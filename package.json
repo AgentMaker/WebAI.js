@@ -1,0 +1,32 @@
+{
+  "name": "webai-js",
+  "version": "1.0.0",
+  "description": "A simple Web AI model deployment tool using JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AgentMaker/WebAI.js.git"
+  },
+  "keywords": [
+    "WebAI.js",
+    "ONNX",
+    "AI"
+  ],
+  "author": "jm12138",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/AgentMaker/WebAI.js/issues"
+  },
+  "homepage": "https://github.com/AgentMaker/WebAI.js#readme",
+  "dependencies": {
+    "onnxruntime-node": "1.10.0"
+  },
+  "devDependencies": {
+    "canvas": "^2.8.0",
+    "jsdom": "^19.0.0",
+    "onnxruntime-web": "^1.10.0"
+  }
+}
