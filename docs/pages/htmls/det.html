@@ -1,0 +1,77 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="../Logo.png" type="image/x-icon">
+    <title>Hello WebAI.js</title>
+</head>
+
+<body>
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <ul class="layui-nav">
+        <li class="layui-nav-item">
+            <a href="javascript:;"><img src="../logo.png" class="layui-nav-img">WebAI.js</a>
+            <dl class="layui-nav-child">
+                <dd><a href="https://github.com/AgentMaker/WebAI.js">Github</a></dd>
+                <dd><a href="https://github.com/AgentMaker/Gitee.js">Gitee</a></dd>
+                <!-- <dd><a href="../htmls/doc.html">Document</a></dd> -->
+            </dl>
+        </li>
+        <li class="layui-nav-item layui-this">
+            <a href="./det.html">Detection</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="./cls.html">Classification</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="./seg.html">Segmentation</a>
+        </li>
+    </ul>
+    <div  class="layui-container" style="width: 98%;">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <p id="statusModel" style="height: 5%; font-size:150%">Model is loading...</p>
+                <p style="height: 5%; font-size:150%">
+                    Model select:
+                    <select id="selectModel">
+                        <option value="blazeface_1000e">blazeface_1000e</option>
+                        <option value="ssdlite_mobilenet_v3_small_320_coco">ssdlite_mobilenet_v3_small_320_coco</option>
+                        <option value="ppyolo_tiny_650e_coco">ppyolo_tiny_650e_coco</option>
+                        <option value="ssd_mobilenet_v1_300_120e_voc">ssd_mobilenet_v1_300_120e_voc</option>
+                    </select>
+                </p>
+                <p style="height: 5%; font-size:150%">
+                    Draw threshold:
+                    <input type="range" value="0.5" min='0.0' max="1.0" step="0.01" id="inputRange">
+                    <input type="number" value="0.5" min='0.0' max="1.0" step="0.01" id="inputNum">
+                </p>
+                <p style="height: 5%; font-size:150%">
+                    Image infer:
+                    <input type="file" name="inputFile" id="inputFile" class="inputfile" accept="image/*"
+                        disabled='true' class="layui-btn" />
+                </p>
+                <p style="height: 5%; font-size:150%">
+                    Camera infer:
+                    <button id='buttonUser' disabled='true'>Open User Camera</button>
+                    <button id='buttonEnv' disabled='true'>Open Environment Camera</button>
+                </p>
+            </div>
+        </div>
+
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <p>
+                    <img src="" alt="" id="image" style="display: none">
+                    <video id="videoCapture" style="display: none"></video>
+                    <canvas id="canvas"></canvas>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <script src='../functions/webai.min.js'></script>
+    <script src='../functions/det.js'></script>
+</body>
+
+</html>
