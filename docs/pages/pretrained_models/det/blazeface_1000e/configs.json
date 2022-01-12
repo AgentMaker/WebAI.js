@@ -1,0 +1,34 @@
+{
+    "Preprocess": [
+        {
+            "type": "Resize",
+            "interp": 1,
+            "keep_ratio": false,
+            "limit_max": true,
+            "target_size": [
+                320,
+                320
+            ]
+        },
+        {
+            "type": "Normalize",
+            "is_scale": false,
+            "mean": [
+                123,
+                117,
+                104
+            ],
+            "std": [
+                127.5,
+                127.5,
+                127.5
+            ]
+        },
+        {
+            "type": "Permute"
+        }
+    ],
+    "label_list": [
+        "face"
+    ]
+}

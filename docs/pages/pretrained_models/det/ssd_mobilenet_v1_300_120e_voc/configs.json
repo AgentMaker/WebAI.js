@@ -1,0 +1,53 @@
+{
+    "Preprocess": [
+        {
+            "type": "Resize",
+            "interp": 1,
+            "keep_ratio": false,
+            "limit_max": true,
+            "target_size": [
+                300,
+                300
+            ]
+        },
+        {
+            "type": "Normalize",
+            "is_scale": false,
+            "mean": [
+                127.5,
+                127.5,
+                127.5
+            ],
+            "std": [
+                127.5,
+                127.5,
+                127.5
+            ]
+        },
+        {
+            "type": "Permute"
+        }
+    ],
+    "label_list": [
+        "aeroplane",
+        "bicycle",
+        "bird",
+        "boat",
+        "bottle",
+        "bus",
+        "car",
+        "cat",
+        "chair",
+        "cow",
+        "diningtable",
+        "dog",
+        "horse",
+        "motorbike",
+        "person",
+        "pottedplant",
+        "sheep",
+        "sofa",
+        "train",
+        "tvmonitor"
+    ]
+}
