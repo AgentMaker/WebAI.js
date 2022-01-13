@@ -31,6 +31,8 @@
 * [ONNXRuntime](https://github.com/microsoft/onnxruntime)
 
 ## Usage
+* More detailed usage documents and example programs will be updated soon
+
 ### Use WebAI.js in a html script
 * Install
 
