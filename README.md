@@ -2,7 +2,7 @@
 ## Online Demo
 * [Hello WebAI.js](https://AgentMaker.github.io/WebAI.js)
 
-    ![](https://img-blog.csdnimg.cn/412e0acf1c5e492ea9ce7f7d7515120f.png)
+    ![](./docs/images/demo.png)
 
 ## Features
 * Multi-type CV model support
