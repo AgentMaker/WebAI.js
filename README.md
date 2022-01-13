@@ -5,24 +5,24 @@
 ## Features
 * Multi-type CV model support
 
-    * [*] Detection models (SSD / YOLO / FCOS / PPYOLO / ...)
-    * [*] Classification models (MobileNet / EfficientNet / PPLCNet / ...)
-    * [*] Segmentation models (BiseNet / PPSeg / STDC / ...)
+    * [x] Detection models (SSD / YOLO / FCOS / PPYOLO / ...)
+    * [x] Classification models (MobileNet / EfficientNet / PPLCNet / ...)
+    * [x] Segmentation models (BiseNet / PPSeg / STDC / ...)
     * [ ] OCR models (PPOCR / ...)
     * [ ] more (...)
 
 * Multi-type common CV preprocess OPs support
 
-    * [*] Resize
-    * [*] Center Crop
-    * [*] Normalize
+    * [x] Resize
+    * [x] Center Crop
+    * [x] Normalize
     * [ ] more (...)
 
 * Rapid deployment of models trained using toolkits
 
-    * [*] [PaddleDetection][PaddleDetection]
-    * [*] [PaddleClas][PaddleClas]
-    * [*] [PaddleSeg][PaddleSeg]
+    * [x] [PaddleDetection][PaddleDetection]
+    * [x] [PaddleClas][PaddleClas]
+    * [x] [PaddleSeg][PaddleSeg]
     * [ ] more (...)
 
 
