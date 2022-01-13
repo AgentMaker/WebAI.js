@@ -5,7 +5,7 @@ WebAI.loadText = function (textURL) {
     return fs.readFileSync(textURL);
 }
 
-WebAI.loadOpneCV = function () {
+WebAI.loadOpenCV = function () {
     return new Promise(resolve => {
         global.Module = {
             onRuntimeInitialized: resolve
@@ -17,7 +17,7 @@ WebAI.loadOpneCV = function () {
 WebAI.Model.create = async function (modelURL, inferConfig, backend = 'node', sessionOption = {logSeverityLevel: 4 }) {
     let model = new this();
     if (typeof global.cv == 'undefined') {
-        await WebAI.loadOpneCV()
+        await WebAI.loadOpenCV()
     }
 
     if (this.backend != backend) {
