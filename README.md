@@ -2,6 +2,8 @@
 ## Online Demo
 * [Hello WebAI.js](https://AgentMaker.github.io/WebAI.js)
 
+    ![](https://img-blog.csdnimg.cn/412e0acf1c5e492ea9ce7f7d7515120f.png)
+
 ## Features
 * Multi-type CV model support
 
@@ -82,7 +84,7 @@
         ]
 
 ## Model Zoo
-* The following pretrained models are provided in the project, and you can quickly try them on the [online experience website]((https://AgentMaker.github.io/WebAI.js))
+* The following pretrained models are provided in the project, and you can quickly try them on the [online experience website](https://AgentMaker.github.io/WebAI.js)
 * The pretrained model files can be found in [./docs/pages/pretrained_model](./docs/pages/pretrained_model) directory
 * More pretrained models will be added continuously
 * The export method of the model will also be updated in the document in the future
