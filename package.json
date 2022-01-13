@@ -22,11 +22,11 @@
   },
   "homepage": "https://github.com/AgentMaker/WebAI.js#readme",
   "dependencies": {
-    "onnxruntime-node": "1.10.0"
+    "onnxruntime-web": "1.10.0",
+    "onnxruntime-node": "1.10.0",
+    "canvas": "2.8.0"
   },
   "devDependencies": {
-    "canvas": "^2.8.0",
-    "jsdom": "^19.0.0",
-    "onnxruntime-web": "^1.10.0"
+    "jsdom": "19.0.0"
   }
 }
