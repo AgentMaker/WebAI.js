@@ -7,7 +7,11 @@
 * Install
 
     ```html
+    <!-- Github -->
     <script src='https://cdn.jsdelivr.net/gh/AgentMaker/WebAI.js/dist/webai.min.js'></script>
+
+    <!-- Npm -->
+    <script src='https://cdn.jsdelivr.net/npm/webai-js/dist/webai.min.js'></script>
     ```
 
 ### use WebAI in node.js
@@ -22,16 +26,16 @@
     ```js
     const WebAI = require('webai-js')
     async function run() {
-    let modelURL = './docs/pages/pretrained_models/det/blazeface_1000e/model.onnx'
-    let modelConfig = './docs/pages/pretrained_models/det/blazeface_1000e/configs.json'
-    let onnxBackend = 'node'
-    let drawThreshold = 0.5
+        let modelURL = './docs/pages/pretrained_models/det/blazeface_1000e/model.onnx'
+        let modelConfig = './docs/pages/pretrained_models/det/blazeface_1000e/configs.json'
+        let onnxBackend = 'node'
+        let drawThreshold = 0.5
 
-    let model = await WebAI.Det.create(modelURL, modelConfig, onnxBackend);
-    let image = await WebAI.loadImage('./docs/images/human_image.jpg');
-    let results = await model.infer(image, drawThreshold)
+        let model = await WebAI.Det.create(modelURL, modelConfig, onnxBackend);
+        let image = await WebAI.loadImage('./docs/images/human_image.jpg');
+        let results = await model.infer(image, drawThreshold)
 
-    console.log(results)
+        console.log(results)
     }
     run()
     ```
