@@ -28,5 +28,8 @@
   },
   "devDependencies": {
     "jsdom": "19.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/AgentMaker"
   }
 }
