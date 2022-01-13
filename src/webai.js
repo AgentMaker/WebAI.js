@@ -391,8 +391,12 @@ WebAI.Cls = class extends WebAI.Model {
                 prob: data[i]
             })
         }
-
-        return probs.sort((a, b) => b.prob - a.prob).slice(0, topK)
+        if (topK > 0) {
+            return probs.sort((a, b) => b.prob - a.prob).slice(0, topK)
+        }
+        else {
+            return probs.sort((a, b) => b.prob - a.prob)
+        }
     }
 
     // Classification model infer
