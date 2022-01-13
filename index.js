@@ -5,23 +5,31 @@ WebAI.loadText = function (textURL) {
     return fs.readFileSync(textURL);
 }
 
-WebAI.setBackend = function (backend = 'node') {
+WebAI.loadOpneCV = function () {
     return new Promise(resolve => {
         global.Module = {
             onRuntimeInitialized: resolve
         };
-        global.cv = require('./src/opencv.js');
-        if (backend == 'web') {
-            global.ort = require('onnxruntime-web')
-        } else {
-            global.ort = require('onnxruntime-node')
-        }
+        global.cv = require('./src/opencv');
     });
 }
 
-WebAI.Model.create = async function (modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, backend = 'node') {
+WebAI.Model.create = async function (modelURL, inferConfig, backend = 'node', sessionOption = {logSeverityLevel: 4 }) {
     let model = new this();
-    await WebAI.setBackend(backend)
+    if (typeof global.cv == 'undefined') {
+        await WebAI.loadOpneCV()
+    }
+
+    if (this.backend != backend) {
+        this.backend = backend
+        if (backend == 'web') {
+            global.ort = require('onnxruntime-web')
+        }
+        else {
+            global.ort = require('onnxruntime-node')
+        }
+    }
+
     model.loadConfigs(inferConfig);
     model.session = await ort.InferenceSession.create(modelURL, sessionOption);
     return model
