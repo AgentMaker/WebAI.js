@@ -15,15 +15,13 @@ var cap = null
 var model = null
 var imgRGBA = null
 var topK = 5
-
+var probs = null
 inputRange.onchange = async function (e) {
     inputNum.value = inputRange.value
     topK = inputRange.value
     if (imgRGBA != null) {
-        let probs = await model.infer(imgRGBA, topK);
-    
         let tableProb = document.getElementById('tableProb');
-        let table = buildTable(probs)
+        let table = buildTable(probs.slice(0, topK))
         output.removeChild(tableProb)
         output.appendChild(table)
         cv.imshow(canvasDom, imgRGBA);
@@ -33,10 +31,8 @@ inputNum.onchange = async function (e) {
     inputRange.value = inputNum.value
     topK = inputNum.value
     if (imgRGBA != null) {
-        let probs = await model.infer(imgRGBA, topK);
-    
         let tableProb = document.getElementById('tableProb');
-        let table = buildTable(probs)
+        let table = buildTable(probs.slice(0, topK))
         output.removeChild(tableProb)
         output.appendChild(table)
         cv.imshow(canvasDom, imgRGBA);
@@ -103,10 +99,10 @@ async function inferCls(e) {
         imgRGBA.delete()
     }
     imgRGBA = cv.imread(imageDom);
-    let probs = await model.infer(imgRGBA, topK);
+    probs = await model.infer(imgRGBA, -1);
     
     let tableProb = document.getElementById('tableProb');
-    let table = buildTable(probs)
+    let table = buildTable(probs.slice(0, topK))
     output.removeChild(tableProb)
     output.appendChild(table)
     cv.imshow(canvasDom, imgRGBA)
@@ -138,10 +134,10 @@ selectModel.onchange = async function (e) {
     buttonUser.disabled = false;
     buttonEnv.disabled = false;
     if (imgRGBA != null) {
-        let probs = await model.infer(imgRGBA, topK);
+        probs = await model.infer(imgRGBA, -1);
     
         let tableProb = document.getElementById('tableProb');
-        let table = buildTable(probs)
+        let table = buildTable(probs.slice(0, topK))
         output.removeChild(tableProb)
         output.appendChild(table)
         cv.imshow(canvasDom, imgRGBA);
@@ -184,11 +180,11 @@ buttonEnv.onclick = function (e) {
 function processVideo() {
     if (buttonUser.innerHTML == 'Stop User Camera' || buttonEnv.innerHTML == 'Stop Environment Camera') {
         cap.read(imgRGBA);
-        model.infer(imgRGBA, topK).then(function (probs) {
+        model.infer(imgRGBA, -1).then(function (probs) {
             cv.imshow(canvasDom, imgRGBA);
     
             let tableProb = document.getElementById('tableProb');
-            let table = buildTable(probs)
+            let table = buildTable(probs.slice(0, topK))
             output.removeChild(tableProb)
             output.appendChild(table)
             setTimeout(processVideo, 0);

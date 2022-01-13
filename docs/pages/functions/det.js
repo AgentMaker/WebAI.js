@@ -14,15 +14,26 @@ var cap = null
 var model = null
 var imgRGBA = null
 var drawThreshold = 0.5
+var bboxes = null
+
+function bboxesThreshold(bboxes, drawThreshold){
+    let _bboxes = []
+    for (let i=0; i<bboxes.length;i++){
+        if (bboxes[i].score > drawThreshold){
+            _bboxes.push(bboxes[i])
+        }
+    }
+    return _bboxes
+}
 
 inputRange.onchange = async function (e) {
     inputNum.value = inputRange.value
     drawThreshold = inputRange.value
     if (imgRGBA != null) {
-        let bboxes = await model.infer(imgRGBA, drawThreshold);
         let imgShow = imgRGBA.clone();
-        for (let i = 0; i < bboxes.length; i++) {
-            let bbox = bboxes[i];
+        let _bboxes = bboxesThreshold(bboxes, drawThreshold);
+        for (let i = 0; i < _bboxes.length; i++) {
+            let bbox = _bboxes[i];
             cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, 2.0);
             cv.putText(imgShow, bbox.label, new cv.Point(bbox.x1, bbox.y2), cv.FONT_HERSHEY_COMPLEX, 0.8, bbox.color);
         }
@@ -34,10 +45,10 @@ inputNum.onchange = async function (e) {
     inputRange.value = inputNum.value
     drawThreshold = inputNum.value
     if (imgRGBA != null) {
-        let bboxes = await model.infer(imgRGBA, drawThreshold);
         let imgShow = imgRGBA.clone();
-        for (let i = 0; i < bboxes.length; i++) {
-            let bbox = bboxes[i];
+        let _bboxes = bboxesThreshold(bboxes, drawThreshold);
+        for (let i = 0; i < _bboxes.length; i++) {
+            let bbox = _bboxes[i];
             cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, 2.0);
             cv.putText(imgShow, bbox.label, new cv.Point(bbox.x1, bbox.y2), cv.FONT_HERSHEY_COMPLEX, 0.8, bbox.color);
         }
@@ -106,10 +117,11 @@ async function inferDet(e) {
         imgRGBA.delete()
     }
     imgRGBA = cv.imread(imageDom);
-    let bboxes = await model.infer(imgRGBA, drawThreshold);
+    bboxes = await model.infer(imgRGBA, -1);
     let imgShow = imgRGBA.clone();
-    for (let i = 0; i < bboxes.length; i++) {
-        let bbox = bboxes[i];
+    let _bboxes = bboxesThreshold(bboxes, drawThreshold);
+    for (let i = 0; i < _bboxes.length; i++) {
+        let bbox = _bboxes[i];
         cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, 2.0);
         cv.putText(imgShow, bbox.label, new cv.Point(bbox.x1, bbox.y2), cv.FONT_HERSHEY_COMPLEX, 0.8, bbox.color);
     }
@@ -143,10 +155,11 @@ selectModel.onchange = async function (e) {
     buttonUser.disabled = false;
     buttonEnv.disabled = false;
     if (imgRGBA != null) {
-        let bboxes = await model.infer(imgRGBA, drawThreshold);
+        bboxes = await model.infer(imgRGBA, -1);
         let imgShow = imgRGBA.clone();
-        for (let i = 0; i < bboxes.length; i++) {
-            let bbox = bboxes[i];
+        let _bboxes = bboxesThreshold(bboxes, drawThreshold);
+        for (let i = 0; i < _bboxes.length; i++) {
+            let bbox = _bboxes[i];
             cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, 2.0);
             cv.putText(imgShow, bbox.label, new cv.Point(bbox.x1, bbox.y2), cv.FONT_HERSHEY_COMPLEX, 0.8, bbox.color);
         }
@@ -192,9 +205,10 @@ function processVideo() {
     if (buttonUser.innerHTML == 'Stop User Camera' || buttonEnv.innerHTML == 'Stop Environment Camera') {
         cap.read(imgRGBA);
         let imgShow = imgRGBA.clone();
-        model.infer(imgRGBA, drawThreshold).then(function (bboxes) {
-            for (let i = 0; i < bboxes.length; i++) {
-                let bbox = bboxes[i];
+        model.infer(imgRGBA, -1).then(function (bboxes) {
+            let _bboxes = bboxesThreshold(bboxes, drawThreshold);
+            for (let i = 0; i < _bboxes.length; i++) {
+                let bbox = _bboxes[i];
                 cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, 2.0);
                 cv.putText(imgShow, bbox.label, new cv.Point(bbox.x1, bbox.y2), cv.FONT_HERSHEY_COMPLEX, 0.8, bbox.color);
             }
