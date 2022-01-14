@@ -43,9 +43,11 @@
     ```html
     <!-- Github -->
     <script src='https://cdn.jsdelivr.net/gh/AgentMaker/WebAI.js/dist/webai.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/gh/AgentMaker/WebAI.js@(branch)/dist/webai.min.js'></script>
 
     <!-- Npm -->
     <script src='https://cdn.jsdelivr.net/npm/webai-js/dist/webai.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/webai-js@{version}/dist/webai.min.js'></script>
     ```
 
 * APIs
@@ -68,8 +70,9 @@
 * Simple Demo
 
     ```html
+    <img src='./docs/images/human_image.jpg' id='image'>
     <canvas id='canvas'></canvas>
-    <img src='./docs/image/human_image.jpg' id='image'>
+    <script src='https://cdn.jsdelivr.net/gh/AgentMaker/WebAI.js/dist/webai.min.js'></script>
     <script>
         const modelURL = './docs/pages/pretrained_models/det/blazeface_1000e/model.onnx';
         const modelConfig = './docs/pages/pretrained_models/det/blazeface_1000e/configs.json';
@@ -79,7 +82,7 @@
         const Dom = document.getElementById('image');
 
         window.onload = async function(){
-            window.model = await WebAI.Det.create(modelURL, modelConfig, onnxBackend);
+            window.model = await WebAI.Det.create(modelURL, modelConfig);
             let image = cv.imread(imageDom);
             let bboxes = await model.infer(image, drawThreshold);
             let imgShow = WebAI.drawBBoxes(image, bboxes, false, true);
