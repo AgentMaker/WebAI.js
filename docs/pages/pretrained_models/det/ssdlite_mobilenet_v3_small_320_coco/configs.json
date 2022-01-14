@@ -1,6 +1,10 @@
 {
     "Preprocess": [
         {
+            "type": "Decode",
+            "mode": "RGB"
+        },
+        {
             "type": "Resize",
             "interp": 1,
             "keep_ratio": false,

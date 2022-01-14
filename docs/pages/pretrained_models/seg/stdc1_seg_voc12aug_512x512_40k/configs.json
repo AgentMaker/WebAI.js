@@ -1,6 +1,10 @@
 {
     "Preprocess": [
         {
+            "type": "Decode",
+            "mode": "RGB"
+        },
+        {
             "type": "Normalize",
             "is_scale": true,
             "mean": [
