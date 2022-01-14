@@ -15,7 +15,7 @@
 
 * Multi-type common CV preprocess OPs support
 
-    * [x] CvtColor (RGBA->RGB/BGR)
+    * [x] CvtColor (RGBA -> RGB / BGR)
     * [x] Resize
     * [x] Center Crop
     * [x] Normalize
@@ -48,6 +48,24 @@
     <script src='https://cdn.jsdelivr.net/npm/webai-js/dist/webai.min.js'></script>
     ```
 
+* APIs
+
+    ```js
+    // Create a model
+    (async) WebAI.Det.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }) -> modelDet
+    (async) WebAI.Cls.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }) -> modelCls
+    (async) WebAI.Seg.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }) -> modelSeg
+
+    // Model infer
+    (async) modelDet.infer(imgRGBA, drawThreshold=0.5) ->  bboxes
+    (async) modelCls.infer(imgRGBA, topK=5) ->  probs
+    (async) modelSeg.infer(imgRGBA) ->  segResults
+
+    // Result postprocess
+    WebAI.drawBBoxes(img, bboxes, withLabel = true, withScore = true, thickness = 2.0, lineType = 8, fontFace = 0, fontScale = 0.7) -> imgDrawed
+    ```
+
+
 ### Use WebAI.js in node.js
 * Install
 
@@ -55,21 +73,46 @@
     $ npm install webai-js
     ```
 
-* Face detection
+* APIs
+
+    ```js
+    // Create a model
+    (async) WebAI.Det.create(modelURL, inferConfig, backend='node', sessionOption = { logSeverityLevel: 4 }) -> modelDet
+    (async) WebAI.Cls.create(modelURL, inferConfig, backend='node', sessionOption = { logSeverityLevel: 4 }) -> modelCls
+    (async) WebAI.Seg.create(modelURL, inferConfig, backend='node', sessionOption = { logSeverityLevel: 4 }) -> modelSeg
+
+    // Model infer
+    (async) modelDet.infer(imgRGBA, drawThreshold=0.5) ->  bboxes
+    (async) modelCls.infer(imgRGBA, topK=5) ->  probs
+    (async) modelSeg.infer(imgRGBA) ->  segResults
+
+    // Image I/O
+    (async) WebAI.loadImage(imgPath) -> img
+    WebAI.saveImage(img, imgPath) -> img
+
+    // Result postprocess
+    WebAI.drawBBoxes(img, bboxes, withLabel = true, withScore = true, thickness = 2.0, lineType = 8, fontFace = 0, fontScale = 0.7) -> imgDrawed
+    ```
+
+
+* Simple Demo (Face Detection)
 
     ```js
     const WebAI = require('webai-js')
     async function run() {
         let modelURL = './docs/pages/pretrained_models/det/blazeface_1000e/model.onnx'
         let modelConfig = './docs/pages/pretrained_models/det/blazeface_1000e/configs.json'
-        let onnxBackend = 'node'
+        let onnxBackend = 'node' // or 'web'
         let drawThreshold = 0.5
 
         let model = await WebAI.Det.create(modelURL, modelConfig, onnxBackend);
         let image = await WebAI.loadImage('./docs/images/human_image.jpg');
-        let results = await model.infer(image, drawThreshold)
-
-        console.log(results)
+        let bboxes = await model.infer(image, drawThreshold)
+        let imgShow = WebAI.drawBBoxes(image, bboxes, false, true)
+        WebAI.saveImage(imgShow, 'test.png')
+        image.delete()
+        imgShow.delete()
+        console.log(bboxes, imgShow)
     }
     run()
     ```
