@@ -74,21 +74,34 @@
     <canvas id='canvas'></canvas>
     <script src='https://cdn.jsdelivr.net/gh/AgentMaker/WebAI.js/dist/webai.min.js'></script>
     <script>
+        // model
         const modelURL = './docs/pages/pretrained_models/det/blazeface_1000e/model.onnx';
         const modelConfig = './docs/pages/pretrained_models/det/blazeface_1000e/configs.json';
+
+        // detection threshold
         const drawThreshold = 0.5;
 
-        const imageDom = document.getElementById('image');
-        const Dom = document.getElementById('image');
-
         window.onload = async function(){
+            // create a model
             window.model = await WebAI.Det.create(modelURL, modelConfig);
-            let image = cv.imread(imageDom);
+
+            // read the test image from img tag
+            let image = cv.imread('image');
+
+            // model infer
             let bboxes = await model.infer(image, drawThreshold);
+
+            // draw bboxes into the test image
             let imgShow = WebAI.drawBBoxes(image, bboxes, false, true);
+
+            // show image into canvas tag
             cv.imshow('canvas', imgShow);      
+
+            // clear cv Mats
             image.delete();
             imgShow.delete();
+
+            // log bboxes results
             console.log(bboxes);
         }
     </script>
@@ -128,18 +141,36 @@
     ```js
     const WebAI = require('webai-js')
     async function run() {
+        // model path
         const modelURL = './docs/pages/pretrained_models/det/blazeface_1000e/model.onnx';
         const modelConfig = './docs/pages/pretrained_models/det/blazeface_1000e/configs.json';
-        const onnxBackend = 'node'; // or 'web'
+
+        // run backend: node or web
+        const onnxBackend = 'node';
+
+        // detection threshold
         const drawThreshold = 0.5;
 
+        // create model
         const model = await WebAI.Det.create(modelURL, modelConfig, onnxBackend);
+
+        // load the test image
         const image = await WebAI.loadImage('./docs/images/human_image.jpg');
+
+        // model infer
         const bboxes = await model.infer(image, drawThreshold);
+
+        // draw bboxes into the test image
         const imgShow = WebAI.drawBBoxes(image, bboxes, false, true);
+
+        // save result image
         WebAI.saveImage(imgShow, 'test.png');
+
+        // clear cv Mats
         image.delete();
         imgShow.delete();
+
+        // log bboxes result
         console.log(bboxes);
     }
     run()
