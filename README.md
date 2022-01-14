@@ -1,4 +1,5 @@
 # WebAI.js
+![](https://www.npmjs.com/package/webai-js)
 ## Online Demo
 * [Hello WebAI.js](https://AgentMaker.github.io/WebAI.js)
 
@@ -193,7 +194,7 @@
 * More pretrained models will be added continuously
 * The export method of the model will also be updated in the document in the future
 
-    |Model|Type|source|
+    |Model|Type|Source|
     |:-:|:-:|:-:|
     |BlazeFace_1000e|Detection|[PaddleDetection][PaddleDetection]|
     |PPYOLO_tiny_650e_coco|Detection|[PaddleDetection][PaddleDetection]|
