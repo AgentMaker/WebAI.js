@@ -15,9 +15,11 @@
 
 * Multi-type common CV preprocess OPs support
 
+    * [x] CvtColor (RGBA->RGB/BGR)
     * [x] Resize
     * [x] Center Crop
     * [x] Normalize
+    * [x] Permute (HWC -> CHW)
     * [ ] more (...)
 
 * Rapid deployment of models trained using toolkits
