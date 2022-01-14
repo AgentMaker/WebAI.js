@@ -1,5 +1,8 @@
 # WebAI.js
-![](https://www.npmjs.com/package/webai-js)
+![](https://img.shields.io/npm/v/webai-js.svg?sanitize=true)
+![](https://img.shields.io/npm/l/webai-js.svg?sanitize=true)
+![](https://img.shields.io/npm/dm/webai-js.svg?sanitize=true)
+
 ## Online Demo
 * [Hello WebAI.js](https://AgentMaker.github.io/WebAI.js)
 
