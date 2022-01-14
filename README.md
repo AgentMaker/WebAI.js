@@ -127,7 +127,7 @@
                 y2: 139
             }
         ]
-
+    ![](./docs/images/face_det_demo.png)
 ## Model Zoo
 * The following pretrained models are provided in the project, and you can quickly try them on the [online experience website](https://AgentMaker.github.io/WebAI.js)
 * The pretrained model files can be found in [./docs/pages/pretrained_model](./docs/pages/pretrained_model) directory
