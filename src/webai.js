@@ -35,6 +35,14 @@ const WebAI = {
         return imgRGB
     },
 
+    // RGBA image -> BGR image
+    // imgRGBA(cv.Mat) -> imgBGR(cv.Mat)
+    rgba2bgr: function (imgRGBA) {
+        let imgBGR = new cv.Mat();
+        cv.cvtColor(imgRGBA, imgBGR, cv.COLOR_RGBA2BGR);
+        return imgBGR
+    },
+
     // Image resize
     // img(cv.Mat), height(int), width(int), targetSize(int[]), keepRatio(bool), limitMax(bool), interp(int) -> [imgResize(cv.Mat), imScaleX(number), imScaleY(number)]
     resize: function (img, height, width, targetSize, keepRatio, limitMax, interp) {
@@ -154,6 +162,18 @@ const WebAI = {
             }
         )
         return index
+    },
+
+    // Draw bboxes / label / score into image
+    // img(cv.Mat), bboxes(object[]), thickness(number)=2.0, lineType(int)=8, fontFace(int)=0, fontScale(number)=1.0 -> imgShow(cv.Mat)
+    drawBBoxes: function(img, bboxes, thickness=2.0, lineType=8, fontFace=0, fontScale=1.0){
+        let imgShow = img.clone()
+        for (let i = 0; i < bboxes.length; i++) {
+            let bbox = bboxes[i];
+            cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, thickness, lineType);
+            cv.putText(imgShow, `${bbox.label}(${(bbox.score*100).toFixed(2)})`, new cv.Point(bbox.x1, bbox.y2), fontFace, fontScale, bbox.color, thickness, lineType);
+        }
+        return imgShow
     }
 }
 
@@ -178,15 +198,21 @@ WebAI.Model = class {
         this.isResize = false
         for (let i = 0; i < preProcess.length; i++) {
             let OP = preProcess[i]
-            if (OP.type == 'Resize') {
+            if (OP.type == 'Decode') {
+                this.mode = OP.mode
+                if (!(this.mode=='RGB' || this.mode=='BGR')){
+                    throw `Not support ${OP.mode} mode.`
+                }
+            }
+            else if (OP.type == 'Resize') {
                 this.isResize = true;
                 this.interp = OP.interp;
                 this.keepRatio = OP.keep_ratio;
                 this.targetSize = OP.target_size;
+                this.limitMax = OP.limit_max;
             }
             else if (OP.type == 'Normalize') {
                 this.isScale = OP.is_scale
-                this.limitMax = OP.limit_max
                 if (this.isScale) {
                     this.scale = [255.0, 255.0, 255.0, 0.0]
                 }
@@ -214,6 +240,23 @@ WebAI.Model = class {
         else {
             this.labelList = null;
         }
+
+        console.info(`model info: `)
+        console.info({
+            mode: this.mode,
+            isResize: this.isResize,
+            interp: this.interp,
+            keepRatio: this.keepRatio,
+            targetSize: this.targetSize,
+            isScale: this.isScale,
+            limitMax: this.limitMax,
+            mean: this.mean.slice(0,3),
+            std: this.std.slice(0,3),
+            isCrop: this.isCrop,
+            cropSize: this.cropSize,
+            isPermute: this.isPermute,
+            labelList: this.labelList
+        })
     }
 
     // Base model preprocess
@@ -228,18 +271,28 @@ WebAI.Model = class {
             imgResize = imgRGBA.clone();
         }
 
-        let imgRGB;
+        let imgCvt;
         if (this.isCrop) {
             let imgCrop = WebAI.crop(imgResize, this.cropSize);
-            imgRGB = WebAI.rgba2rgb(imgCrop);
+            if (this.mode == 'RGB') {
+                imgCvt = WebAI.rgba2rgb(imgCrop);
+            }
+            else if (this.mode == 'BGR') {
+                imgCvt = WebAI.rgba2bgr(imgCrop);
+            }
             imgCrop.delete();
         }
         else {
-            imgRGB = WebAI.rgba2rgb(imgResize);
+            if (this.mode == 'RGB') {
+                imgCvt = WebAI.rgba2rgb(imgResize);
+            }
+            else if (this.mode == 'BGR') {
+                imgCvt = WebAI.rgba2bgr(imgResize);
+            }
             imgResize.delete();
         }
 
-        let imgNorm = WebAI.normalize(imgRGB, this.scale, this.mean, this.std, this.isScale);
+        let imgNorm = WebAI.normalize(imgCvt, this.scale, this.mean, this.std, this.isScale);
 
         let imgTensor;
         let [h, w] = [imgNorm.rows, imgNorm.cols];
