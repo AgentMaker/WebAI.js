@@ -112,7 +112,7 @@
         WebAI.saveImage(imgShow, 'test.png')
         image.delete()
         imgShow.delete()
-        console.log(bboxes, imgShow)
+        console.log(bboxes)
     }
     run()
     ```
@@ -133,7 +133,6 @@
 * The pretrained model files can be found in [./docs/pages/pretrained_model](./docs/pages/pretrained_model) directory
 * More pretrained models will be added continuously
 * The export method of the model will also be updated in the document in the future
-
 
     |Model|Type|source|
     |:-:|:-:|:-:|
