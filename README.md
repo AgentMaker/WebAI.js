@@ -65,6 +65,31 @@
     WebAI.drawBBoxes(img, bboxes, withLabel = true, withScore = true, thickness = 2.0, lineType = 8, fontFace = 0, fontScale = 0.7) -> imgDrawed
     ```
 
+* Simple Demo
+
+    ```html
+    <canvas id='canvas'></canvas>
+    <img src='./docs/image/human_image.jpg' id='image'>
+    <script>
+        const modelURL = './docs/pages/pretrained_models/det/blazeface_1000e/model.onnx';
+        const modelConfig = './docs/pages/pretrained_models/det/blazeface_1000e/configs.json';
+        const drawThreshold = 0.5;
+
+        const imageDom = document.getElementById('image');
+        const Dom = document.getElementById('image');
+
+        window.onload = async function(){
+            window.model = await WebAI.Det.create(modelURL, modelConfig, onnxBackend);
+            let image = cv.imread(imageDom);
+            let bboxes = await model.infer(image, drawThreshold);
+            let imgShow = WebAI.drawBBoxes(image, bboxes, false, true);
+            cv.imshow('canvas', imgShow);      
+            image.delete();
+            imgShow.delete();
+            console.log(bboxes);
+        }
+    </script>
+    ```
 
 ### Use WebAI.js in node.js
 * Install
@@ -100,19 +125,19 @@
     ```js
     const WebAI = require('webai-js')
     async function run() {
-        let modelURL = './docs/pages/pretrained_models/det/blazeface_1000e/model.onnx'
-        let modelConfig = './docs/pages/pretrained_models/det/blazeface_1000e/configs.json'
-        let onnxBackend = 'node' // or 'web'
-        let drawThreshold = 0.5
+        const modelURL = './docs/pages/pretrained_models/det/blazeface_1000e/model.onnx';
+        const modelConfig = './docs/pages/pretrained_models/det/blazeface_1000e/configs.json';
+        const onnxBackend = 'node'; // or 'web'
+        const drawThreshold = 0.5;
 
-        let model = await WebAI.Det.create(modelURL, modelConfig, onnxBackend);
-        let image = await WebAI.loadImage('./docs/images/human_image.jpg');
-        let bboxes = await model.infer(image, drawThreshold)
-        let imgShow = WebAI.drawBBoxes(image, bboxes, false, true)
-        WebAI.saveImage(imgShow, 'test.png')
-        image.delete()
-        imgShow.delete()
-        console.log(bboxes)
+        const model = await WebAI.Det.create(modelURL, modelConfig, onnxBackend);
+        const image = await WebAI.loadImage('./docs/images/human_image.jpg');
+        const bboxes = await model.infer(image, drawThreshold);
+        const imgShow = WebAI.drawBBoxes(image, bboxes, false, true);
+        WebAI.saveImage(imgShow, 'test.png');
+        image.delete();
+        imgShow.delete();
+        console.log(bboxes);
     }
     run()
     ```
