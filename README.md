@@ -88,7 +88,7 @@
 
     // Image I/O
     (async) WebAI.loadImage(imgPath) -> img
-    WebAI.saveImage(img, imgPath) -> img
+    WebAI.saveImage(img, imgPath)
 
     // Result postprocess
     WebAI.drawBBoxes(img, bboxes, withLabel = true, withScore = true, thickness = 2.0, lineType = 8, fontFace = 0, fontScale = 0.7) -> imgDrawed
