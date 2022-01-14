@@ -166,12 +166,21 @@ const WebAI = {
 
     // Draw bboxes / label / score into image
     // img(cv.Mat), bboxes(object[]), thickness(number)=2.0, lineType(int)=8, fontFace(int)=0, fontScale(number)=1.0 -> imgShow(cv.Mat)
-    drawBBoxes: function(img, bboxes, thickness=2.0, lineType=8, fontFace=0, fontScale=1.0){
+    drawBBoxes: function (img, bboxes, withLabel = true, withScore = true, thickness = 2.0, lineType = 8, fontFace = 0, fontScale = 0.7) {
         let imgShow = img.clone()
         for (let i = 0; i < bboxes.length; i++) {
             let bbox = bboxes[i];
             cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, thickness, lineType);
-            cv.putText(imgShow, `${bbox.label}(${(bbox.score*100).toFixed(2)})`, new cv.Point(bbox.x1, bbox.y2), fontFace, fontScale, bbox.color, thickness, lineType);
+            if (withLabel && withScore) {
+                cv.putText(imgShow, `${bbox.label} ${(bbox.score * 100).toFixed(2)}%`, new cv.Point(bbox.x1, bbox.y2), fontFace, fontScale, bbox.color, thickness, lineType);
+            }
+            else if (withLabel) {
+                cv.putText(imgShow, `${bbox.label}`, new cv.Point(bbox.x1, bbox.y2), fontFace, fontScale, bbox.color, thickness, lineType);
+            }
+            else if (withScore) {
+                cv.putText(imgShow, `${(bbox.score * 100).toFixed(2)}%`, new cv.Point(bbox.x1, bbox.y2), fontFace, fontScale, bbox.color, thickness, lineType);
+            }
+
         }
         return imgShow
     }
@@ -200,7 +209,7 @@ WebAI.Model = class {
             let OP = preProcess[i]
             if (OP.type == 'Decode') {
                 this.mode = OP.mode
-                if (!(this.mode=='RGB' || this.mode=='BGR')){
+                if (!(this.mode == 'RGB' || this.mode == 'BGR')) {
                     throw `Not support ${OP.mode} mode.`
                 }
             }
@@ -250,8 +259,8 @@ WebAI.Model = class {
             targetSize: this.targetSize,
             isScale: this.isScale,
             limitMax: this.limitMax,
-            mean: this.mean.slice(0,3),
-            std: this.std.slice(0,3),
+            mean: this.mean.slice(0, 3),
+            std: this.std.slice(0, 3),
             isCrop: this.isCrop,
             cropSize: this.cropSize,
             isPermute: this.isPermute,

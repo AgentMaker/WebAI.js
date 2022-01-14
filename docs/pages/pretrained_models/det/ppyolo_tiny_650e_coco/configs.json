@@ -8,7 +8,7 @@
             "type": "Resize",
             "interp": 2,
             "keep_ratio": false,
-            "limit_max": true,
+            "limit_max": false,
             "target_size": [
                 320,
                 320

@@ -1,8 +1,8 @@
 const WebAI = require('./src/webai')
-const { createCanvas, loadImage } = require('canvas');
+const { createCanvas, loadImage, createImageData } = require('canvas');
+const fs = require('fs');
 
 WebAI.loadText = function (textURL) {
-    let fs = require('fs');
     return fs.readFileSync(textURL);
 }
 
@@ -46,6 +46,14 @@ WebAI.loadImage = async function (imageURL) {
     let imageData = ctx.getImageData(0, 0, image.width, image.height)
     let imageMat = cv.matFromArray(image.height, image.width, cv.CV_8UC4, imageData.data)
     return imageMat
+}
+
+WebAI.saveImage = function (image, path) {
+    let canvas = createCanvas(image.cols, image.rows);
+    let ctx = canvas.getContext('2d');
+    let imageData = createImageData(Uint8ClampedArray.from(image.data), image.cols, image.rows)
+    ctx.putImageData(imageData, 0, 0, 0, 0, image.cols, image.rows);
+    fs.writeFileSync(path, canvas.toBuffer('image/png'));
 }
 
 WebAI.Model.create = async function (modelURL, inferConfig, backend = 'node', sessionOption = { logSeverityLevel: 4 }) {

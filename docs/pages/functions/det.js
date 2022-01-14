@@ -30,13 +30,8 @@ inputRange.onchange = async function (e) {
     inputNum.value = inputRange.value
     drawThreshold = inputRange.value
     if (imgRGBA != null) {
-        let imgShow = imgRGBA.clone();
         let _bboxes = bboxesThreshold(bboxes, drawThreshold);
-        for (let i = 0; i < _bboxes.length; i++) {
-            let bbox = _bboxes[i];
-            cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, 2.0);
-            cv.putText(imgShow, bbox.label, new cv.Point(bbox.x1, bbox.y2), cv.FONT_HERSHEY_COMPLEX, 0.8, bbox.color);
-        }
+        let imgShow = WebAI.drawBBoxes(imgRGBA, _bboxes)
         cv.imshow(canvasDom, imgShow);
         imgShow.delete()
     }
@@ -45,13 +40,8 @@ inputNum.onchange = async function (e) {
     inputRange.value = inputNum.value
     drawThreshold = inputNum.value
     if (imgRGBA != null) {
-        let imgShow = imgRGBA.clone();
         let _bboxes = bboxesThreshold(bboxes, drawThreshold);
-        for (let i = 0; i < _bboxes.length; i++) {
-            let bbox = _bboxes[i];
-            cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, 2.0);
-            cv.putText(imgShow, bbox.label, new cv.Point(bbox.x1, bbox.y2), cv.FONT_HERSHEY_COMPLEX, 0.8, bbox.color);
-        }
+        let imgShow = WebAI.drawBBoxes(imgRGBA, _bboxes)
         cv.imshow(canvasDom, imgShow);
         imgShow.delete()
     }
@@ -118,14 +108,9 @@ async function inferDet(e) {
     }
     imgRGBA = cv.imread(imageDom);
     bboxes = await model.infer(imgRGBA, -1);
-    let imgShow = imgRGBA.clone();
     let _bboxes = bboxesThreshold(bboxes, drawThreshold);
-    for (let i = 0; i < _bboxes.length; i++) {
-        let bbox = _bboxes[i];
-        cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, 2.0);
-        cv.putText(imgShow, bbox.label, new cv.Point(bbox.x1, bbox.y2), cv.FONT_HERSHEY_COMPLEX, 0.8, bbox.color);
-    }
-    cv.imshow(canvasDom, imgShow)
+    let imgShow = WebAI.drawBBoxes(imgRGBA, _bboxes)
+    cv.imshow(canvasDom, imgShow);
     imgShow.delete()
 };
 async function loadModel(e) {
@@ -156,13 +141,8 @@ selectModel.onchange = async function (e) {
     buttonEnv.disabled = false;
     if (imgRGBA != null) {
         bboxes = await model.infer(imgRGBA, -1);
-        let imgShow = imgRGBA.clone();
         let _bboxes = bboxesThreshold(bboxes, drawThreshold);
-        for (let i = 0; i < _bboxes.length; i++) {
-            let bbox = _bboxes[i];
-            cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, 2.0);
-            cv.putText(imgShow, bbox.label, new cv.Point(bbox.x1, bbox.y2), cv.FONT_HERSHEY_COMPLEX, 0.8, bbox.color);
-        }
+        let imgShow = WebAI.drawBBoxes(imgRGBA, _bboxes)
         cv.imshow(canvasDom, imgShow);
         imgShow.delete()
     }
@@ -204,14 +184,9 @@ buttonEnv.onclick = function (e) {
 function processVideo() {
     if (buttonUser.innerHTML == 'Stop User Camera' || buttonEnv.innerHTML == 'Stop Environment Camera') {
         cap.read(imgRGBA);
-        let imgShow = imgRGBA.clone();
         model.infer(imgRGBA, -1).then(function (bboxes) {
             let _bboxes = bboxesThreshold(bboxes, drawThreshold);
-            for (let i = 0; i < _bboxes.length; i++) {
-                let bbox = _bboxes[i];
-                cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, 2.0);
-                cv.putText(imgShow, bbox.label, new cv.Point(bbox.x1, bbox.y2), cv.FONT_HERSHEY_COMPLEX, 0.8, bbox.color);
-            }
+            let imgShow = WebAI.drawBBoxes(imgRGBA, _bboxes)
             cv.imshow(canvasDom, imgShow);
             imgShow.delete()
             setTimeout(processVideo, 0);
