@@ -1,204 +1,59 @@
-// WebAI Namespace
-const WebAI = {
-    // Get image resize scale
-    // height(int), width(int), targetSize(int[]), keepRatio(bool), limitMax(bool) -> imScaleX(number), imScaleY(number)
-    getIMScale: function (height, width, targetSize, keepRatio, limitMax) {
-        let imScaleX, imScaleY;
-        if (keepRatio) {
-            let imSizeMin = Math.min(height, width);
-            let targetSizeMin = Math.min(targetSize[0], targetSize[1]);
-            let imScale = targetSizeMin / imSizeMin;
-
-            if (limitMax) {
-                let imSizeMax = Math.max(height, width);
-                let targetSizeMax = Math.max(targetSize[0], targetSize[1]);
-                if (Math.round(imScale * imSizeMax) > targetSizeMax) {
-                    imScale = targetSizeMax / imSizeMax;
-                }
-            }
-
-            imScaleX = imScale;
-            imScaleY = imScale;
-        }
-        else {
-            imScaleY = targetSize[0] / height;
-            imScaleX = targetSize[1] / width;
-        }
-        return [imScaleX, imScaleY]
-    },
-
-    // RGBA image -> RGB image
-    // imgRGBA(cv.Mat) -> imgRGB(cv.Mat)
-    rgba2rgb: function (imgRGBA) {
-        let imgRGB = new cv.Mat();
-        cv.cvtColor(imgRGBA, imgRGB, cv.COLOR_RGBA2RGB);
-        return imgRGB
-    },
-
-    // RGBA image -> BGR image
-    // imgRGBA(cv.Mat) -> imgBGR(cv.Mat)
-    rgba2bgr: function (imgRGBA) {
-        let imgBGR = new cv.Mat();
-        cv.cvtColor(imgRGBA, imgBGR, cv.COLOR_RGBA2BGR);
-        return imgBGR
-    },
-
-    // Image resize
-    // img(cv.Mat), height(int), width(int), targetSize(int[]), keepRatio(bool), limitMax(bool), interp(int) -> [imgResize(cv.Mat), imScaleX(number), imScaleY(number)]
-    resize: function (img, height, width, targetSize, keepRatio, limitMax, interp) {
-        let [imScaleX, imScaleY] = this.getIMScale(height, width, targetSize, keepRatio, limitMax);
-        let imgResize = new cv.Mat();
-        cv.resize(img, imgResize, { width: 0, height: 0 }, imScaleX, imScaleY, interp);
-        return [imgResize, imScaleX, imScaleY]
-    },
-
-    // Image center crop
-    // imgInput(cv.Mat) -> imgCrop(cv.Mat)
-    crop: function (img, cropSize) {
-        let imgCrop = img.roi({
-            x: Math.ceil((img.cols - cropSize[1]) / 2),
-            y: Math.ceil((img.rows - cropSize[0]) / 2),
-            width: cropSize[1],
-            height: cropSize[0]
-        })
-        img.delete()
-        return imgCrop
-    },
-
-    // Image normalize
-    // imgOutput(cv.Mat) = (imgInput(cv.Mat) / scale - mean) / std
-    normalize: function (imgRGB, scale, mean, std, isScale) {
-        imgRGB.convertTo(imgRGB, cv.CV_32F);
-
-        if (isScale) {
-            let imgScale = new cv.Mat(imgRGB.rows, imgRGB.cols, cv.CV_32FC3, scale);
-            cv.divide(imgRGB, imgScale, imgRGB);
-            imgScale.delete();
-        }
-
-        let imgMean = new cv.Mat(imgRGB.rows, imgRGB.cols, cv.CV_32FC3, mean);
-        cv.subtract(imgRGB, imgMean, imgRGB);
-        imgMean.delete();
-
-        let imgStd = new cv.Mat(imgRGB.rows, imgRGB.cols, cv.CV_32FC3, std);
-        cv.divide(imgRGB, imgStd, imgRGB);
-        imgStd.delete();
-
-        return imgRGB
-    },
-
-    // Image permute
-    // imgHWC(cv.Mat) -> imgCHW(Float32Array)
-    permute: function (imgRGB) {
-        let rgbPlanes = new cv.MatVector();
-        cv.split(imgRGB, rgbPlanes);
-        let R = rgbPlanes.get(0);
-        let G = rgbPlanes.get(1);
-        let B = rgbPlanes.get(2);
-        rgbPlanes.delete();
-
-        let imgData = new Float32Array(R.data32F.length * 3)
-        imgData.set(R.data32F, 0)
-        imgData.set(G.data32F, R.data32F.length)
-        imgData.set(B.data32F, R.data32F.length * 2)
-        R.delete();
-        G.delete();
-        B.delete();
-        imgRGB.delete();
-        return imgData
-    },
-
-    // Load text
-    // textURL(string) -> textContext(string)
-    loadText: function (textURL) {
-        let xhr = new XMLHttpRequest();
-        xhr.open('get', textURL, false);
-        xhr.send(null);
-        return xhr.responseText
-    },
-
-    // Get color map for echo class
-    // labelList(string[]) -> colorMap({
-    //     label: any;
-    //     color: number[];
-    // }[])
-    getColorMap: function (labelList) {
-        let classNum = labelList.length
-        let colorMap = []
-        let colorSlice = Math.ceil((256 * 256 * 256) / classNum)
-        for (let i = 0; i < classNum; i++) {
-            let color = (colorSlice * i).toString(16)
-            let colorRGBA = []
-            for (let j = 0; j < 6; j += 2) {
-                let tmp = color.slice(j, j + 2)
-                if (tmp == '') {
-                    colorRGBA.push(0);
-                }
-                else {
-                    colorRGBA.push(parseInt("0x" + tmp));
-                }
-            }
-            colorRGBA.push(255)
-            colorMap.push({
-                label: labelList[i],
-                color: colorRGBA
-            })
-        }
-        return colorMap
-    },
-
-    // Get the index of the max value of a array
-    // arr(number[]) -> index(int)
-    argMax: function (arr) {
-        let max = Math.max.apply(null, arr);
-        let index = arr.findIndex(
-            function (v, i, obj) {
-                if (v == max) {
-                    return true
-                }
-                else {
-                    return false
-                }
-            }
-        )
-        return index
-    },
-
-    // Draw bboxes / label / score into image
-    // img(cv.Mat), bboxes(object[]), thickness(number)=2.0, lineType(int)=8, fontFace(int)=0, fontScale(number)=1.0 -> imgShow(cv.Mat)
-    drawBBoxes: function (img, bboxes, withLabel = true, withScore = true, thickness = 2.0, lineType = 8, fontFace = 0, fontScale = 0.7) {
-        let imgShow = img.clone()
-        for (let i = 0; i < bboxes.length; i++) {
-            let bbox = bboxes[i];
-            cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, thickness, lineType);
-            if (withLabel && withScore) {
-                cv.putText(imgShow, `${bbox.label} ${(bbox.score * 100).toFixed(2)}%`, new cv.Point(bbox.x1, bbox.y2), fontFace, fontScale, bbox.color, thickness, lineType);
-            }
-            else if (withLabel) {
-                cv.putText(imgShow, `${bbox.label}`, new cv.Point(bbox.x1, bbox.y2), fontFace, fontScale, bbox.color, thickness, lineType);
-            }
-            else if (withScore) {
-                cv.putText(imgShow, `${(bbox.score * 100).toFixed(2)}%`, new cv.Point(bbox.x1, bbox.y2), fontFace, fontScale, bbox.color, thickness, lineType);
-            }
-
-        }
-        return imgShow
-    }
-}
-
-// Base Model of WebAI
-WebAI.Model = class {
-    // Model create
-    // modelURL(string), inferConfig(string), sessionOption(object) = { logSeverityLevel: 4 } -> model(WebAI.Model)
-    static async create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }) {
+class Model {
+    static async create(modelURL, sessionOption = { logSeverityLevel: 4 }, init = null, preProcess = null, postProcess = null) {
         let model = new this();
-        model.loadConfigs(inferConfig);
-        model.session = await ort.InferenceSession.create(modelURL, sessionOption);
+        model.session = await WebAI.ort.InferenceSession.create(modelURL, sessionOption);
+        if (init) {
+            init(model)
+        }
+        if (preProcess) {
+            model.preProcess = preProcess
+        }
+        if (postProcess) {
+            model.postProcess = postProcess
+        }
         return model
     }
 
-    // Load configs
-    // inferConfig(string) = configs.json -> null
+    async infer(...args) {
+        console.time('Infer');
+
+        console.time('Infer.Preprocess');
+        let feeds = this.preProcess(...args);
+
+        console.timeEnd('Infer.Preprocess');
+
+        console.time('Infer.Run');
+
+        let resultsTensors = await this.session.run(feeds);
+
+        console.timeEnd('Infer.Run');
+
+        console.time('Infer.Postprocess');
+
+        let results = this.postProcess(resultsTensors, ...args);
+
+        console.timeEnd('Infer.Postprocess');
+
+        console.timeEnd('Infer');
+
+        return results
+    }
+}
+
+class CV extends Model {
+    static async create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) {
+        let model = new this();
+        model.loadConfigs(inferConfig);
+        model.session = await WebAI.ort.InferenceSession.create(modelURL, sessionOption);
+        if (getFeeds) {
+            model.getFeeds = getFeeds
+        }
+        if (postProcess) {
+            model.postProcess = postProcess
+        }
+        return model
+    }
+
     loadConfigs(inferConfig) {
         let inferConfigs = JSON.parse(WebAI.loadText(inferConfig));
         let preProcess = inferConfigs.Preprocess;
@@ -250,8 +105,7 @@ WebAI.Model = class {
             this.labelList = null;
         }
 
-        console.info(`model info: `)
-        console.info({
+        console.info('model info: ', {
             mode: this.mode,
             isResize: this.isResize,
             interp: this.interp,
@@ -268,10 +122,8 @@ WebAI.Model = class {
         })
     }
 
-    // Base model preprocess
-    // Resize -> Crop -> Normalize -> Permute -> Totensor -> Feeds
-    // imgRGBA(cv.Mat), height(int), width(int) -> feeds (object)
-    preProcess(imgRGBA, height, width) {
+    preProcess(...args) {
+        let [imgRGBA, height, width] = args.slice(0, 3)
         let imgResize, imScaleX, imScaleY
         if (this.isResize) {
             [imgResize, imScaleX, imScaleY] = WebAI.resize(imgRGBA, height, width, this.targetSize, this.keepRatio, this.limitMax, this.interp);
@@ -306,57 +158,24 @@ WebAI.Model = class {
         let imgTensor;
         let [h, w] = [imgNorm.rows, imgNorm.cols];
         if (this.isPermute) {
-            imgTensor = new ort.Tensor('float32', WebAI.permute(imgNorm), [1, 3, h, w]);
+            imgTensor = new WebAI.ort.Tensor('float32', WebAI.permute(imgNorm), [1, 3, h, w]);
         }
         else {
-            imgTensor = new ort.Tensor('float32', imgNorm.data32F, [1, h, w, 3]);
+            imgTensor = new WebAI.ort.Tensor('float32', imgNorm.data32F, [1, h, w, 3]);
             imgNorm.delete()
         }
 
         return this.getFeeds(imgTensor, imScaleX, imScaleY)
     }
-
-    // Base model infer
-    // Preprocess --feed--> session.run --resultsTensors--> Postprocess -> results
-    // imgRGBA(cv.Mat) -> results(any)
-    async infer(imgRGBA, ...args) {
-        console.time('Infer');
-
-        console.time('Infer.Preprocess');
-        let [height, width] = [imgRGBA.rows, imgRGBA.cols]
-
-        let feeds = this.preProcess(imgRGBA, height, width);
-
-        console.timeEnd('Infer.Preprocess');
-
-        console.time('Infer.Run');
-
-        let resultsTensors = await this.session.run(feeds);
-
-        console.timeEnd('Infer.Run');
-
-        console.time('Infer.Postprocess');
-
-        let results = this.postProcess(resultsTensors, ...args);
-
-        console.timeEnd('Infer.Postprocess');
-
-        console.timeEnd('Infer');
-
-        return results
-    }
 }
 
-// Detection Model of WebAI
-WebAI.Det = class extends WebAI.Model {
-    // Get feeds for session.run
-    // imgTensor(ort.Tensor), imScaleX(number), imScaleY(number) -> feeds(object)
+class Det extends CV {
     getFeeds(imgTensor, imScaleX, imScaleY) {
         let inputNames = this.session.inputNames;
         let _feeds = {
-            im_shape: new ort.Tensor('float32', Float32Array.from(imgTensor.dims.slice(2, 4)), [1, 2]),
+            im_shape: new WebAI.ort.Tensor('float32', Float32Array.from(imgTensor.dims.slice(2, 4)), [1, 2]),
             image: imgTensor,
-            scale_factor: new ort.Tensor('float32', Float32Array.from([imScaleY, imScaleX]), [1, 2])
+            scale_factor: new WebAI.ort.Tensor('float32', Float32Array.from([imScaleY, imScaleX]), [1, 2])
         }
         let feeds = {};
         for (let i = 0; i < inputNames.length; i++) {
@@ -365,18 +184,8 @@ WebAI.Det = class extends WebAI.Model {
         return feeds
     }
 
-    // Detection model postprocess
-    // resultsTensors(ort.Tensor), args(any[]) -> results({
-    //     label: string,
-    //     color: int[],
-    //     score: number,
-    //     x1: int,
-    //     y1: int,
-    //     x2: int,
-    //     y2: int
-    // }[])
     postProcess(resultsTensors, ...args) {
-        let [height, width, drawThreshold] = args
+        let [height, width, drawThreshold] = args.slice(1, 4)
         let bboxesTensor = Object.values(resultsTensors)[0];
         let bboxes = [];
         let bboxesNum = bboxesTensor.dims[0];
@@ -410,39 +219,18 @@ WebAI.Det = class extends WebAI.Model {
         return bboxes
     }
 
-    // Detection model infer
-    // Preprocess --feed--> session.run --resultsTensors--> Postprocess -> results
-    // imgRGBA(cv.Mat), drawThreshold(number) -> results({
-    //     label: string,
-    //     color: int[],
-    //     score: number,
-    //     x1: int,
-    //     y1: int,
-    //     x2: int,
-    //     y2: int
-    // }[])
     async infer(imgRGBA, drawThreshold = 0.5) {
         return super.infer(imgRGBA, imgRGBA.rows, imgRGBA.cols, drawThreshold)
     }
 }
 
-// Classification Model of WebAI
-WebAI.Cls = class extends WebAI.Model {
-    // Get feeds for session.run
-    // imgTensor(ort.Tensor), imScaleX(number), imScaleY(number) -> feeds(object)
-    getFeeds(imgTensor, imScaleX, imScaleY) {
-        return {
-            x: imgTensor
-        }
+class Cls extends CV {
+    getFeeds(imgTensor) {
+        return { x: imgTensor }
     }
 
-    // Classification model postprocess
-    // resultsTensors(ort.Tensor), args(any[]) -> results({
-    //     label: string,
-    //     prob: number
-    // }[])
     postProcess(resultsTensors, ...args) {
-        let topK = args[0];
+        let topK = args[3];
         let probsTensor = Object.values(resultsTensors)[0];
         let data = probsTensor.data
         let probs = []
@@ -461,31 +249,16 @@ WebAI.Cls = class extends WebAI.Model {
         }
     }
 
-    // Classification model infer
-    // Preprocess --feed--> session.run --resultsTensors--> Postprocess -> results
-    // imgRGBA(cv.Mat), topK(int) -> results({
-    //     label: string,
-    //     prob: number
-    // }[])
     async infer(imgRGBA, topK = 5) {
-        return super.infer(imgRGBA, topK)
+        return super.infer(imgRGBA, imgRGBA.rows, imgRGBA.cols, topK)
     }
 }
 
-// Segmentation Model of WebAI
-WebAI.Seg = class extends WebAI.Model {
-    // Get feeds for session.run
-    // imgTensor(ort.Tensor), imScaleX(number), imScaleY(number) -> feeds(object)
-    getFeeds(imgTensor, imScaleX, imScaleY) {
+class Seg extends CV {
+    getFeeds(imgTensor) {
         return { x: imgTensor }
     }
 
-    // Segmentation model postprocess
-    // resultsTensors(ort.Tensor) -> results({
-    //     argMax: int[],
-    //     colorMapping: int[]，
-    //     colorMap: colorMap({label: any, color: number[]}[])
-    // })
     postProcess(resultsTensors) {
         let segTensor = Object.values(resultsTensors)[0];
         let data = segTensor.data
@@ -516,16 +289,180 @@ WebAI.Seg = class extends WebAI.Model {
         }
     }
 
-    // Segmentation model infer
-    // Preprocess --feed--> session.run --resultsTensors--> Postprocess -> results
-    // imgRGBA(cv.Mat) -> results({
-    //     argMax: int[],
-    //     colorMapping: int[]，
-    //     colorMap: colorMap({label: any, color: number[]}[])
-    // })
     infer(imgRGBA) {
-        return super.infer(imgRGBA)
+        return super.infer(imgRGBA, imgRGBA.rows, imgRGBA.cols)
     }
+}
+
+class WebAI {
+    static argMax(arr) {
+        let max = Math.max.apply(null, arr);
+        let index = arr.findIndex(
+            function (value) {
+                if (value == max) {
+                    return true
+                }
+                else {
+                    return false
+                }
+            }
+        )
+        return index
+    }
+
+    static getIMScale(height, width, targetSize, keepRatio, limitMax) {
+        let imScaleX, imScaleY;
+        if (keepRatio) {
+            let imSizeMin = Math.min(height, width);
+            let targetSizeMin = Math.min(targetSize[0], targetSize[1]);
+            let imScale = targetSizeMin / imSizeMin;
+
+            if (limitMax) {
+                let imSizeMax = Math.max(height, width);
+                let targetSizeMax = Math.max(targetSize[0], targetSize[1]);
+                if (Math.round(imScale * imSizeMax) > targetSizeMax) {
+                    imScale = targetSizeMax / imSizeMax;
+                }
+            }
+
+            imScaleX = imScale;
+            imScaleY = imScale;
+        }
+        else {
+            imScaleY = targetSize[0] / height;
+            imScaleX = targetSize[1] / width;
+        }
+        return [imScaleX, imScaleY]
+    }
+
+    static rgba2rgb(imgRGBA) {
+        let imgRGB = new this.cv.Mat();
+        this.cv.cvtColor(imgRGBA, imgRGB, this.cv.COLOR_RGBA2RGB);
+        return imgRGB
+    }
+
+    static rgba2bgr(imgRGBA) {
+        let imgBGR = new this.cv.Mat();
+        this.cv.cvtColor(imgRGBA, imgBGR, this.cv.COLOR_RGBA2BGR);
+        return imgBGR
+    }
+
+    static resize(img, height, width, targetSize, keepRatio, limitMax, interp) {
+        let [imScaleX, imScaleY] = this.getIMScale(height, width, targetSize, keepRatio, limitMax);
+        let imgResize = new this.cv.Mat();
+        this.cv.resize(img, imgResize, { width: 0, height: 0 }, imScaleX, imScaleY, interp);
+        return [imgResize, imScaleX, imScaleY]
+    }
+
+    static crop(img, cropSize) {
+        let imgCrop = img.roi({
+            x: Math.ceil((img.cols - cropSize[1]) / 2),
+            y: Math.ceil((img.rows - cropSize[0]) / 2),
+            width: cropSize[1],
+            height: cropSize[0]
+        })
+        img.delete()
+        return imgCrop
+    }
+
+    static normalize(imgRGB, scale, mean, std, isScale) {
+        imgRGB.convertTo(imgRGB, this.cv.CV_32F);
+
+        if (isScale) {
+            let imgScale = new this.cv.Mat(imgRGB.rows, imgRGB.cols, this.cv.CV_32FC3, scale);
+            this.cv.divide(imgRGB, imgScale, imgRGB);
+            imgScale.delete();
+        }
+
+        let imgMean = new this.cv.Mat(imgRGB.rows, imgRGB.cols, this.cv.CV_32FC3, mean);
+        this.cv.subtract(imgRGB, imgMean, imgRGB);
+        imgMean.delete();
+
+        let imgStd = new this.cv.Mat(imgRGB.rows, imgRGB.cols, this.cv.CV_32FC3, std);
+        this.cv.divide(imgRGB, imgStd, imgRGB);
+        imgStd.delete();
+
+        return imgRGB
+    }
+
+    static permute(imgRGB) {
+        let rgbPlanes = new this.cv.MatVector();
+        this.cv.split(imgRGB, rgbPlanes);
+        let R = rgbPlanes.get(0);
+        let G = rgbPlanes.get(1);
+        let B = rgbPlanes.get(2);
+        rgbPlanes.delete();
+
+        let imgData = new Float32Array(R.data32F.length * 3)
+        imgData.set(R.data32F, 0)
+        imgData.set(G.data32F, R.data32F.length)
+        imgData.set(B.data32F, R.data32F.length * 2)
+        R.delete();
+        G.delete();
+        B.delete();
+        imgRGB.delete();
+        return imgData
+    }
+
+    static loadText(textURL) {
+        let xhr = new XMLHttpRequest();
+        xhr.open('get', textURL, false);
+        xhr.send(null);
+        return xhr.responseText
+    }
+
+    static getColorMap(labelList) {
+        let classNum = labelList.length
+        let colorMap = []
+        let colorSlice = Math.ceil((256 * 256 * 256) / classNum)
+        for (let i = 0; i < classNum; i++) {
+            let color = (colorSlice * i).toString(16)
+            let colorRGBA = []
+            for (let j = 0; j < 6; j += 2) {
+                let tmp = color.slice(j, j + 2)
+                if (tmp == '') {
+                    colorRGBA.push(0);
+                }
+                else {
+                    colorRGBA.push(parseInt("0x" + tmp));
+                }
+            }
+            colorRGBA.push(255)
+            colorMap.push({
+                label: labelList[i],
+                color: colorRGBA
+            })
+        }
+        return colorMap
+    }
+
+    static drawBBoxes(img, bboxes, withLabel = true, withScore = true, thickness = 2.0, lineType = 8, fontFace = 0, fontScale = 0.7) {
+        let imgShow = img.clone()
+        for (let i = 0; i < bboxes.length; i++) {
+            let bbox = bboxes[i];
+            this.cv.rectangle(imgShow, { x: bbox.x1, y: bbox.y1 }, { x: bbox.x2, y: bbox.y2 }, bbox.color, thickness, lineType);
+            if (withLabel && withScore) {
+                this.cv.putText(imgShow, `${bbox.label} ${(bbox.score * 100).toFixed(2)}%`, { x: bbox.x1, y: bbox.y2 }, fontFace, fontScale, bbox.color, thickness, lineType);
+            }
+            else if (withLabel) {
+                this.cv.putText(imgShow, `${bbox.label}`, { x: bbox.x1, y: bbox.y2 }, fontFace, fontScale, bbox.color, thickness, lineType);
+            }
+            else if (withScore) {
+                this.cv.putText(imgShow, `${(bbox.score * 100).toFixed(2)}%`, { x: bbox.x1, y: bbox.y2 }, fontFace, fontScale, bbox.color, thickness, lineType);
+            }
+        }
+        return imgShow
+    }
+
+    static Model = Model
+
+    static CV = CV
+
+    static Det = Det
+
+    static Cls = Cls
+
+    static Seg = Seg
 }
 
 module.exports = WebAI

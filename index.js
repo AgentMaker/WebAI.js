@@ -1,50 +1,45 @@
-const WebAI = require('./src/webai')
-const { createCanvas, loadImage, createImageData } = require('canvas');
 const fs = require('fs');
-
-WebAI.loadText = function (textURL) {
-    return fs.readFileSync(textURL);
-}
+const { createCanvas, loadImage, createImageData } = require('canvas');
+const WebAI = require('./src/webai')
 
 WebAI.loadOpenCV = function () {
     return new Promise(resolve => {
         global.Module = {
             onRuntimeInitialized: resolve
         };
-        global.cv = require('./src/opencv');
+        WebAI.cv = require('./src/opencv');
     });
 }
 
 WebAI.checkOpenCV = async function () {
-    if (typeof global.cv == 'undefined') {
+    if (typeof WebAI.cv == 'undefined') {
         await WebAI.loadOpenCV()
     }
 }
 
-WebAI.loadONNXRuntime = function (backend = 'node') {
-    WebAI.backend = backend
-    if (backend == 'web') {
-        global.ort = require('onnxruntime-web')
-    }
-    else {
-        global.ort = require('onnxruntime-node')
-    }
-}
-
-WebAI.checkONNXRuntime = function (backend = 'node') {
-    if (WebAI.backend != backend) {
-        WebAI.loadONNXRuntime(backend)
+WebAI.switchBackend = function (onnxBackend) {
+    if (onnxBackend != WebAI.onnxBackend) {
+        WebAI.onnxBackend = onnxBackend
+        if (onnxBackend == 'node') {
+            WebAI.ort = require('onnxruntime-node')
+        }
+        else if (onnxBackend == 'web') {
+            WebAI.ort = require('onnxruntime-web')
+        }
+        else {
+            throw `not support ${onnxBackend} ONNXRuntime Backend`
+        }
     }
 }
 
 WebAI.loadImage = async function (imageURL) {
-    WebAI.checkOpenCV()
+    await this.checkOpenCV()
     let image = await loadImage(imageURL);
     let canvas = createCanvas(image.width, image.height);
     let ctx = canvas.getContext('2d')
     ctx.drawImage(image, 0, 0, image.width, image.height)
     let imageData = ctx.getImageData(0, 0, image.width, image.height)
-    let imageMat = cv.matFromArray(image.height, image.width, cv.CV_8UC4, imageData.data)
+    let imageMat = WebAI.cv.matFromArray(image.height, image.width, WebAI.cv.CV_8UC4, imageData.data)
     return imageMat
 }
 
@@ -56,13 +51,22 @@ WebAI.saveImage = function (image, path) {
     fs.writeFileSync(path, canvas.toBuffer('image/png'));
 }
 
-WebAI.Model.create = async function (modelURL, inferConfig, backend = 'node', sessionOption = { logSeverityLevel: 4 }) {
-    await WebAI.checkOpenCV();
-    WebAI.checkONNXRuntime(backend);
+WebAI.loadText = function (textURL) {
+    return fs.readFileSync(textURL);
+}
 
+WebAI.CV.create = async function (modelURL, inferConfig, onnxBackend = 'node', sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) {
+    WebAI.switchBackend(onnxBackend)
+    await WebAI.checkOpenCV()
     let model = new this();
     model.loadConfigs(inferConfig);
-    model.session = await ort.InferenceSession.create(modelURL, sessionOption);
+    model.session = await WebAI.ort.InferenceSession.create(modelURL, sessionOption);
+    if (getFeeds) {
+        model.getFeeds = getFeeds
+    }
+    if (postProcess) {
+        model.postProcess = postProcess
+    }
     return model
 }
 
