@@ -55,6 +55,23 @@ WebAI.loadText = function (textURL) {
     return fs.readFileSync(textURL);
 }
 
+WebAI.Model.create = async function (modelURL, onnxBackend = 'node', sessionOption = { logSeverityLevel: 4 }, init = null, preProcess = null, postProcess = null) {
+    WebAI.switchBackend(onnxBackend)
+    await WebAI.checkOpenCV()
+    let model = new this();
+    model.session = await WebAI.ort.InferenceSession.create(modelURL, sessionOption);
+    if (init) {
+        init(model)
+    }
+    if (preProcess) {
+        model.preProcess = preProcess
+    }
+    if (postProcess) {
+        model.postProcess = postProcess
+    }
+    return model
+}
+
 WebAI.CV.create = async function (modelURL, inferConfig, onnxBackend = 'node', sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) {
     WebAI.switchBackend(onnxBackend)
     await WebAI.checkOpenCV()
