@@ -45,6 +45,7 @@
         |data64F	|double	|Float64Array	|CV_64F|
 
     * MatVector 即多个 Mat 组成的向量
+    
     * Mat 和 MatVector 类型的变量请在不再需要使用的时候使用 delete() 方法将其删除，否则该变量将会持续占用内存
 
 * 其他数据类型及其对应的 JS 对象格式，创建变量时两种方式均可使用
@@ -88,8 +89,6 @@
 
 ## 5. API
 * OpenCV.js 的 API 与 OpenCV C++ 版本 API 非常相似
-* 其中 Mat 的数据类型对照表格如下：
-
 
 * OpenCV.js 常用的 API 如下：
     * 图像读取和显示
