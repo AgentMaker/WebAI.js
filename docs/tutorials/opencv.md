@@ -44,9 +44,23 @@
         |data32F	|float	|Float32Array	|CV_32F|
         |data64F	|double	|Float64Array	|CV_64F|
 
-    * MatVector 即多个 Mat 组成的向量
-    
+    * MatVector 即多个 Mat 组成的向量，使用 push_back(mat: cv.Mat)、 get(index: number) 和 set(index: number, mat: cv.Mat)方法添加、读取和设置 Mat 至 MatVector 中
+
     * Mat 和 MatVector 类型的变量请在不再需要使用的时候使用 delete() 方法将其删除，否则该变量将会持续占用内存
+
+    * 简单的创建和删除方式如下：
+
+        ```js
+        let mat = new cv.Mat()
+        let matVector = new cv.MatVector()
+
+        matVector.push_back(mat)
+        mat = matVector(0)
+        matVector.set(0, mat)
+
+        mat.delete()
+        matVector.delete()
+        ```
 
 * 其他数据类型及其对应的 JS 对象格式，创建变量时两种方式均可使用
 
