@@ -13,13 +13,24 @@
 1. HTML script 标签引入
 
     ```html
-    <!-- Github -->
+    <!-- Github 最新版本 -->
     <script src='https://cdn.jsdelivr.net/gh/AgentMaker/WebAI.js/dist/webai.min.js'></script>
+
+    <!-- Github 指定版本 -->
     <script src='https://cdn.jsdelivr.net/gh/AgentMaker/WebAI.js@(branch)/dist/webai.min.js'></script>
 
-    <!-- Npm -->
+    <!-- Github main 分支版本 -->
+    <script src='https://cdn.jsdelivr.net/gh/AgentMaker/WebAI.js@main/dist/webai.min.js'></script>
+
+
+    <!-- Npm 最新版本 -->
     <script src='https://cdn.jsdelivr.net/npm/webai-js/dist/webai.min.js'></script>
+
+    <!-- Npm 指定版本 -->
     <script src='https://cdn.jsdelivr.net/npm/webai-js@{version}/dist/webai.min.js'></script>
+
+    <!-- Npm 1.0.6 版本 -->
+    <script src='https://cdn.jsdelivr.net/npm/webai-js@1.0.6/dist/webai.min.js'></script>
     ```
 
 2. Npm 安装
@@ -205,8 +216,8 @@
 
 * 更多 API 请参考文档：[API 参考](./api.md)
 
-## 6. 使用教程
-1. OpenCV.js 快速入门和 API 速览
+## 6. 教程
+1. [OpenCV.js 快速入门和 API 速览](./opencv.md)
 
 2. ONNXRuntime.js 快速入门和 API 速览
 
