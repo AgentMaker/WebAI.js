@@ -30,19 +30,66 @@
 
     * 下载 opencv.js 文件，放置于源码目录下即可
 
-## 4. API
+## 4. 数据类型
+* 图像数据类型
+    * Mat 是 OpenCV 基础的图像数据结构，其数据类型对照表如下：
+
+        |Data Properties	|C++ Type	|JavaScript Typed Array	|Mat Type|
+        |:-:|:-:|:-:|:-:|
+        |data	|uchar	|Uint8Array	|CV_8U|
+        |data8S	|char	|Int8Array	|CV_8S|
+        |data16U	|ushort	|Uint16Array	|CV_16U|
+        |data16S	|short	|Int16Array	|CV_16S|
+        |data32S	|int	|Int32Array	|CV_32S|
+        |data32F	|float	|Float32Array	|CV_32F|
+        |data64F	|double	|Float64Array	|CV_64F|
+
+    * MatVector 即多个 Mat 组成的向量
+    * Mat 和 MatVector 类型的变量请在不再需要使用的时候使用 delete() 方法将其删除，否则该变量将会持续占用内存
+
+* 其他数据类型及其对应的 JS 对象格式，创建变量时两种方式均可使用
+
+    ```js
+    new cv.Point(x, y) = {
+        x: number, 
+        y: number
+    }
+
+    new cv.Scalar(R, G, B, Alpha) = [
+        R: number, 
+        G: number, 
+        B: number, 
+        Alpha: number
+    ]
+
+    new cv.Size(width, height) = {
+        width: number, 
+        height: number
+    }
+
+    new cv.Circle(center, radius) = {
+        center: number, 
+        radius: number
+    }
+
+    new cv.Rect(x, y, width, height) = {
+        x: number, 
+        y: number, 
+        width: number, 
+        height: number
+    }
+
+    new cv.RotatedRect(center, size, angle) = {
+        center: number, 
+        size: number,
+        angle: number
+    }
+    ```
+
+## 5. API
 * OpenCV.js 的 API 与 OpenCV C++ 版本 API 非常相似
 * 其中 Mat 的数据类型对照表格如下：
 
-    |Data Properties	|C++ Type	|JavaScript Typed Array	|Mat Type|
-    |:-:|:-:|:-:|:-:|
-    |data	|uchar	|Uint8Array	|CV_8U|
-    |data8S	|char	|Int8Array	|CV_8S|
-    |data16U	|ushort	|Uint16Array	|CV_16U|
-    |data16S	|short	|Int16Array	|CV_16S|
-    |data32S	|int	|Int32Array	|CV_32S|
-    |data32F	|float	|Float32Array	|CV_32F|
-    |data64F	|double	|Float64Array	|CV_64F|
 
 * OpenCV.js 常用的 API 如下：
     * 图像读取和显示
@@ -104,4 +151,4 @@
 
 * 更多 API 和详细信息请参考 [OpenCV 官方文档](https://docs.opencv.org)
 
-## 5. 使用
+## 6. 使用
