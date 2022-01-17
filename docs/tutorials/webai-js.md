@@ -1,6 +1,6 @@
 # WebAI.js
 ## 1. 简介
-* WebAI.js 是一个基于 OpenCV.js 和 ONNXRuntime 开发的一个 Web 前端 AI 模型部署工具
+* WebAI.js 是一个基于 [OpenCV.js](https://docs.opencv.org/4.5.5/d5/d10/tutorial_js_root.html) 和 [ONNXRuntime](https://github.com/microsoft/onnxruntime/tree/master/js) 开发的一个 Web 前端 AI 模型部署工具
 
 ## 2. 特性
 * WebAI.js 支持 HTML script 标签引入和 npm 两种方式进行使用
@@ -58,51 +58,24 @@
                 "interp": 1, // 插值方式
                 "keep_ratio": false, // 保持长宽比
                 "limit_max": false, // 限制图片尺寸
-                "target_size": [ // 目标尺寸
-                    300,
-                    300
-                ]
+                "target_size": [300, 300] // 目标尺寸
+                
             },
             {
                 "type": "Normalize", // 归一化
                 "is_scale": false, // 是否缩放 (img /= 255.0)
-                "mean": [ // 均值
-                    127.5,
-                    127.5,
-                    127.5
-                ],
-                "std": [ // 标准差
-                    127.5,
-                    127.5,
-                    127.5
-                ]
+                "mean": [127.5, 127.5, 127.5], // 均值
+                "std": [127.5, 127.5, 127.5] // 标准差
             },
             {
                 "type": "Permute" // 转置 (HWC -> CHW)
             }
         ],
-        "label_list": [ // 标签列表
-            "aeroplane",
-            "bicycle",
-            "bird",
-            "boat",
-            "bottle",
-            "bus",
-            "car",
-            "cat",
-            "chair",
-            "cow",
-            "diningtable",
-            "dog",
-            "horse",
-            "motorbike",
-            "person",
-            "pottedplant",
-            "sheep",
-            "sofa",
-            "train",
-            "tvmonitor"
-        ]
+        "label_list": [
+            "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", 
+            "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", 
+            "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"
+        ] // 标签列表
     }
     ```
 

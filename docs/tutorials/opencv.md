@@ -28,8 +28,13 @@
 
 2. node.js
 
-    * 下载 opencv.js 文件，放置于源码目录下
+    * 下载 opencv.js 文件，放置于源码目录下即可
 
 ## 4. API
+* OpenCV.js 的 API 与 OpenCV C++ 版本 API 非常相似
+
+* OpenCV.js 常用的 API 如下：
+
+* 更多 API 和详细信息请参考 [OpenCV 官方文档](https://docs.opencv.org)
 
 ## 5. 使用
