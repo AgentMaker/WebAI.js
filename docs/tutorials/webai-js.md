@@ -189,136 +189,148 @@
             }[]
         }): 图像分割结果
 
-* 功能函数
+* 图像读取/保存（只适用于 node.js）
 
-    * 绘制目标检测包围框
+    ```js
+    // 图像读取
+    (async) WebAI.loadImage(imgPath) -> img
 
-        ```js
-        WebAI.drawBBoxes(img, bboxes, withLabel = true, withScore = true, thickness = 2.0, lineType = 8, fontFace = 0, fontScale = 0.7) -> imgDrawed
-        ```
+    // 图像保存
+    WebAI.saveImage(img, imgPath)
+    ```
+    
+        imgPath(string): 图像（保存）路径
 
-            img(cv.Mat): 输入图像
-            bboxes({
-                label: string, // 标签
-                score: number, // 置信度
-                color: number[], // 颜色（RGBA）
-                x1: number, // 左上角 x 坐标
-                y1: number, // 左上角 y 坐标
-                x2: number, // 右下角 x 坐标
-                y2: number // 右下角 y 坐标
-            }[]): 目标检测包围框结果
-            withLabel(boolean): 绘制标签
-            withScore(boolean): 绘制置信度
-            thickness(number): 线条宽度
-            lineType(number): 线条类型
-            fontFace(number): 字体类型
-            fontScale(number): 字体缩放
+        img(cv.Mat): 输入/输出图像
 
-            imgDrawed(cv.Mat): 输出图像
+* 绘制目标检测包围框
 
-    * 获取图像缩放因子
+    ```js
+    WebAI.drawBBoxes(img, bboxes, withLabel = true, withScore = true, thickness = 2.0, lineType = 8, fontFace = 0, fontScale = 0.7) -> imgDrawed
+    ```
 
-        ```js
-        WebAI.getIMScale(height, width, targetSize, keepRatio, limitMax) -> [imScaleX, imScaleY]
-        ```
+        img(cv.Mat): 输入图像
+        bboxes({
+            label: string, // 标签
+            score: number, // 置信度
+            color: number[], // 颜色（RGBA）
+            x1: number, // 左上角 x 坐标
+            y1: number, // 左上角 y 坐标
+            x2: number, // 右下角 x 坐标
+            y2: number // 右下角 y 坐标
+        }[]): 目标检测包围框结果
+        withLabel(boolean): 绘制标签
+        withScore(boolean): 绘制置信度
+        thickness(number): 线条宽度
+        lineType(number): 线条类型
+        fontFace(number): 字体类型
+        fontScale(number): 字体缩放
 
-            height(number): 图像高度
-            width(number): 图像宽度
-            targetSize([number, number]): 目标尺寸（高，宽）/（最小，最大）
-            keepRatio(boolean): 保持长宽比
-            limitMax(boolean): 限制最大尺寸
+        imgDrawed(cv.Mat): 输出图像
 
-            imScaleX, imScaleY(number, number): x/y 轴缩放因子
+* 获取图像缩放因子
 
-    * 图像颜色空间转换
+    ```js
+    WebAI.getIMScale(height, width, targetSize, keepRatio, limitMax) -> [imScaleX, imScaleY]
+    ```
 
-        ```js
-        WebAI.rgba2rgb(imgRGBA) -> imgRGB
-        WebAI.rgba2bgr(imgRGBA) -> imgBGR
-        ```
+        height(number): 图像高度
+        width(number): 图像宽度
+        targetSize([number, number]): 目标尺寸（高，宽）/（最小，最大）
+        keepRatio(boolean): 保持长宽比
+        limitMax(boolean): 限制最大尺寸
 
-            imgRGBA(cv.Mat): 输入的图像（RGBA）
+        imScaleX, imScaleY(number, number): x/y 轴缩放因子
 
-            imgRGB/imgBGR(cv.Mat): 输出的图像（RGB/BGR）
+* 图像颜色空间转换
 
-    * 图像缩放
+    ```js
+    WebAI.rgba2rgb(imgRGBA) -> imgRGB
+    WebAI.rgba2bgr(imgRGBA) -> imgBGR
+    ```
 
-        ```js
-        WebAI.resize(img, height, width, targetSize, keepRatio, limitMax, interp) -> imgResize
-        ```
+        imgRGBA(cv.Mat): 输入的图像（RGBA）
 
-            img(cv.Mat): 输入的图像
-            height(number): 图像高度
-            width(number): 图像宽度
-            targetSize([number, number]): 目标尺寸（高，宽）/（最小，最大）
-            keepRatio(boolean): 保持长宽比
-            limitMax(boolean): 限制最大尺寸
-            interp(number): 插值类型
+        imgRGB/imgBGR(cv.Mat): 输出的图像（RGB/BGR）
 
-    * 图像裁切（中心裁切）
+* 图像缩放
 
-        ```js
-        WebAI.crop(img, cropSize) -> imgCrop
-        ```
+    ```js
+    WebAI.resize(img, height, width, targetSize, keepRatio, limitMax, interp) -> imgResize
+    ```
 
-            img(cv.Mat): 输入的图像
-            cropSize([number, number]): 裁切尺寸（高，宽）
+        img(cv.Mat): 输入的图像
+        height(number): 图像高度
+        width(number): 图像宽度
+        targetSize([number, number]): 目标尺寸（高，宽）/（最小，最大）
+        keepRatio(boolean): 保持长宽比
+        limitMax(boolean): 限制最大尺寸
+        interp(number): 插值类型
 
-    * 归一化
+* 图像裁切（中心裁切）
 
-        ```js
-        WebAI.normalize(img, scale, mean, std, isScale) -> imgNorm
-        ```
+    ```js
+    WebAI.crop(img, cropSize) -> imgCrop
+    ```
 
-            img(cv.Mat): 输入的图像
-            scale(number): 缩放值
-            mean(number[]): 均值
-            std(number[]): 标准差
-            isScale(boolean): 是否缩放
+        img(cv.Mat): 输入的图像
+        cropSize([number, number]): 裁切尺寸（高，宽）
 
-            imgNorm(cv.Mat): 输出的图像
+* 归一化
 
-    * 转置
+    ```js
+    WebAI.normalize(img, scale, mean, std, isScale) -> imgNorm
+    ```
 
-        ```js
-        WebAI.permute(img) -> imgData
-        ```
+        img(cv.Mat): 输入的图像
+        scale(number): 缩放值
+        mean(number[]): 均值
+        std(number[]): 标准差
+        isScale(boolean): 是否缩放
 
-            img(cv.Mat): 输入的图像（HWC）
+        imgNorm(cv.Mat): 输出的图像
 
-            imgData(Float32Array): 输出的图像数据（CHW）
+* 转置
 
-    * 获取文本内容
+    ```js
+    WebAI.permute(img) -> imgData
+    ```
 
-        ```js
-        WebAI.loadText(textURL) -> text
-        ```
+        img(cv.Mat): 输入的图像（HWC）
 
-            textURL: 文本文件链接/路径
+        imgData(Float32Array): 输出的图像数据（CHW）
 
-            text: 文本内容
+* 获取文本内容
 
-    * 获取调色板
+    ```js
+    WebAI.loadText(textURL) -> text
+    ```
 
-        ```js
-        WebAI.getColorMap(labelList) -> colorMap
-        ```
-            labelList(string[]): 标签列表
+        textURL: 文本文件链接/路径
 
-            colorMap: { // 调色板
-                lable: string, // 标签
-                color: number[] // 颜色（RGBA）
-            }[]
+        text: 文本内容
 
-    * 获取列表最大值的索引值
+* 获取调色板
 
-        ```js
-        WebAI.argMax(arr) -> index
-        ```
+    ```js
+    WebAI.getColorMap(labelList) -> colorMap
+    ```
+        labelList(string[]): 标签列表
 
-            arr(number[]): 输入的列表
+        colorMap({
+            lable: string, // 标签
+            color: number[] // 颜色（RGBA）
+        }[]): 调色板
 
-            index(number): 列表最大值的索引值
+* 获取列表最大值的索引值
+
+    ```js
+    WebAI.argMax(arr) -> index
+    ```
+
+        arr(number[]): 输入的列表
+
+        index(number): 列表最大值的索引值
 
 ## 6. 使用教程
 1. OpenCV.js 快速入门和 API 速览
