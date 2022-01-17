@@ -1,11 +1,12 @@
 {
   "name": "webai-js",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A simple Web AI model deployment tool using JavaScript",
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "serve": "npx light-server -s ./docs -p 8080"
   },
   "repository": {
     "type": "git",

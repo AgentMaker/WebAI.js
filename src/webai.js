@@ -42,14 +42,10 @@ class Model {
 
 class CV extends Model {
     static async create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) {
-        let model = new this();
+        let model = await super.create(modelURL, sessionOption, null, null, postProcess)
         model.loadConfigs(inferConfig);
-        model.session = await WebAI.ort.InferenceSession.create(modelURL, sessionOption);
         if (getFeeds) {
             model.getFeeds = getFeeds
-        }
-        if (postProcess) {
-            model.postProcess = postProcess
         }
         return model
     }

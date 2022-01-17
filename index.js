@@ -55,8 +55,7 @@ WebAI.loadText = function (textURL) {
     return fs.readFileSync(textURL);
 }
 
-WebAI.Model.create = async function (modelURL, onnxBackend = 'node', sessionOption = { logSeverityLevel: 4 }, init = null, preProcess = null, postProcess = null) {
-    WebAI.switchBackend(onnxBackend)
+WebAI.Model.create = async function (modelURL, sessionOption = { logSeverityLevel: 4 }, init = null, preProcess = null, postProcess = null) {
     await WebAI.checkOpenCV()
     let model = new this();
     model.session = await WebAI.ort.InferenceSession.create(modelURL, sessionOption);
@@ -72,19 +71,5 @@ WebAI.Model.create = async function (modelURL, onnxBackend = 'node', sessionOpti
     return model
 }
 
-WebAI.CV.create = async function (modelURL, inferConfig, onnxBackend = 'node', sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) {
-    WebAI.switchBackend(onnxBackend)
-    await WebAI.checkOpenCV()
-    let model = new this();
-    model.loadConfigs(inferConfig);
-    model.session = await WebAI.ort.InferenceSession.create(modelURL, sessionOption);
-    if (getFeeds) {
-        model.getFeeds = getFeeds
-    }
-    if (postProcess) {
-        model.postProcess = postProcess
-    }
-    return model
-}
-
+WebAI.switchBackend('node')
 module.exports = WebAI
