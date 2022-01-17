@@ -189,7 +189,18 @@
 
 * 更多 API 请参考文档：[API 参考](./api.md)
 
-## 6. 教程
+## 6. 部署
+* 在线体验网页：[Hello WebAI.js](https://AgentMaker.github.io/WebAI.js)
+
+* 除了在线体验网页，也可以通过 node.js 快速在本地部署这个体验网页
+
+    ```
+    $ npm run serve
+    ```
+
+* 部署完成后，就可以使用浏览器访问 http://localhost:8080/ 进行体验使用
+
+## 7. 教程
 1. [OpenCV.js 快速入门和 API 速览](./opencv.md)
 
 2. ONNXRuntime.js 快速入门和 API 速览

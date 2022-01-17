@@ -32,8 +32,75 @@
 
 ## 4. API
 * OpenCV.js 的 API 与 OpenCV C++ 版本 API 非常相似
+* 其中 Mat 的数据类型对照表格如下：
+
+    |Data Properties	|C++ Type	|JavaScript Typed Array	|Mat Type|
+    |:-:|:-:|:-:|:-:|
+    |data	|uchar	|Uint8Array	|CV_8U|
+    |data8S	|char	|Int8Array	|CV_8S|
+    |data16U	|ushort	|Uint16Array	|CV_16U|
+    |data16S	|short	|Int16Array	|CV_16S|
+    |data32S	|int	|Int32Array	|CV_32S|
+    |data32F	|float	|Float32Array	|CV_32F|
+    |data64F	|double	|Float64Array	|CV_64F|
 
 * OpenCV.js 常用的 API 如下：
+    * 图像读取和显示
+
+        ```js
+        // 读取
+        cv.imread(dom) -> dst
+
+        // 显示
+        cv.imshow(dst, dom)
+        ```
+
+            dom(Dom/string): img 标签或其 id（读取） / canvas 标签或其 id（读取/显示）
+
+            dst(cv.Mat): 图像（RGBA）
+
+    * 创建图像
+    
+
+        ```js
+        // 创建一个 Mat 格式的图像
+        new cv.Mat() -> mat
+        new cv.Mat(size, type) -> mat
+        new cv.Mat(rows, cols, type) -> mat
+        new cv.Mat(rows, cols, type, scalar) -> mat
+
+        // 创建一个值全部为零的图像
+        cv.Mat.zeros(rows, cols, type) -> mat
+        // 创建一个值全部为一的图像
+        cv.Mat.ones(rows, cols, type) -> mat
+        // 创建一个对角线值为一的图像
+        cv.Mat.eye(rows, cols, type) -> mat
+
+        // 使用 JS Array 生成图像
+        cv.matFromArray(rows, cols, type, array) -> mat
+        // 使用 canvas ImageData 生成图像
+        cv.matFromImageData(imgData) - mat
+        ```
+
+            size(cv.size): 图像尺寸
+            rows(number): 图像高度
+            cols(number): 图像宽度
+            type(number): 图像类型
+            scalar(cv.Scalar): 图像初始值
+            array(Array): JS 图像数组
+            imgData(ImageData): canvas 图像数据
+
+            mat(cv.Mat): 图像（type)
+
+    * 颜色空间转换
+
+        ```js
+        cv.cvtColor(src, dst, code)
+        ```
+
+            src(cv.Mat): 输入图像
+            dst(cv.Mat): 输出图像
+            code(number): 转换类型（如：cv.COLOR_RGBA2RGB）
 
 * 更多 API 和详细信息请参考 [OpenCV 官方文档](https://docs.opencv.org)
 
