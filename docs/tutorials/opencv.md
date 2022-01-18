@@ -328,6 +328,19 @@
             dst(cv.Mat): 输出图像
             channels(cv.MatVector): 通道图像向量
     
+    * 删除对象
+
+        ```js
+        // 删除图像对象
+        mat.delete()
+
+        // 删除图像向量对象
+        matVector.delete()
+        ```
+
+            mat(cv.Mat): 图像
+            matVector(cv.MatVector): 图像向量
+
     * 创建视频流
 
         ```js
