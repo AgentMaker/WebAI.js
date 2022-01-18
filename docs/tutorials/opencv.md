@@ -1,6 +1,6 @@
 # OpenCV.js
 ## 1. 简介
-* OpenCV.js 
+* OpenCV.js: OpenCV 的 JavaScript 版本
 
 * 官方指南：[OpenCV.js Tutorials](https://docs.opencv.org/4.5.5/d5/d10/tutorial_js_root.html)
 
@@ -18,7 +18,7 @@
     https://docs.opencv.org/4.5.5/opencv.js
     ```
 
-## 3. 安装
+## 3. 安装使用
 1. HTML script 标签引入
 
     ```html
@@ -28,7 +28,32 @@
 
 2. node.js
 
-    * 下载 opencv.js 文件，放置于源码目录下即可
+    * 下载 opencv.js 文件，放置于源码目录下，然后使用 require 的方式加载即可
+
+        ```js
+        // 加载 OpenCV.js
+        function loadOpenCV(path) {
+            return new Promise(resolve => {
+                global.Module = {
+                    onRuntimeInitialized: resolve
+                };
+                global.cv = require(path);
+            });
+        }
+
+        // 加载并创建一个图像
+        async function run(path){
+            await loadOpenCV(path)
+            let img = new cv.Mat()
+            img.delete()
+        }
+        
+        // 设置文件路径
+        const path = './opencv.js'
+
+        // 运行
+        run(path)
+        ```
 
 ## 4. 数据类型
 * 图像数据类型
@@ -51,25 +76,38 @@
     * 简单的创建和删除方式如下：
 
         ```js
+        // 创建一个 Mat
         let mat = new cv.Mat()
+
+        // 创建一个 MatVector
         let matVector = new cv.MatVector()
 
+        // 添加一个 Mat
         matVector.push_back(mat)
-        mat = matVector(0)
+
+        // 获取 index 为 0 的 Mat 
+        mat = matVector.get(0)
+
+        // 设置 index 为 0 的 Mat 
         matVector.set(0, mat)
 
+        // 删除 Mat
         mat.delete()
+
+        // 删除 MatVector
         matVector.delete()
         ```
 
 * 其他数据类型及其对应的 JS 对象格式，创建变量时两种方式均可使用
 
     ```js
+    // 坐标点
     new cv.Point(x, y) = {
         x: number, 
         y: number
     }
 
+    // 像素点
     new cv.Scalar(R, G, B, Alpha) = [
         R: number, 
         G: number, 
@@ -77,16 +115,22 @@
         Alpha: number
     ]
 
+    // 图像尺寸
     new cv.Size(width, height) = {
         width: number, 
         height: number
     }
 
+    // 圆形区域
     new cv.Circle(center, radius) = {
-        center: number, 
+        center: {
+            x: number,
+            y: number
+        }, 
         radius: number
     }
 
+    // 矩形区域
     new cv.Rect(x, y, width, height) = {
         x: number, 
         y: number, 
@@ -94,9 +138,16 @@
         height: number
     }
 
+    // 旋转矩形区域
     new cv.RotatedRect(center, size, angle) = {
-        center: number, 
-        size: number,
+        center: {
+            x: number,
+            y: number
+        }, 
+        size: {
+            width: number, 
+            height: number 
+        },
         angle: number
     }
     ```
@@ -120,7 +171,6 @@
             dst(cv.Mat): 图像（RGBA）
 
     * 创建图像
-    
 
         ```js
         // 创建一个 Mat 格式的图像
@@ -129,15 +179,19 @@
         new cv.Mat(rows, cols, type) -> mat
         new cv.Mat(rows, cols, type, scalar) -> mat
 
+
         // 创建一个值全部为零的图像
         cv.Mat.zeros(rows, cols, type) -> mat
+
         // 创建一个值全部为一的图像
         cv.Mat.ones(rows, cols, type) -> mat
+
         // 创建一个对角线值为一的图像
         cv.Mat.eye(rows, cols, type) -> mat
 
         // 使用 JS Array 生成图像
         cv.matFromArray(rows, cols, type, array) -> mat
+
         // 使用 canvas ImageData 生成图像
         cv.matFromImageData(imgData) - mat
         ```
@@ -145,12 +199,71 @@
             size(cv.size): 图像尺寸
             rows(number): 图像高度
             cols(number): 图像宽度
-            type(number): 图像类型
+            type(number): 图像类型（cv.CV_8UC3 ...）
             scalar(cv.Scalar): 图像初始值
             array(Array): JS 图像数组
             imgData(ImageData): canvas 图像数据
 
-            mat(cv.Mat): 图像（type)
+            mat(cv.Mat): 图像（type）
+
+    * 获取图像属性
+
+        ```js
+        // 图像高度
+        mat.rows -> rows
+
+        // 图像宽度
+        mat.cols -> cols
+
+        // 图像尺寸
+        mat.size() -> size
+
+        // 图像通道数量
+        mat.channels() -> channels
+
+        // 图像数据类型
+        mat.type() -> type
+        ```
+            
+            mat(cv.Mat): 图像
+
+            rows(number): 图像高度
+            cols(number): 图像宽度
+            size(cv.Size): 图像尺寸
+            channles(number): 图像通道数量
+            type(number): 图像数据类型（cv.CV_8UC3 ...）
+
+    * 获取图像数据
+
+        ```js
+        mat.data -> data
+        mat.data8S -> data8S
+        mat.data16U -> data16U
+        mat.data16S -> data16S
+        mat.data32S -> data32S
+        mat.data32F -> data32F
+        mat.data64F -> data64F
+        ```
+            
+            mat(cv.Mat): 图像
+
+            data(Uint8Array): 无符号 8 位整型数据
+            data8S(Int8Array): 有符号 8 位整型数据
+            data16U(Uint16Array): 无符号 16 位整型数据
+            data16S(Int16Array): 有符号 16 位整型数据
+            data32S(Int32Array): 有符号 32 位整型数据
+            data32F(Float32Array): 32 位浮点数据
+            data64F(Float64Array): 64 位浮点数据
+    
+    * 裁切图像
+
+        ```js
+        mat.roi(rect) -> matROI
+        ```
+
+            rect(cv.Rect): 图像裁切区域
+
+            matROI(cv.Mat): 裁切图像
 
     * 颜色空间转换
 
@@ -160,8 +273,69 @@
 
             src(cv.Mat): 输入图像
             dst(cv.Mat): 输出图像
-            code(number): 转换类型（如：cv.COLOR_RGBA2RGB）
+            code(number): 转换类型（cv.COLOR_RGBA2RGB ...）
+
+    * 图像缩放
+
+        ```js
+        cv.resize(src, dst, dsize, fx, fy, interpolation)
+        ```
+
+            src(cv.Mat): 输入图像
+            dst(cv.Mat): 输出图像
+            dsize(cv.Size): 目标尺寸
+            fx(number): x 轴缩放因子
+            fy(number): y 轴缩放因子
+            interpolation(number): 插值类型（cv.INTER_LINEAR ...）
+
+    * 创建图像向量
+
+        ```js
+        new cv.MatVector() -> matVector
+        ```
+
+            matVector(cv.MatVector): 图像向量
+
+    * 图像向量操作
+
+        ```js
+        // 添加
+        matVector.push_back(mat)
+
+        // 获取
+        matVector.get(index) -> mat
+
+        // 设置
+        matVector.set(index, mat)
+        ```
+            
+            matVector(cv.MatVector): 图像向量
+
+            mat(cv.Mat): 图像
+            index(number): 索引值
+
+    * 通道拆分与合并
+
+        ```js
+        // 拆分
+        cv.split(src, channels)
+
+        // 合并
+        cv.merge(channels, dst)
+        ```
+
+            src(cv.Mat): 输入图像
+            dst(cv.Mat): 输出图像
+            channels(cv.MatVector): 通道图像向量
+    
+    * 创建视频流
+
+        ```js
+        new cv.VideoCapture(videoSource) -> cap
+        ```
+
+            videoSource(Dom/string): video 标签或其 id
+
+            cap(cv.VideoCapture): 视频流
 
 * 更多 API 和详细信息请参考 [OpenCV 官方文档](https://docs.opencv.org)
-
-## 6. 使用
