@@ -351,4 +351,14 @@
 
             cap(cv.VideoCapture): 视频流
 
+    * 读取视频帧
+
+        ```js
+        cap.read(mat)
+        ```
+
+            cap(cv.VideoCapture): 视频流
+
+            mat(cv.Mat): 图像
+
 * 更多 API 和详细信息请参考 [OpenCV 官方文档](https://docs.opencv.org)
