@@ -26,34 +26,32 @@
     <script src='https://docs.opencv.org/4.5.5/opencv.js'></script>
     ```
 
-2. node.js
+2. node.js 使用
 
-    * 下载 opencv.js 文件，放置于源码目录下，然后使用 require 的方式加载即可
+    ```js
+    // 加载 OpenCV.js
+    function loadOpenCV(path) {
+        return new Promise(resolve => {
+            global.Module = {
+                onRuntimeInitialized: resolve
+            };
+            global.cv = require(path);
+        });
+    }
 
-        ```js
-        // 加载 OpenCV.js
-        function loadOpenCV(path) {
-            return new Promise(resolve => {
-                global.Module = {
-                    onRuntimeInitialized: resolve
-                };
-                global.cv = require(path);
-            });
-        }
+    // 加载并创建一个图像
+    async function run(path){
+        await loadOpenCV(path)
+        let img = new cv.Mat()
+        img.delete()
+    }
+    
+    // 设置文件路径
+    const path = './opencv.js'
 
-        // 加载并创建一个图像
-        async function run(path){
-            await loadOpenCV(path)
-            let img = new cv.Mat()
-            img.delete()
-        }
-        
-        // 设置文件路径
-        const path = './opencv.js'
-
-        // 运行
-        run(path)
-        ```
+    // 运行
+    run(path)
+    ```
 
 ## 4. 数据类型
 * 图像数据类型
