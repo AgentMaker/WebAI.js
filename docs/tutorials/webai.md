@@ -203,7 +203,7 @@
 ## 7. 教程
 1. [OpenCV.js 快速入门和 API 速览](./opencv.md)
 
-2. ONNXRuntime.js 快速入门和 API 速览
+2. [ONNXRuntime.js 快速入门和 API 速览](./ort.md)
 
 3. WebAI.js 快速使用
 
