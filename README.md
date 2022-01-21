@@ -3,6 +3,8 @@
 ![](https://img.shields.io/npm/l/webai-js.svg?sanitize=true)
 ![](https://img.shields.io/npm/dm/webai-js.svg?sanitize=true)
 
+English | [中文版](./docs/tutorials/webai.md)
+
 ## Online Demo
 * [Hello WebAI.js](https://AgentMaker.github.io/WebAI.js)
 
@@ -74,39 +76,43 @@
 * Simple Demo
 
     ```html
-    <img src='./docs/images/human_image.jpg' id='image'>
-    <canvas id='canvas'></canvas>
-    <script src='https://cdn.jsdelivr.net/gh/AgentMaker/WebAI.js/dist/webai.min.js'></script>
+    <input type="file" accept="image/*" id="inputFile">
+    <img src="" alt="" id="imgDom" style="display: none">
+    <canvas id='canvasDom'></canvas>
+    <script src='https://cdn.jsdelivr.net/npm/webai-js/dist/webai.min.js'></script>
     <script>
-        // model
-        const modelURL = './docs/pages/pretrained_models/det/blazeface_1000e/model.onnx';
-        const modelConfig = './docs/pages/pretrained_models/det/blazeface_1000e/configs.json';
+        // Get HTML elements
+        const imgDom = document.getElementById('imgDom')
+        const canvasDom = document.getElementById('canvasDom')
+        const inputFile = document.getElementById('inputFile')
 
-        // detection threshold
+        // Face detection model files
+        const modelURL = 'https://agentmaker.github.io/WebAI.js/pages/pretrained_models/det/blazeface_1000e/model.onnx'
+        const modelConfig = 'https://agentmaker.github.io/WebAI.js/pages/pretrained_models/det/blazeface_1000e/configs.json'
+
+        // Detection threshold
         const drawThreshold = 0.5;
 
-        window.onload = async function(){
-            // create a model
-            window.model = await WebAI.Det.create(modelURL, modelConfig);
+        // Load the model
+        window.onload = async function (e) {
+            window.model = await WebAI.Det.create(modelURL, modelConfig)
+        }
 
-            // read the test image from img tag
-            let image = cv.imread('image');
+        // Set the input image
+        inputFile.onchange = function (e) {
+            if (e.target.files[0]) {
+                imgDom.src = URL.createObjectURL(e.target.files[0])
+            }
+        }
 
-            // model infer
-            let bboxes = await model.infer(image, drawThreshold);
-
-            // draw bboxes into the test image
-            let imgShow = WebAI.drawBBoxes(image, bboxes, false, true);
-
-            // show image into canvas tag
-            cv.imshow('canvas', imgShow);      
-
-            // clear cv Mats
-            image.delete();
-            imgShow.delete();
-
-            // log bboxes results
-            console.log(bboxes);
+        // Model infer and show the result image
+        imgDom.onload = async function (e) {
+            let imgRGBA = cv.imread(imgDom)
+            let bboxes = await model.infer(imgRGBA)
+            let imgShow = await WebAI.drawBBoxes(imgRGBA, bboxes)
+            cv.imshow(canvasDom, imgShow)
+            imgRGBA.delete()
+            imgShow.delete()
         }
     </script>
     ```
@@ -191,6 +197,7 @@
             }
         ]
     ![](./docs/images/face_det_demo.png)
+
 ## Model Zoo
 * The following pretrained models are provided in the project, and you can quickly try them on the [online experience website](https://AgentMaker.github.io/WebAI.js)
 * The pretrained model files can be found in [./docs/pages/pretrained_model](./docs/pages/pretrained_model) directory
