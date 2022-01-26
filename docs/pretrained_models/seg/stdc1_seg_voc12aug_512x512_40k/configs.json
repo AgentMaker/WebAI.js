@@ -1,0 +1,48 @@
+{
+    "Preprocess": [
+        {
+            "type": "Decode",
+            "mode": "RGB"
+        },
+        {
+            "type": "Normalize",
+            "is_scale": true,
+            "mean": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "std": [
+                0.5,
+                0.5,
+                0.5
+            ]
+        },
+        {
+            "type": "Permute"
+        }
+    ],
+    "label_list": [
+        "background",
+        "aeroplane",
+        "bicycle",
+        "bird",
+        "boat",
+        "bottle",
+        "bus",
+        "car",
+        "cat",
+        "chair",
+        "cow",
+        "diningtable",
+        "dog",
+        "horse",
+        "motorbike",
+        "person",
+        "potted plant",
+        "sheep",
+        "sofa",
+        "train",
+        "tv/monitor"
+    ]
+}

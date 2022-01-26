@@ -109,3 +109,5 @@ package-lock.json
 
 # Work
 test.js
+*.lock
+src/ort_export.js

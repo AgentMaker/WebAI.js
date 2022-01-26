@@ -1,12 +1,15 @@
 {
   "name": "webai-js",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "A simple Web AI model deployment tool using JavaScript",
-  "main": "index.js",
+  "main": "./src/webai.js",
+  "unpkg": "./dist/webai.min.js", 
+  "jsdelivr": "./dist/webai.min.js", 
   "scripts": {
-    "test": "node test.js",
-    "build": "webpack --mode production",
-    "serve": "npx light-server -s ./docs -p 8080"
+    "dev": "vite",
+    "build": "vite build",
+    "build_html": "vite build --config vite.config.html.js",
+    "preview_html": "vite preview --config vite.config.html.js"
   },
   "repository": {
     "type": "git",
@@ -23,11 +26,9 @@
     "url": "https://github.com/AgentMaker/WebAI.js/issues"
   },
   "homepage": "https://github.com/AgentMaker/WebAI.js#readme",
-  "dependencies": {
-    "onnxruntime-web": "1.10.0",
-    "onnxruntime-node": "1.10.0",
-    "canvas": "2.8.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "onnxruntime-web": "^1.10.0",
+    "vite": "^2.7.13"
   }
 }
