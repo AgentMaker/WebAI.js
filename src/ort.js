@@ -21358,7 +21358,7 @@ const extractTransferableBuffers = (tensors) => {
 };
 wasmCoreImpl.extractTransferableBuffers = extractTransferableBuffers;
 function WorkerWrapper() {
-  return new Worker("/worker.js", {
+  return new Worker(scriptSrc.substr(0, scriptSrc.lastIndexOf("/") + 1) + "/worker.js", {
     "type": "module"
   });
 }
