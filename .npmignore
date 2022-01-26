@@ -2,3 +2,5 @@
 public
 docs
 test.js
+.gitignore
+.npmignore
