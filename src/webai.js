@@ -1,5 +1,10 @@
+import cv from './opencv'
+import ort from './ort'
+
+
 class Model {
     static async create(modelURL, sessionOption = { logSeverityLevel: 4 }, init = null, preProcess = null, postProcess = null) {
+        await WebAI.waitForOpenCV()
         let model = new this();
         model.session = await WebAI.ort.InferenceSession.create(modelURL, sessionOption);
         if (init) {
@@ -148,7 +153,6 @@ class CV extends Model {
             }
             imgResize.delete();
         }
-
         let imgNorm = WebAI.normalize(imgCvt, this.scale, this.mean, this.std, this.isScale);
 
         let imgTensor;
@@ -265,23 +269,31 @@ class Seg extends CV {
         for (let i = 0; i < C; i++) {
             pixelArrs.push(data.slice(i * numPixel, (i + 1) * numPixel))
         }
-        let colorMapping = [];
-        let argMax = [];
+        let colorRGBA = [];
+        let gray = [];
         let tmp, index;
         for (let i = 0; i < numPixel; i++) {
             tmp = []
             for (let j = 0; j < C; j++) {
                 tmp.push(pixelArrs[j][i])
             }
-            index = WebAI.argMax(tmp)
-            argMax.push(index)
-            colorMapping.push(...this.colorMap[index].color)
+            index = WebAI.gray(tmp)
+            gray.push(index)
+            colorRGBA.push(...this.colorMap[index].color)
         }
 
         return {
-            argMax: argMax,
-            colorMapping: colorMapping,
-            colorMap: this.colorMap
+            gray: cv.matFromArray(H, W, cv.CV_8UC1, gray),
+            colorRGBA: cv.matFromArray(H, W, cv.CV_8UC4, colorRGBA),
+            colorMap: this.colorMap,
+            delete: function () {
+                if (!this.gray.isDeleted()) {
+                    this.gray.delete()
+                }
+                if (!this.colorRGBA.isDeleted()) {
+                    this.colorRGBA.delete()
+                }
+            }
         }
     }
 
@@ -291,7 +303,7 @@ class Seg extends CV {
 }
 
 class WebAI {
-    static argMax(arr) {
+    static gray(arr) {
         let max = Math.max.apply(null, arr);
         let index = arr.findIndex(
             function (value) {
@@ -450,6 +462,17 @@ class WebAI {
         return imgShow
     }
 
+    static waitForOpenCV() {
+        return new Promise(resolve => {
+            if (typeof cv.onRuntimeInitialized == 'undefined'){
+                resolve(cv.onRuntimeInitialized) 
+            }
+            else {
+                resolve(true)
+            }
+        });
+    }
+
     static Model = Model
 
     static CV = CV
@@ -459,6 +482,10 @@ class WebAI {
     static Cls = Cls
 
     static Seg = Seg
+
+    static cv = cv
+
+    static ort = ort
 }
 
-module.exports = WebAI
+export default WebAI

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="./logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui@2.6.8/dist/css/layui.css">
+    <script type='module' src="https://cdn.jsdelivr.net/npm/layui@2.6.8/dist/layui.min.js"></script>
+    <title>Vite App</title>
+</head>
+
+<body>
+    <ul class="layui-nav">
+        <li class="layui-nav-item">
+            <a href="javascript:;"><img src="./logo.png" class="layui-nav-img">WebAI.js</a>
+            <dl class="layui-nav-child">
+                <dd><a href="https://github.com/AgentMaker/WebAI.js">Github</a></dd>
+                <dd><a href="https://gitee.com/AgentMaker/WebAI.js">Gitee</a></dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item layui-this">
+            <a href="javascript:" id='aDet'>Detection</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:" id='aCls'>Classification</a>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:" id='aSeg'>Segmentation</a>
+        </li>
+    </ul>
+
+    <div class="layui-container" style="width: 98%">
+        <br>
+        <div>
+            Model select:
+            <select id="detModel" class="det">
+                <option value="blazeface_1000e">blazeface_1000e</option>
+                <option value="ssdlite_mobilenet_v3_small_320_coco">ssdlite_mobilenet_v3_small_320_coco</option>
+                <option value="ppyolo_tiny_650e_coco">ppyolo_tiny_650e_coco</option>
+                <option value="ssd_mobilenet_v1_300_120e_voc">ssd_mobilenet_v1_300_120e_voc</option>
+            </select>
+            <select id="clsModel" class='cls' style="display: none">
+                <option value="efficientnetb0_imagenet">efficientnetb0_imagenet</option>
+                <option value="mobilenetv3_small_x0_5_imagenet">mobilenetv3_small_x0_5_imagenet</option>
+                <option value="pplcnet_x0_25_imagenet">pplcnet_x0_25_imagenet</option>
+            </select>
+            <select id="segModel" class='seg' style="display: none">
+                <option value="ppseg_lite_portrait_398x224">ppseg_lite_portrait_398x224</option>
+                <option value="stdc1_seg_voc12aug_512x512_40k">stdc1_seg_voc12aug_512x512_40k</option>
+                <option value="bisenet_cityscapes_1024x1024_160k">bisenet_cityscapes_1024x1024_160k</option>
+            </select>
+        </div>
+        <br>
+        <div class="det">
+            Draw threshold:
+            <input type="range" value="0.5" min='0.0' max="1.0" step="0.01" class="drawThreshold">
+            <input type="number" value="0.5" min='0.0' max="1.0" step="0.01" class="drawThreshold">
+        </div>
+        <div class="cls" style="display: none">
+            TopK:
+            <input type="range" value="5" min='1' max="10" step="1" class="topK">
+            <input type="number" value="5" min='1' max="10" step="1" class="topK">
+        </div>
+        <div class="seg" style="display: none">
+            Mixing factor:
+            <input type="range" value="0.5" min='0.0' max="1.0" step="0.01" class='mixingFactor'>
+            <input type="number" value="0.5" min='0.0' max="1.0" step="0.01" class='mixingFactor'>
+        </div>
+        <br>
+        <div>
+            Image infer:
+            <input type="file" accept="image/*" id="inputFile" disabled='true'>
+        </div>
+        <br>
+        <div>
+            Camera infer:
+            <button id='buttonUser' disabled='true'>Open User Camera</button>
+            <button id='buttonEnv' disabled='true'>Open Environment Camera</button>
+        </div>
+        <br>
+        <div>
+            <img src="" alt="" id="imgDom" style="display: none">
+            <video id="videoDom" style="display: none"></video>
+            <canvas id="canvasDom"></canvas>
+        </div>
+        <br>
+
+        <div style="display: none" id='tableDiv'>
+            <table id="tableDom"></table>
+        </div>
+    </div>
+    <script type="module" src="./main.js"></script>
+</body>
+
+</html>
