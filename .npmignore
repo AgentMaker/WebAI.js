@@ -4,3 +4,4 @@ docs
 test.js
 .gitignore
 .npmignore
+src/ort_export.js
