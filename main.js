@@ -43,9 +43,10 @@ let seg
 
 
 let modelDir
-if (typeof BUILD == 'undefined'){
+if (typeof BUILD == 'undefined') {
     modelDir = './docs/pretrained_models'
-}else{
+}
+else {
     modelDir = './pretrained_models'
 }
 
