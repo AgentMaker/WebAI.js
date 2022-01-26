@@ -1,10 +1,10 @@
 {
   "name": "webai-js",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A simple Web AI model deployment tool using JavaScript",
   "main": "./src/webai.js",
-  "unpkg": "./dist/webai.min.js", 
-  "jsdelivr": "./dist/webai.min.js", 
+  "unpkg": "./dist/webai.min.js",
+  "jsdelivr": "./dist/webai.min.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
