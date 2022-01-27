@@ -1,6 +1,6 @@
 {
   "name": "webai-js",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "A simple Web AI model deployment tool using JavaScript",
   "main": "./src/webai.js",
   "unpkg": "./dist/webai.min.js",

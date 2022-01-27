@@ -277,7 +277,7 @@ class Seg extends CV {
             for (let j = 0; j < C; j++) {
                 tmp.push(pixelArrs[j][i])
             }
-            index = WebAI.gray(tmp)
+            index = WebAI.argmax(tmp)
             gray.push(index)
             colorRGBA.push(...this.colorMap[index].color)
         }
@@ -303,7 +303,7 @@ class Seg extends CV {
 }
 
 class WebAI {
-    static gray(arr) {
+    static argmax(arr) {
         let max = Math.max.apply(null, arr);
         let index = arr.findIndex(
             function (value) {
@@ -464,8 +464,8 @@ class WebAI {
 
     static waitForOpenCV() {
         return new Promise(resolve => {
-            if (typeof cv.onRuntimeInitialized == 'undefined'){
-                resolve(cv.onRuntimeInitialized) 
+            if (typeof cv.onRuntimeInitialized == 'undefined') {
+                resolve(cv.onRuntimeInitialized)
             }
             else {
                 resolve(true)
