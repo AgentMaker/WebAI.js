@@ -158,7 +158,7 @@ async function loadModel(MODE) {
     buttonUser.disabled = true
     buttonEnv.disabled = true
 
-    let modelURL = `${modelDir}/${MODE}/${modelName}/model.onnx`
+    let modelURL = `${modelDir}/${MODE}/${modelName}/model.onnx.json`
     let modelConfig = `${modelDir}/${MODE}/${modelName}/configs.json`
     if (MODE == 'det') {
         model = await WebAI.Det.create(modelURL, modelConfig)
