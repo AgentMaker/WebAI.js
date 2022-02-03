@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="./logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui@2.6.8/dist/css/layui.css">
     <script src="https://cdn.jsdelivr.net/npm/layui@2.6.8/dist/layui.min.js"></script>
     <title>Hello WebAI.js</title>
@@ -28,9 +28,12 @@
         <li class="layui-nav-item">
             <a href="javascript:" id='aSeg'>Segmentation</a>
         </li>
+        <li class="layui-nav-item">
+            <a href="javascript:" id='aConvertor'>Configs Convertor</a>
+        </li>
     </ul>
 
-    <div class="layui-container" style="width: 98%">
+    <div class="layui-container" style="width: 98%" id='predictor'>
         <br>
         <div>
             Model select:
@@ -89,6 +92,156 @@
         <div style="display: none" id='tableDiv'>
             <table id="tableDom"></table>
         </div>
+    </div>
+
+    <div class="layui-container" style="width: 98%; display: none;" id='convertor'>
+        <form class="layui-form" action="" lay-filter="configs">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>decode</legend>
+            </fieldset>
+            <div class="layui-form-item">
+                <label class="layui-form-label">mode</label>
+                <div class="layui-input-inline" style="width: 40%;">
+                    <select name="mode">
+                        <option value="RGB">RGB</option>
+                        <option value="BGR">BGR</option>
+                    </select>
+                </div>
+            </div>
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>resize</legend>
+            </fieldset>
+            <div class="layui-form-item">
+                <label class="layui-form-label">resize</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="resize" lay-skin="switch" value='true' checked='true'>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">keep ratio</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="keep_ratio" lay-skin="switch" value='true' checked='true'>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">limit max</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="limit_max" lay-skin="switch" value='true'>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">interpolation</label>
+                <div class="layui-input-inline" style="width: 40%;">
+                    <select name="interp">
+                        <option value="0">cv.INTER_NEAREST [0]</option>
+                        <option value="1" selected='true'>cv.INTER_NEAREST [1]</option>
+                        <option value="2">cv.INTER_CUBIC [2]</option>
+                        <option value="3">cv.INTER_AREA [3]</option>
+                        <option value="4">cv.INTER_LANCZOS4 [4]</option>
+                        <option value="5">cv.INTER_LINEAR_EXACT [5]</option>
+                        <option value="6">cv.INTER_NEAREST_EXACT [6]</option>
+                        <option value="7">cv.INTER_MAX [7]</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">target size</label>
+                <div class="layui-input-inline" style="width: 10%;">
+                    <input type="number" name="target_size.h" min='0' step="1" value="320" class="layui-input"
+                        lay-verify="size">
+                </div>
+                <div class="layui-input-inline" style="width: 10%;">
+                    <input type="number" name="target_size.w" min='0' step="1" value="320" class="layui-input"
+                        lay-verify="size">
+                </div>
+            </div>
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>crop</legend>
+            </fieldset>
+            <div class="layui-form-item">
+                <label class="layui-form-label">center crop</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="crop" lay-skin="switch">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">crop size</label>
+                <div class="layui-input-inline" style="width: 10%;">
+                    <input type="number" name="crop_size.h" min='0' step="1" value="224" class="layui-input"
+                        lay-verify="size">
+                </div>
+                <div class="layui-input-inline" style="width: 10%;">
+                    <input type="number" name="crop_size.w" min='0' step="1" value="224" class="layui-input"
+                        lay-verify="size">
+                </div>
+            </div>
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>normalize</legend>
+            </fieldset>
+            <div class="layui-form-item">
+                <label class="layui-form-label">scale</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="is_scale" lay-skin="switch" value='true' checked='true'>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">mean</label>
+                <div class="layui-input-inline" style="width: 10%;">
+                    <input type="number" name="mean.R" min='0' max="255" step="0.1" value="0.5" class="layui-input"
+                        lay-verify="mean_std">
+                </div>
+                <div class="layui-input-inline" style="width: 10%;">
+                    <input type="number" name="mean.G" min='0' max="255" step="0.1" value="0.5" class="layui-input"
+                        lay-verify="mean_std">
+                </div>
+                <div class="layui-input-inline" style="width: 10%;">
+                    <input type="number" name="mean.B" min='0' max="255" step="0.1" value="0.5" class="layui-input"
+                        lay-verify="mean_std">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">std</label>
+                <div class="layui-input-inline" style="width: 10%;">
+                    <input type="number" name="std.R" min='0' max="255" step="0.1" value="0.5" class="layui-input"
+                        lay-verify="mean_std">
+                </div>
+                <div class="layui-input-inline" style="width: 10%;">
+                    <input type="number" name="std.G" min='0' max="255" step="0.1" value="0.5" class="layui-input"
+                        lay-verify="mean_std">
+                </div>
+                <div class="layui-input-inline" style="width: 10%;">
+                    <input type="number" name="std.B" min='0' max="255" step="0.1" value="0.5" class="layui-input"
+                        lay-verify="mean_std">
+                </div>
+            </div>
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>permute</legend>
+            </fieldset>
+            <div class="layui-form-item">
+                <label class="layui-form-label">permute</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="permute" lay-skin="switch" value='true' checked='true'>
+                </div>
+            </div>
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>label</legend>
+            </fieldset>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">label list</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="class1&#10class2&#10class3&#10..." class="layui-textarea"
+                        name='label_list'></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div style="text-align:center">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="formDemo">Download</button>
+                    <button type="button" class="layui-btn layui-btn-warm" id='buttonLoad'>Load<input type="file"
+                            accept=".yaml,.yml,.json" id="inputLoad" class="layui-upload-file"></button>
+                    <button type="reset" class="layui-btn  layui-btn-danger">Reset</button>
+                </div>
+            </div>
+        </form>
     </div>
     <script type="module" src="./main.js"></script>
 </body>

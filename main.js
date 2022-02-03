@@ -6,6 +6,7 @@ window.cv = WebAI.cv
 const aDet = document.getElementById('aDet')
 const aCls = document.getElementById('aCls')
 const aSeg = document.getElementById('aSeg')
+const aConvertor = document.getElementById('aConvertor')
 
 const detDoms = document.getElementsByClassName('det')
 const clsDoms = document.getElementsByClassName('cls')
@@ -26,6 +27,9 @@ const canvasDom = document.getElementById('canvasDom')
 const buttonUser = document.getElementById('buttonUser')
 const buttonEnv = document.getElementById('buttonEnv')
 const tableDiv = document.getElementById('tableDiv')
+const convertor = document.getElementById('convertor')
+const predictor = document.getElementById('predictor')
+
 let MODE = 'det'
 let modelName = 'blazeface_1000e'
 
@@ -61,10 +65,13 @@ async function switchType(e) {
         for (let i = 0; i < segDoms.length; i++) {
             segDoms[i].style['display'] = 'none'
         }
+        predictor.style['display'] = ''
+        convertor.style['display'] = 'none'
         tableDiv.style['display'] = 'none'
         modelName = 'blazeface_1000e'
         await loadModel('det')
         MODE = 'det'
+        await restart()
     }
     else if (e.target.id == 'aCls') {
         for (let i = 0; i < detDoms.length; i++) {
@@ -76,10 +83,13 @@ async function switchType(e) {
         for (let i = 0; i < segDoms.length; i++) {
             segDoms[i].style['display'] = 'none'
         }
+        predictor.style['display'] = ''
+        convertor.style['display'] = 'none'
         tableDiv.style['display'] = ''
         modelName = 'efficientnetb0_imagenet'
         await loadModel('cls')
         MODE = 'cls'
+        await restart()
     }
     else if (e.target.id == 'aSeg') {
         for (let i = 0; i < detDoms.length; i++) {
@@ -91,17 +101,24 @@ async function switchType(e) {
         for (let i = 0; i < segDoms.length; i++) {
             segDoms[i].style['display'] = ''
         }
+        predictor.style['display'] = ''
+        convertor.style['display'] = 'none'
         tableDiv.style['display'] = ''
         modelName = 'ppseg_lite_portrait_398x224'
         await loadModel('seg')
         MODE = 'seg'
+        await restart()
     }
-    await restart()
+    else if (e.target.id == 'aConvertor') {
+        predictor.style['display'] = 'none'
+        convertor.style['display'] = ''
+    }
 }
 
 aDet.onclick = (e) => switchType(e)
 aCls.onclick = (e) => switchType(e)
 aSeg.onclick = (e) => switchType(e)
+aConvertor.onclick = (e) => switchType(e)
 
 async function switchModel(e) {
     modelName = e.target.value
@@ -351,5 +368,296 @@ function inferVideo() {
         postProcess()
         setTimeout(inferVideo, 0)
     })
+
+}
+
+import YAML from 'yamljs'
+let form = layui.form
+let configs
+layui.use('form', function () {
+    var form = layui.form;
+    let layer = layui.layer
+    //监听提交
+    form.on('submit(formDemo)', function (data) {
+        let datas = data.field;
+
+        configs = {
+            "Preprocess": [
+                {
+                    'type': 'Decode',
+                    'mode': datas.mode,
+                },
+            ],
+            "label_list": []
+        }
+        if (datas.resize) {
+            configs.Preprocess.push({
+                'type': 'Resize',
+                'interp': datas.interp * 1,
+                'keep_ratio': datas.keep_ratio == 'true',
+                'limit_max': datas.limit_max == 'true',
+                'target_size': [datas['target_size.h'] * 1, datas['target_size.w'] * 1]
+            })
+        }
+        if (datas.crop) {
+            configs.Preprocess.push({
+                'type': 'Crop',
+                'crop_size': [datas['crop_size.h'] * 1, datas['crop_size.w'] * 1]
+            })
+        }
+        configs.Preprocess.push({
+            'type': 'Normalize',
+            'is_scale': datas.is_scale == 'true',
+            'mean': [datas['mean.R'] * 1.0, datas['mean.G'] * 1.0, datas['mean.B'] * 1.0],
+            'std': [datas['std.R'] * 1.0, datas['std.G'] * 1.0, datas['std.B'] * 1.0]
+        })
+        if (datas.permute) {
+            configs.Preprocess.push({
+                'type': 'Permute'
+            })
+        }
+        if (datas.label_list == '') {
+            layer.prompt({
+                title: 'label list is empty, please input the number of the labels',
+            }, function (value, index, elem) {
+                layer.close(index);
+                for (let i = 0; i < value * 1; i++) {
+                    configs.label_list.push(i.toString())
+                }
+                var Link = document.createElement('a');
+                Link.download = "configs.json";
+                Link.style.display = 'none';
+                var blob = new Blob([JSON.stringify(configs, null, 4)]);
+                Link.href = URL.createObjectURL(blob);
+                document.body.appendChild(Link);
+                Link.click();
+                document.body.removeChild(Link);
+            })
+        }
+        else {
+            let label_list = datas.label_list.split('\n')
+            for (let i = 0; i < label_list.length; i++) {
+                if (label_list[i] != '') {
+                    configs.label_list.push(label_list[i])
+                }
+            }
+            var Link = document.createElement('a');
+            Link.download = "configs.json";
+            Link.style.display = 'none';
+            var blob = new Blob([JSON.stringify(configs, null, 4)]);
+            Link.href = URL.createObjectURL(blob);
+            document.body.appendChild(Link);
+            Link.click();
+            document.body.removeChild(Link);
+        }
+        return false;
+    });
+
+    form.verify({
+        mean_std: function (value) {
+            let data = form.val('configs');
+            if (data.is_scale) {
+                if (value < 0.0 || value > 1.0) {
+                    return 'value must be 0 - 1';
+                }
+            } else {
+                if (value < 0 || value > 255) {
+                    return 'value must be 0 - 255';
+                }
+            }
+        }
+        , size: function (value) {
+            if (value <= 0) {
+                return 'value must be > 0';
+            }
+        }
+    });
+
+});
+const buttonLoad = document.getElementById('buttonLoad')
+const inputLoad = document.getElementById('inputLoad')
+const buttonDownload = document.getElementById('buttonDownload')
+function loadText(textURL) {
+    let xhr = new XMLHttpRequest();
+    xhr.open('get', textURL, false);
+    xhr.send(null);
+    return xhr.responseText
+}
+
+function convertFromWebAI(configs) {
+    configs
+}
+
+buttonLoad.onclick = function () {
+    inputLoad.click()
+}
+
+inputLoad.onchange = function (e) {
+    if (e.target.files[0].name.endsWith('.json')) {
+        configs = JSON.parse(loadText(URL.createObjectURL(e.target.files[0])))
+        let datas = {
+            resize: false,
+            crop: false,
+            is_scale: false,
+            permute: false
+        }
+        for (let i = 0; i < configs.Preprocess.length; i++) {
+            let op = configs.Preprocess[i]
+            let type = op.type
+            if (type == 'Decode') {
+                datas['mode'] = op.mode
+            }
+            else if (type == 'Resize') {
+                datas.resize = true
+                datas.interp = op.interp
+                datas.keep_ratio = op.keep_ratio
+                datas.limit_max = op.limit_max
+                datas['target_size.h'] = op.target_size[0]
+                datas['target_size.w'] = op.target_size[1]
+            }
+            else if (type == 'Crop') {
+                datas.crop = true
+                datas['crop_size.h'] = op.crop_size[0]
+                datas['crop_size.w'] = op.crop_size[1]
+            }
+            else if (type == 'Normalize') {
+                datas.is_scale = op.is_scale
+                datas['mean.R'] = op.mean[0]
+                datas['mean.G'] = op.mean[1]
+                datas['mean.B'] = op.mean[2]
+                datas['std.R'] = op.std[0]
+                datas['std.G'] = op.std[1]
+                datas['std.B'] = op.std[2]
+            }
+            else if (type == 'Permute') {
+                datas.permute = true
+            }
+        }
+        datas.label_list = configs.label_list.join('\n')
+        form.val('configs', datas)
+    }
+    else if (e.target.files[0].name.endsWith('.yml') || e.target.files[0].name.endsWith('.yaml')) {
+        configs = YAML.load(URL.createObjectURL(e.target.files[0]))
+
+        if (configs.hasOwnProperty('Deploy')) {
+            let datas = {
+                resize: false,
+                crop: false,
+                is_scale: true,
+                permute: true
+            }
+            let ops = configs.Deploy.transforms
+            ops.forEach(op => {
+                let type = op.type
+                if (type == 'Normalize') {
+                    if (op.hasOwnProperty('mean')) {
+                        datas['mean.R'] = op.mean[0]
+                        datas['mean.G'] = op.mean[1]
+                        datas['mean.B'] = op.mean[2]
+                    }
+                    else {
+                        datas['mean.R'] = 0.5
+                        datas['mean.G'] = 0.5
+                        datas['mean.B'] = 0.5
+                    }
+                    if (op.hasOwnProperty('std')) {
+                        datas['std.R'] = op.std[0]
+                        datas['std.G'] = op.std[1]
+                        datas['std.B'] = op.std[2]
+                    }
+                    else {
+                        datas['std.R'] = 0.5
+                        datas['std.G'] = 0.5
+                        datas['std.B'] = 0.5
+                    }
+                }
+            })
+            form.val('configs', datas)
+        }
+        else if (configs.hasOwnProperty('Global')) {
+            let ops = configs.PreProcess.transform_ops
+            let datas = {
+                resize: false,
+                crop: false,
+                is_scale: false,
+                permute: false
+            }
+            ops.forEach(op => {
+                if (op.hasOwnProperty('ResizeImage')) {
+                    if (op.ResizeImage.hasOwnProperty('resize_short')) {
+                        datas.keep_ratio = true
+                        datas.limit_max = false
+                        datas.resize = true
+                        datas.interp = 1
+                        datas['target_size.h'] = op.ResizeImage.resize_short
+                        datas['target_size.w'] = op.ResizeImage.resize_short
+                    }
+                }
+                else if (op.hasOwnProperty('CropImage')) {
+                    if (op.CropImage.hasOwnProperty('size')) {
+                        datas.crop = true
+                        datas['crop_size.h'] = op.CropImage.size
+                        datas['crop_size.w'] = op.CropImage.size
+                    }
+                }
+                else if (op.hasOwnProperty('NormalizeImage')) {
+                    if (op.NormalizeImage.hasOwnProperty('scale')) {
+                        datas.is_scale = true
+                    }
+                    if (op.NormalizeImage.hasOwnProperty('mean')) {
+                        datas['mean.R'] = op.NormalizeImage.mean[0]
+                        datas['mean.G'] = op.NormalizeImage.mean[1]
+                        datas['mean.B'] = op.NormalizeImage.mean[2]
+                    }
+                    if (op.NormalizeImage.hasOwnProperty('std')) {
+                        datas['std.R'] = op.NormalizeImage.std[0]
+                        datas['std.G'] = op.NormalizeImage.std[1]
+                        datas['std.B'] = op.NormalizeImage.std[2]
+                    }
+                }
+                else if (op.hasOwnProperty('ToCHWImage')) {
+                    datas.permute = true
+                }
+
+            });
+            form.val('configs', datas)
+        }
+        else if (configs.hasOwnProperty('mode')) {
+            let ops = configs.Preprocess
+            let datas = {
+                resize: false,
+                crop: false,
+                is_scale: false,
+                permute: false
+            }
+            ops.forEach(op => {
+                let type = op.type
+                if (type == 'Resize') {
+                    datas.resize = true
+                    datas.interp = op.interp
+                    datas.keep_ratio = op.keep_ratio
+                    datas.limit_max = op.keep_ratio
+                    datas['target_size.h'] = op.target_size[0]
+                    datas['target_size.w'] = op.target_size[1]
+                }
+                else if (type == 'NormalizeImage') {
+
+                    datas.is_scale = op.is_scale
+                    datas['mean.R'] = op.mean[0]
+                    datas['mean.G'] = op.mean[1]
+                    datas['mean.B'] = op.mean[2]
+                    datas['std.R'] = op.std[0]
+                    datas['std.G'] = op.std[1]
+                    datas['std.B'] = op.std[2]
+                }
+                else if (type == 'Permute') {
+                    datas.permute = true
+                }
+            })
+            datas.label_list = configs.label_list.join('\n')
+            form.val('configs', datas)
+        }
+    }
+    inputLoad.value = null
 
 }

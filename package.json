@@ -1,6 +1,6 @@
 {
   "name": "webai-js",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "A simple Web AI model deployment tool using JavaScript",
   "main": "./src/webai.js",
   "unpkg": "./dist/webai.min.js",
@@ -29,6 +29,7 @@
   "dependencies": {},
   "devDependencies": {
     "onnxruntime-web": "^1.10.0",
-    "vite": "^2.7.13"
+    "vite": "^2.7.13",
+    "yamljs": "^0.3.0"
   }
 }
