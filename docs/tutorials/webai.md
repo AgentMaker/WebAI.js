@@ -165,8 +165,8 @@
             prob: number // 置信度
         }[]): 图像分类置信度结果
         segResults({
-            argMax: number[], // 最大值索引图像（Gray）
-            colorMapping: number[], // 伪彩色图（RGBA）
+            gray: cv.Mat, // 最大值索引图像（Gray）
+            colorRGBA: cv.Mat, // 伪彩色图（RGBA）
             colorMap: { // 调色板
                 lable: string, // 标签
                 color: number[] // 颜色（RGBA）
@@ -192,13 +192,13 @@
 ## 6. 部署
 * 在线体验网页：[Hello WebAI.js](https://AgentMaker.github.io/WebAI.js)
 
-* 除了在线体验网页，也可以通过 node.js 快速在本地部署这个体验网页
+* 除了在线体验网页，也可以通过 node.js 借助 vite 构建工具快速在本地部署这个体验网页
 
     ```
-    $ npm run serve
+    $ npm run dev
     ```
 
-* 部署完成后，就可以使用浏览器访问 http://localhost:8080/ 进行体验使用
+* 部署完成后，就可以使用浏览器访问 http://localhost:3000/ 进行体验使用
 
 ## 7. 教程
 1. [OpenCV.js 快速入门和 API 速览](./opencv.md)
