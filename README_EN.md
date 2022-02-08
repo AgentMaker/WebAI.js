@@ -3,7 +3,7 @@
 ![](https://img.shields.io/npm/l/webai-js.svg?sanitize=true)
 ![](https://img.shields.io/npm/dm/webai-js.svg?sanitize=true)
 
-English | [中文版](./docs/tutorials/webai.md)
+[中文版](./docs/tutorials/webai.md) | English
 
 ## Online Demo
 * [Hello WebAI.js](https://AgentMaker.github.io/WebAI.js)

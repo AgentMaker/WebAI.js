@@ -1,8 +1,13 @@
 # WebAI.js
-[English](./README_EN.md) | 中文版
+中文版 | [English](./README_EN.md)
 
 ## 1. 简介
 * WebAI.js 是一个基于 [OpenCV.js](https://docs.opencv.org/4.5.5/d5/d10/tutorial_js_root.html) 和 [ONNXRuntime](https://github.com/microsoft/onnxruntime/tree/master/js) 开发的一个 Web 前端 AI 模型部署工具
+
+* 可通过在线体验网站 [Hello WebAI.js](https://AgentMaker.github.io/WebAI.js) 进行快速的体验试用
+
+    ![](./docs/images/demo.png)
+
 
 ## 2. 特性
 * WebAI.js 支持 HTML script 标签引入和 node.js 两种方式进行使用
