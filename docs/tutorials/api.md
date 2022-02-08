@@ -4,7 +4,7 @@
 
     ```js
     // Base model
-    (async) WebAI.CV.create(modelURL, sessionOption = { logSeverityLevel: 4 }, init = null, preProcess = null, postProcess = null) -> model
+    (async) WebAI.Model.create(modelURL, sessionOption = { logSeverityLevel: 4 }, init = null, preProcess = null, postProcess = null) -> model
 
     // Base CV model
     (async) WebAI.CV.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelCV
@@ -66,30 +66,15 @@
             prob: number // 置信度
         }[]): 图像分类置信度结果
         segResults({
-            argMax: number[], // 最大值索引图像（Gray）
-            colorMapping: number[], // 伪彩色图（RGBA）
+            gray: cv.Mat, // 最大值索引图像（Gray）
+            colorRGBA: cv.Mat, // 伪彩色图（RGBA）
             colorMap: { // 调色板
                 lable: string, // 标签
                 color: number[] // 颜色（RGBA）
             }[]
         }): 图像分割结果
 
-## 2. 图像 I/O
-* 图像读取/保存（只适用于 node.js）
-
-    ```js
-    // 图像读取
-    (async) WebAI.loadImage(imgPath) -> img
-
-    // 图像保存
-    WebAI.saveImage(img, imgPath)
-    ```
-    
-        imgPath(string): 图像（保存）路径
-
-        img(cv.Mat): 输入/输出图像
-
-## 3. 预处理函数
+## 2. 预处理函数
 * 获取图像缩放因子
 
     ```js
@@ -162,7 +147,7 @@
 
         imgData(Float32Array): 输出的图像数据（CHW）
 
-## 4. 后处理函数
+## 3. 后处理函数
 * 绘制目标检测包围框
 
     ```js
@@ -188,7 +173,7 @@
 
         imgDrawed(cv.Mat): 输出图像
 
-## 5. 其他功能函数
+## 4. 其他功能函数
 * 获取文本内容
 
     ```js
