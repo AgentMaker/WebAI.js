@@ -181,14 +181,14 @@
 * 部署完成后，就可以使用浏览器访问 http://localhost:3000/ 进行体验使用
 
 ## 7. 教程
-1. [OpenCV.js 快速入门和 API 速览](./docs/tutorials/opencv.md)
+1. [WebAI.js 快速使用](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/quick_start)
 
-2. [ONNXRuntime.js 快速入门和 API 速览](./docs/tutorials/ort.md)
+2. [PaddleDetection 模型导出、转换和部署](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppdet)
 
-3. [WebAI.js 快速使用](./docs/tutorials/quick_start.md)
+3. [PaddleClas 模型导出、转换和部署](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppcls)
 
-4. [PaddleDetection 模型导出、转换和部署](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppdet)
+4. [PaddleSeg 模型导出、转换和部署](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppseg)
 
-5. [PaddleClas 模型导出、转换和部署](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppcls)
+5. [OpenCV.js 快速入门和 API 速览](./docs/tutorials/opencv.md)
 
-6. [PaddleSeg 模型导出、转换和部署](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppseg)
+6. [ONNXRuntime.js 快速入门和 API 速览](./docs/tutorials/ort.md)
