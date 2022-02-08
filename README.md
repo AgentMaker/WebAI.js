@@ -1,208 +1,74 @@
 # WebAI.js
-![](https://img.shields.io/npm/v/webai-js.svg?sanitize=true)
-![](https://img.shields.io/npm/l/webai-js.svg?sanitize=true)
-![](https://img.shields.io/npm/dm/webai-js.svg?sanitize=true)
+[English](./README_EN.md) | 中文版
 
-English | [中文版](./docs/tutorials/webai.md)
+## 1. 简介
+* WebAI.js 是一个基于 [OpenCV.js](https://docs.opencv.org/4.5.5/d5/d10/tutorial_js_root.html) 和 [ONNXRuntime](https://github.com/microsoft/onnxruntime/tree/master/js) 开发的一个 Web 前端 AI 模型部署工具
 
-## Online Demo
-* [Hello WebAI.js](https://AgentMaker.github.io/WebAI.js)
+## 2. 特性
+* WebAI.js 支持 HTML script 标签引入和 node.js 两种方式进行使用
 
-    ![](./docs/images/demo.png)
+* 目前支持目标检测 (Yolo / ssd / ...)、图像分类 (MobileNet / EfficientNet / ...)、图像分割(BiseNet / PPSeg / ...) 三类 CV 模型
 
-## Features
-* Multi-type CV model support
+* 目前支持 [PaddleDetection][PaddleDetection] / [PaddleClas][PaddleClas] / [PaddleSeg][PaddleSeg] 三个套件部分导出模型的部署
 
-    * [x] Detection models (SSD / YOLO / FCOS / PPYOLO / ...)
-    * [x] Classification models (MobileNet / EfficientNet / PPLCNet / ...)
-    * [x] Segmentation models (BiseNet / PPSeg / STDC / ...)
-    * [ ] OCR models (PPOCR / ...)
-    * [ ] more (...)
-
-* Multi-type common CV preprocess OPs support
-
-    * [x] CvtColor (RGBA -> RGB / BGR)
-    * [x] Resize
-    * [x] Center Crop
-    * [x] Normalize
-    * [x] Permute (HWC -> CHW)
-    * [ ] more (...)
-
-* Rapid deployment of models trained using toolkits
-
-    * [x] [PaddleDetection][PaddleDetection]
-    * [x] [PaddleClas][PaddleClas]
-    * [x] [PaddleSeg][PaddleSeg]
-    * [ ] more (...)
-
-
-## Requirements
-* [OpenCV.js](https://docs.opencv.org/4.5.5/d5/d10/tutorial_js_root.html)
-* [ONNXRuntime](https://github.com/microsoft/onnxruntime)
-
-## Usage
-* More detailed usage documents and example programs will be updated soon
-
-### Use WebAI.js in a html script
-* Install
+## 3. 安装
+1. HTML script 标签引入
 
     ```html
-    <!-- Github -->
-    <script src='https://cdn.jsdelivr.net/gh/AgentMaker/WebAI.js/dist/webai.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/gh/AgentMaker/WebAI.js@(branch)/dist/webai.min.js'></script>
-
-    <!-- Npm -->
+    <!-- 最新版本 -->
     <script src='https://cdn.jsdelivr.net/npm/webai-js/dist/webai.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/webai-js@{version}/dist/webai.min.js'></script>
+
+    <!-- 1.1.4 版本 -->
+    <script src='https://cdn.jsdelivr.net/npm/webai-js@1.1.4/dist/webai.min.js'></script>
     ```
 
-* APIs
+2. Npm 安装
 
-    ```js
-    // Create a model
-    (async) WebAI.Det.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }) -> modelDet
-    (async) WebAI.Cls.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }) -> modelCls
-    (async) WebAI.Seg.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }) -> modelSeg
-
-    // Model infer
-    (async) modelDet.infer(imgRGBA, drawThreshold=0.5) ->  bboxes
-    (async) modelCls.infer(imgRGBA, topK=5) ->  probs
-    (async) modelSeg.infer(imgRGBA) ->  segResults
-
-    // Result postprocess
-    WebAI.drawBBoxes(img, bboxes, withLabel = true, withScore = true, thickness = 2.0, lineType = 8, fontFace = 0, fontScale = 0.7) -> imgDrawed
-    ```
-
-* Simple Demo
-
-    ```html
-    <input type="file" accept="image/*" id="inputFile">
-    <img src="" alt="" id="imgDom" style="display: none">
-    <canvas id='canvasDom'></canvas>
-    <script src='https://cdn.jsdelivr.net/npm/webai-js/dist/webai.min.js'></script>
-    <script>
-        // Get HTML elements
-        const imgDom = document.getElementById('imgDom')
-        const canvasDom = document.getElementById('canvasDom')
-        const inputFile = document.getElementById('inputFile')
-
-        // Face detection model files
-        const modelURL = 'https://agentmaker.github.io/WebAI.js/pages/pretrained_models/det/blazeface_1000e/model.onnx'
-        const modelConfig = 'https://agentmaker.github.io/WebAI.js/pages/pretrained_models/det/blazeface_1000e/configs.json'
-
-        // Detection threshold
-        const drawThreshold = 0.5;
-
-        // Load the model
-        window.onload = async function (e) {
-            window.model = await WebAI.Det.create(modelURL, modelConfig)
-        }
-
-        // Set the input image
-        inputFile.onchange = function (e) {
-            if (e.target.files[0]) {
-                imgDom.src = URL.createObjectURL(e.target.files[0])
-            }
-        }
-
-        // Model infer and show the result image
-        imgDom.onload = async function (e) {
-            let imgRGBA = cv.imread(imgDom)
-            let bboxes = await model.infer(imgRGBA)
-            let imgShow = await WebAI.drawBBoxes(imgRGBA, bboxes)
-            cv.imshow(canvasDom, imgShow)
-            imgRGBA.delete()
-            imgShow.delete()
-        }
-    </script>
-    ```
-
-### Use WebAI.js in node.js
-* Install
-
-    ```shell
+    ```bash
     $ npm install webai-js
     ```
 
-* APIs
+## 4. 模型
+* WebAI.js 使用 ONNX 模型进行模型推理，通过配置文件对模型的预处理进行配置
 
-    ```js
-    // Create a model
-    (async) WebAI.Det.create(modelURL, inferConfig, backend='node', sessionOption = { logSeverityLevel: 4 }) -> modelDet
-    (async) WebAI.Cls.create(modelURL, inferConfig, backend='node', sessionOption = { logSeverityLevel: 4 }) -> modelCls
-    (async) WebAI.Seg.create(modelURL, inferConfig, backend='node', sessionOption = { logSeverityLevel: 4 }) -> modelSeg
+* 一个常规的模型包含如下两个文件: model.onnx / configs.json
 
-    // Model infer
-    (async) modelDet.infer(imgRGBA, drawThreshold=0.5) ->  bboxes
-    (async) modelCls.infer(imgRGBA, topK=5) ->  probs
-    (async) modelSeg.infer(imgRGBA) ->  segResults
+* 其中 model.onnx 为模型文件，记录了模型的计算图和每层的参数，configs.json 为配置文件，记录了模型预处理的一些配置，如下为一个配置文件的具体内容：
 
-    // Image I/O
-    (async) WebAI.loadImage(imgPath) -> img
-    WebAI.saveImage(img, imgPath)
-
-    // Result postprocess
-    WebAI.drawBBoxes(img, bboxes, withLabel = true, withScore = true, thickness = 2.0, lineType = 8, fontFace = 0, fontScale = 0.7) -> imgDrawed
-    ```
-
-
-* Simple Demo (Face Detection)
-
-    ```js
-    const WebAI = require('webai-js')
-    async function run() {
-        // model path
-        const modelURL = './docs/pages/pretrained_models/det/blazeface_1000e/model.onnx';
-        const modelConfig = './docs/pages/pretrained_models/det/blazeface_1000e/configs.json';
-
-        // run backend: node or web
-        const onnxBackend = 'node';
-
-        // detection threshold
-        const drawThreshold = 0.5;
-
-        // create model
-        const model = await WebAI.Det.create(modelURL, modelConfig, onnxBackend);
-
-        // load the test image
-        const image = await WebAI.loadImage('./docs/images/human_image.jpg');
-
-        // model infer
-        const bboxes = await model.infer(image, drawThreshold);
-
-        // draw bboxes into the test image
-        const imgShow = WebAI.drawBBoxes(image, bboxes, false, true);
-
-        // save result image
-        WebAI.saveImage(imgShow, 'test.png');
-
-        // clear cv Mats
-        image.delete();
-        imgShow.delete();
-
-        // log bboxes result
-        console.log(bboxes);
-    }
-    run()
-    ```
-        [
+    ```json
+    {
+        "Preprocess": [
             {
-                label: 'face',
-                color: [ 0, 0, 0, 255 ],
-                score: 0.9996205568313599,
-                x1: 330,
-                y1: 28,
-                x2: 418,
-                y2: 139
+                "type": "Decode", // 图像解码
+                "mode": "RGB" // RGB 或 BGR
+            },
+            {
+                "type": "Resize", //  图像缩放
+                "interp": 1, // 插值方式
+                "keep_ratio": false, // 保持长宽比
+                "limit_max": false, // 限制图片尺寸
+                "target_size": [300, 300] // 目标尺寸
+                
+            },
+            {
+                "type": "Normalize", // 归一化
+                "is_scale": false, // 是否缩放 (img /= 255.0)
+                "mean": [127.5, 127.5, 127.5], // 均值
+                "std": [127.5, 127.5, 127.5] // 标准差
+            },
+            {
+                "type": "Permute" // 转置 (HWC -> CHW)
             }
-        ]
-    ![](./docs/images/face_det_demo.png)
+        ],
+        "label_list": [
+            "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", 
+            "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", 
+            "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"
+        ] // 标签列表
+    }
+    ```
 
-## Model Zoo
-* The following pretrained models are provided in the project, and you can quickly try them on the [online experience website](https://AgentMaker.github.io/WebAI.js)
-* The pretrained model files can be found in [./docs/pages/pretrained_model](./docs/pages/pretrained_model) directory
-* More pretrained models will be added continuously
-* The export method of the model will also be updated in the document in the future
+* 项目中提供了多个已经过测试的预训练模型文件，具体文件位于 [docs/pages/pretrained_models](../pages/pretrained_models) 目录，也可在在线体验网页 [Hello WebAI.js](https://AgentMaker.github.io/WebAI.js) 中快速试用如下的模型，以下模型均来自 [PaddleDetection][PaddleDetection] / [PaddleClas][PaddleClas] / [PaddleSeg][PaddleSeg] 提供预训练模型，具体的导出教程和兼容性表格将很快更新，更多其他套件、工具链的兼容适配也在稳步进行
 
     |Model|Type|Source|
     |:-:|:-:|:-:|
@@ -220,3 +86,104 @@ English | [中文版](./docs/tutorials/webai.md)
 [PaddleDetection]:https://www.github.com/PaddlePaddle/PaddleDetection
 [PaddleClas]:https://www.github.com/PaddlePaddle/PaddleClas
 [PaddleSeg]:https://www.github.com/PaddlePaddle/PaddleSeg
+
+## 5. API 
+* 模型加载
+
+    ```js
+    // Base model
+    (async) WebAI.Model.create(modelURL, sessionOption = { logSeverityLevel: 4 }, init = null, preProcess = null, postProcess = null) -> model
+
+    // Base CV model
+    (async) WebAI.CV.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelCV
+
+    // Detection model
+    (async) WebAI.Det.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelDet
+
+    // Classification model
+    (async) WebAI.Cls.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelCls
+
+    // Segmentation model
+    (async) WebAI.Seg.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelSeg    
+    ```
+
+        modelURL(string): 模型链接/路径
+        inferConfig(string): 模型配置文件链接/路径
+        sessionOption(object): ONNXRuntime session 的配置
+        getFeeds(function(imgTensor: ort.Tensor, imScaleX: number, imScaleY: number) => feeds:object): 自定义模型输入函数
+        init(function(model: WebAI.Model) => void): 自定义模型初始化函数
+        preProcess(function(...args) => feeds: object): 自定义模型预处理函数
+        postProcess(function(resultsTensors: object, ...args) => result: any): 自定义模型后处理函数
+
+* 模型推理
+
+    ```js
+    // Base model
+    (async) model.infer(...args)
+
+    // Base CV model
+    (async) modelCV.infer(...args)
+
+    // Detection model
+    (async) modelDet.infer(imgRGBA, drawThreshold=0.5) ->  bboxes
+
+    // Classification model
+    (async) modelCls.infer(imgRGBA, topK=5) ->  probs
+    
+    // Segmentation model
+    (async) modelSeg.infer(imgRGBA) ->  segResults
+    ```
+
+        // 注：目前只能实现 BatchSize=1 的模型推理
+
+        imgRGBA(cv.Mat): 输入图像
+        drawThreshold(number): 检测阈值
+        topK(number): 返回置信度前 K (K>0) 个结果，如果 K<0 返回所有结果
+
+        bboxes({
+            label: string, // 标签
+            score: number, // 置信度
+            color: number[], // 颜色（RGBA）
+            x1: number, // 左上角 x 坐标
+            y1: number, // 左上角 y 坐标
+            x2: number, // 右下角 x 坐标
+            y2: number // 右下角 y 坐标
+        }[]): 目标检测包围框结果
+        probs({
+            label: string, // 标签
+            prob: number // 置信度
+        }[]): 图像分类置信度结果
+        segResults({
+            gray: cv.Mat, // 最大值索引图像（Gray）
+            colorRGBA: cv.Mat, // 伪彩色图（RGBA）
+            colorMap: { // 调色板
+                lable: string, // 标签
+                color: number[] // 颜色（RGBA）
+            }[]
+        }): 图像分割结果
+
+* 更多 API 请参考文档：[API 参考](./docs/tutorials/api.md)
+
+## 6. 部署
+* 在线体验网页：[Hello WebAI.js](https://AgentMaker.github.io/WebAI.js)
+
+* 除了在线体验网页，也可以通过 node.js 借助 vite 构建工具快速在本地部署这个体验网页
+
+    ```
+    $ npm run dev
+    ```
+
+* 部署完成后，就可以使用浏览器访问 http://localhost:3000/ 进行体验使用
+
+## 7. 教程
+1. [OpenCV.js 快速入门和 API 速览](./docs/tutorials/opencv.md)
+
+2. [ONNXRuntime.js 快速入门和 API 速览](./docs/tutorials/ort.md)
+
+3. [WebAI.js 快速使用](./docs/tutorials/quick_start.md)
+
+4. [PaddleDetection 模型导出、转换和部署](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppdet)
+
+5. [PaddleClas 模型导出、转换和部署](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppcls)
+
+6. [PaddleSeg 模型导出、转换和部署](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppseg)
