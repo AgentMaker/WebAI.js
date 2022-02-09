@@ -73,7 +73,7 @@
     }
     ```
 
-* 项目中提供了多个已经过测试的预训练模型文件，具体文件位于 [docs/pages/pretrained_models](./pretrained_models) 目录，也可在在线体验网页 [Hello WebAI.js](https://AgentMaker.github.io/WebAI.js) 中快速试用如下的模型，以下模型均来自 [PaddleDetection][PaddleDetection] / [PaddleClas][PaddleClas] / [PaddleSeg][PaddleSeg] 提供预训练模型，具体的导出教程和兼容性表格将很快更新，更多其他套件、工具链的兼容适配也在稳步进行
+* 项目中提供了多个已经过测试的预训练模型文件，具体文件位于 [./docs/pretrained_models](https://github.com/AgentMaker/WebAI.js/tree/main/docs/pretrained_models) 目录，也可在在线体验网页 [Hello WebAI.js](https://AgentMaker.github.io/WebAI.js) 中快速试用如下的模型，以下模型均来自 [PaddleDetection][PaddleDetection] / [PaddleClas][PaddleClas] / [PaddleSeg][PaddleSeg] 提供预训练模型，具体的导出教程和兼容性表格将很快更新，更多其他套件、工具链的兼容适配也在稳步进行
 
     |Model|Type|Source|
     |:-:|:-:|:-:|
