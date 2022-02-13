@@ -1,4 +1,8 @@
 # WebAI.js
+![](https://img.shields.io/npm/v/webai-js.svg?sanitize=true)
+![](https://img.shields.io/npm/l/webai-js.svg?sanitize=true)
+![](https://img.shields.io/npm/dm/webai-js.svg?sanitize=true)
+
 中文版 | [English](./README_EN.md)
 
 ## 1. 简介
