@@ -359,4 +359,5 @@
 
             mat(cv.Mat): 图像
 
-* 更多 API 和详细信息请参考 [OpenCV 官方文档](https://docs.opencv.org)
+* 更多 API 和详细信息请参考官方文档：[OpenCV Docs](https://docs.opencv.org)
+* 更多示例代码请参考官方指南：[OpenCV.js Tutorials](https://docs.opencv.org/4.5.5/d5/d10/tutorial_js_root.html)
