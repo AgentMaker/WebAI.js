@@ -1,8 +1,9 @@
 {
   "name": "webai-js",
-  "version": "1.1.4",
+  "version": "2.0.0",
   "description": "A simple Web AI model deployment tool using JavaScript",
-  "main": "./src/webai.js",
+  "main": "./src/webai/webai.js",
+  "types": ".src/webai/webai.d.ts",
   "unpkg": "./dist/webai.min.js",
   "jsdelivr": "./dist/webai.min.js",
   "scripts": {
@@ -28,7 +29,6 @@
   "homepage": "https://github.com/AgentMaker/WebAI.js#readme",
   "dependencies": {},
   "devDependencies": {
-    "onnxruntime-web": "^1.10.0",
     "vite": "^2.7.13",
     "yamljs": "^0.3.0"
   }
