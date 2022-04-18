@@ -1,0 +1,6 @@
+{
+    "name": "webai-js",
+    "version": "2.0.0",
+    "main": "./webai.js",
+    "types": "./webai.d.ts"
+}
