@@ -1,6 +1,4 @@
-import WebAI from './src/webai'
-window.WebAI = WebAI
-window.cv = WebAI.cv
+import WebAI, {cv} from '.'
 
 // 获取 Doms
 const aDet = document.getElementById('aDet')
