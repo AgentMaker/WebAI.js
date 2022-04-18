@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "A simple Web AI model deployment tool using JavaScript",
   "main": "./src/webai/webai.js",
-  "types": ".src/webai/webai.d.ts",
+  "types": "./src/webai/webai.d.ts",
   "unpkg": "./dist/webai.min.js",
   "jsdelivr": "./dist/webai.min.js",
   "scripts": {
