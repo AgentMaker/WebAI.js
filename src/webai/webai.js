@@ -1,45 +1,44 @@
 import cv from '../opencv'
 import ort from '../onnxruntime-web'
 
-/**
- * wait for OpenCV initialized.
- */
 const waitForOpenCV = new Promise(resolve => {
     cv.onRuntimeInitialized = resolve
-});
+})
 
 class Model {
     /**
      * create a base model.
-     * @param {string} modelURL model URL
-     * @param {ort.InferenceSession.SessionOptions} sessionOption onnxruntime session options
-     * @param {(model: Model) => void} init model init function
-     * @param {(...arg: any[]) => ort.InferenceSession.OnnxValueMapType} preProcess preprocess function
-     * @param {(resultsTensors: ort.InferenceSession.OnnxValueMapType, ...args: any[]) => any} postProcess postprocess function
-     * @returns {Promise<Model>} base model object
      */
-    static async create(modelURL, sessionOption = undefined, init = undefined, preProcess = undefined, postProcess = undefined) {
-        await waitForOpenCV
-        let model = new this();
-        model.session = await ort.InferenceSession.create(modelURL, sessionOption);
+    constructor(
+        modelURL,
+        sessionOption,
+        init,
+        preProcess,
+        postProcess
+    ) {
+        this.promises = Promise.all([
+            waitForOpenCV,
+            ort.InferenceSession.create(modelURL, sessionOption)
+                .then(session => this.session = session)
+        ])
         if (typeof init != 'undefined') {
-            init(model)
+            init(this)
         }
         if (typeof preProcess != 'undefined') {
-            model.preProcess = preProcess
+            this.preProcess = preProcess
         }
         if (typeof postProcess != 'undefined') {
-            model.postProcess = postProcess
+            this.postProcess = postProcess
         }
-        return model
     }
 
     /**
      * base model infer function.
-     * @param  {...args: any[]} args model infer paramters
+     * @param  args model infer paramters
      * @returns {any} model infer results
      */
     async infer(...args) {
+        await this.promises;
         console.time('Infer');
 
         console.time('Infer.Preprocess');
@@ -65,29 +64,33 @@ class Model {
     }
 }
 
-
 class CV extends Model {
     /**
      * create a base CV model.
-     * @param {string} modelURL model URL
-     * @param {string} inferConfig model infer config URL
-     * @param {ort.InferenceSession.SessionOptions} sessionOption onnxruntime session options
-     * @param {(imgTensor: ort.Tensor, imScaleX: number, imScaleY: number) => ort.InferenceSession.OnnxValueMapType} getFeeds get infer session feeds function
-     * @param {(resultsTensors: ort.InferenceSession.OnnxValueMapType, ...args: any[]) => any} postProcess postprocess function
-     * @returns {Promise<CV>} base CV model object
+     * @param modelURL model URL
+     * @param inferConfig model infer config URL
+     * @param sessionOption onnxruntime session options
+     * @param getFeeds get infer session feeds function
+     * @param postProcess postprocess function
+     * @returns base CV model object
      */
-    static async create(modelURL, inferConfig, sessionOption = undefined, getFeeds = undefined, postProcess = undefined) {
-        let model = await super.create(modelURL, sessionOption, undefined, undefined, postProcess)
-        model.loadConfigs(inferConfig);
+    constructor(
+        modelURL,
+        inferConfig,
+        sessionOption,
+        getFeeds,
+        postProcess
+    ) {
+        super(modelURL, sessionOption, undefined, undefined, postProcess)
+        this.loadConfigs(inferConfig)
         if (typeof getFeeds != 'undefined') {
-            model.getFeeds = getFeeds
+            this.getFeeds = getFeeds
         }
-        return model
     }
 
     /**
      * load infer configs
-     * @param {string} inferConfig model infer config URL
+     * @param inferConfig model infer config URL
      */
     loadConfigs(inferConfig) {
         let inferConfigs = JSON.parse(WebAI.loadText(inferConfig));
@@ -113,12 +116,10 @@ class CV extends Model {
             else if (OP.type == 'Normalize') {
                 this.isScale = OP.is_scale
                 if (this.isScale) {
-                    this.scale = [255.0, 255.0, 255.0, 0.0]
+                    this.scale = new cv.Scalar(255.0, 255.0, 255.0)
                 }
-                this.mean = OP.mean
-                this.mean.push(0.0)
-                this.std = OP.std
-                this.std.push(0.0)
+                this.mean = new cv.Scalar(...OP.mean)
+                this.std = new cv.Scalar(...OP.std)
             }
             else if (OP.type == 'Crop') {
                 this.isCrop = true;
@@ -136,9 +137,6 @@ class CV extends Model {
             this.labelList = inferConfigs.label_list;
             this.colorMap = WebAI.getColorMap(this.labelList);
         }
-        else {
-            this.labelList = null;
-        }
 
         console.info('model info: ', {
             mode: this.mode,
@@ -148,8 +146,8 @@ class CV extends Model {
             targetSize: this.targetSize,
             isScale: this.isScale,
             limitMax: this.limitMax,
-            mean: this.mean.slice(0, 3),
-            std: this.std.slice(0, 3),
+            mean: this.mean,
+            std: this.std,
             isCrop: this.isCrop,
             cropSize: this.cropSize,
             isPermute: this.isPermute,
@@ -159,8 +157,8 @@ class CV extends Model {
 
     /**
      * model preprocess function. 
-     * @param  {...args: any[]} args preprocess args
-     * @returns {InferenceSession.OnnxValueMapType} session infer feeds
+     * @param args preprocess args
+     * @returns session infer feeds
      */
     preProcess(...args) {
         let [imgRGBA, height, width] = args.slice(0, 3)
@@ -212,10 +210,10 @@ class CV extends Model {
 class Det extends CV {
     /**
      * get session infer feeds.
-     * @param {ort.Tensor} imgTensor image tensor
-     * @param {number} imScaleX image scale factor of x axis
-     * @param {number} imScaleY image scale factor of y axis
-     * @returns {ort.InferenceSession.OnnxValueMapType} session infer feeds
+     * @param imgTensor image tensor
+     * @param imScaleX image scale factor of x axis
+     * @param imScaleY image scale factor of y axis
+     * @returns session infer feeds
      */
     getFeeds(imgTensor, imScaleX, imScaleY) {
         let inputNames = this.session.inputNames;
@@ -224,20 +222,27 @@ class Det extends CV {
             image: imgTensor,
             scale_factor: new ort.Tensor('float32', Float32Array.from([imScaleY, imScaleX]), [1, 2])
         }
-        let feeds = {};
-        for (let i = 0; i < inputNames.length; i++) {
-            feeds[inputNames[i]] = _feeds[inputNames[i]];
+        let feeds = {
+            im_shape: undefined,
+            image: undefined,
+            scale_factor: undefined
         }
+        inputNames.forEach(name => {
+            feeds[name] = _feeds[name]
+        })
         return feeds
     }
 
     /**
      * detection postprocess.
-     * @param {ort.InferenceSession.OnnxValueMapType} resultsTensors result tensors
-     * @param  {...args: any[]} args postprocess args
-     * @returns {{label: string,  color: [number, number, number, number], score: number, x1: number, y1: number, x2: number, y2: number}[]} bboxes of the detection
+     * @param resultsTensors result tensors
+     * @param args postprocess args
+     * @returns bboxes of the detection
      */
-    postProcess(resultsTensors, ...args) {
+    postProcess(
+        resultsTensors,
+        ...args
+    ) {
         let [height, width, drawThreshold] = args.slice(1, 4)
         let bboxesTensor = Object.values(resultsTensors)[0];
         let bboxes = [];
@@ -274,11 +279,14 @@ class Det extends CV {
 
     /**
      * detection infer.
-     * @param {cv.Mat} imgRGBA RGBA image
-     * @param {number} drawThreshold threshold of detection
-     * @returns {{label: string,  color: [number, number, number, number], score: number, x1: number, y1: number, x2: number, y2: number}[]} bboxes of the detection
+     * @param imgRGBA RGBA image
+     * @param drawThreshold threshold of detection
+     * @returns bboxes of the detection
      */
-    async infer(imgRGBA, drawThreshold = 0.5) {
+    infer(
+        imgRGBA,
+        drawThreshold = 0.5
+    ) {
         return super.infer(imgRGBA, imgRGBA.rows, imgRGBA.cols, drawThreshold)
     }
 }
@@ -286,8 +294,8 @@ class Det extends CV {
 class Cls extends CV {
     /**
      * get the feeds of the infer session.
-     * @param {ort.Tensor} imgTensor image tensor
-     * @returns {InferenceSession.OnnxValueMapType} feeds of the infer session {x: image tensor}
+     * @param imgTensor image tensor
+     * @returns feeds of the infer session {x: image tensor}
      */
     getFeeds(imgTensor) {
         return { x: imgTensor }
@@ -295,9 +303,9 @@ class Cls extends CV {
 
     /**
      * classification postprocess.
-     * @param {InferenceSession.OnnxValueMapType} resultsTensors result tensors
-     * @param  {...args: any[]} args postprocess args
-     * @returns {{label: string, prob: number}[]} probs of the classification
+     * @param resultsTensors result tensors
+     * @param args postprocess args
+     * @returns probs of the classification
      */
     postProcess(resultsTensors, ...args) {
         let topK = args[3];
@@ -321,11 +329,14 @@ class Cls extends CV {
 
     /**
      * classification infer.
-     * @param {cv.Mat} imgRGBA RGBA image
-     * @param {number} topK probs top K
-     * @returns {{label: string, prob: number}[]} probs of the classification
+     * @param imgRGBA RGBA image
+     * @param topK probs top K
+     * @returns probs of the classification
      */
-    async infer(imgRGBA, topK = 5) {
+    infer(
+        imgRGBA,
+        topK = 5
+    ) {
         return super.infer(imgRGBA, imgRGBA.rows, imgRGBA.cols, topK)
     }
 }
@@ -333,8 +344,8 @@ class Cls extends CV {
 class Seg extends CV {
     /**
      * get the feeds of the infer session.
-     * @param {ort.Tensor} imgTensor image tensor
-     * @returns {InferenceSession.OnnxValueMapType} feeds of the infer session {x: image tensor}
+     * @param imgTensor image tensor
+     * @returns feeds of the infer session {x: image tensor}
      */
     getFeeds(imgTensor) {
         return { x: imgTensor }
@@ -342,8 +353,8 @@ class Seg extends CV {
 
     /**
      * segmentation postprocess.
-     * @param {InferenceSession.OnnxValueMapType} resultsTensors result tensors
-     * @returns {{gray: cv.Mat, colorRGBA: cv.Mat, colorMap: {label: string, color: [number, number, number, number]}[], delete: method}} segmentation results
+     * @param resultsTensors result tensors
+     * @returns segmentation results
      */
     postProcess(resultsTensors) {
         let segTensor = Object.values(resultsTensors)[0];
@@ -359,7 +370,7 @@ class Seg extends CV {
         let gray = [];
         let tmp, index;
         for (let i = 0; i < numPixel; i++) {
-            tmp = []
+            let tmp = []
             for (let j = 0; j < C; j++) {
                 tmp.push(pixelArrs[j][i])
             }
@@ -385,21 +396,24 @@ class Seg extends CV {
 
     /**
      * segmentation infer.
-     * @param {cv.Mat} imgRGBA RGBA image
-     * @returns {{gray: cv.Mat, colorRGBA: cv.Mat, colorMap: {label: string, color: [number, number, number, number]}[], delete: method}} segmentation results
+     * @param imgRGBA RGBA image
+     * @returns segmentation results
      */
-    infer(imgRGBA) {
+    infer(
+        imgRGBA
+    ) {
         return super.infer(imgRGBA, imgRGBA.rows, imgRGBA.cols)
     }
 }
 
-class WebAI {
+
+const WebAI = {
     /**
      * get the index of the max value of the array.
-     * @param {number[]} arr array
-     * @returns {number} the index of the max value of the array
+     * @param arr array
+     * @returns the index of the max value of the array
      */
-    static argmax(arr) {
+    argmax(arr) {
         let max = Math.max.apply(null, arr);
         let index = arr.findIndex(
             function (value) {
@@ -412,18 +426,18 @@ class WebAI {
             }
         )
         return index
-    }
+    },
 
     /**
      * get image scale.
-     * @param {number} height image height
-     * @param {number} width image width
-     * @param {[number, number]} targetSize target size [h, w]
-     * @param {boolean} keepRatio is keep the ratio of image size
-     * @param {boolean} limitMax is limit max size of image
-     * @returns {[number, number]} [scale factor of x axis, , scale factor of y axis]
+     * @param height image height
+     * @param width image width
+     * @param targetSize target size [h, w]
+     * @param keepRatio is keep the ratio of image size
+     * @param limitMax is limit max size of image
+     * @returns [scale factor of x axis, , scale factor of y axis]
      */
-    static getIMScale(height, width, targetSize, keepRatio, limitMax) {
+    getIMScale(height, width, targetSize, keepRatio, limitMax) {
         let imScaleX, imScaleY;
         if (keepRatio) {
             let imSizeMin = Math.min(height, width);
@@ -446,102 +460,104 @@ class WebAI {
             imScaleX = targetSize[1] / width;
         }
         return [imScaleX, imScaleY]
-    }
+    },
 
     /**
      * RGBA -> RGB image.
-     * @param {cv.Mat} imgRGBA RGBA image
-     * @returns {cv.Mat} RGB image
+     * @param imgRGBA RGBA image
+     * @returns RGB image
      */
-    static rgba2rgb(imgRGBA) {
-        let imgRGB = new this.cv.Mat();
-        this.cv.cvtColor(imgRGBA, imgRGB, this.cv.COLOR_RGBA2RGB);
+    rgba2rgb(imgRGBA) {
+        let imgRGB = new cv.Mat();
+        cv.cvtColor(imgRGBA, imgRGB, cv.COLOR_RGBA2RGB);
         return imgRGB
-    }
+    },
 
     /**
      * RGBA -> BGR image.
-     * @param {cv.Mat} imgRGBA RGBA image
-     * @returns {cv.Mat} BGR image
+     * @param imgRGBA RGBA image
+     * @returns BGR image
      */
-    static rgba2bgr(imgRGBA) {
-        let imgBGR = new this.cv.Mat();
-        this.cv.cvtColor(imgRGBA, imgBGR, this.cv.COLOR_RGBA2BGR);
+    rgba2bgr(imgRGBA) {
+        let imgBGR = new cv.Mat();
+        cv.cvtColor(imgRGBA, imgBGR, cv.COLOR_RGBA2BGR);
         return imgBGR
-    }
+    },
 
     /**
      * image resize.
-     * @param {cv.Mat} img image mat
-     * @param {number} height image height
-     * @param {number} width image width
-     * @param {[number, number]} targetSize target size [h, w]
-     * @param {boolean} keepRatio is keep the ratio of image size
-     * @param {boolean} limitMax is limit max size of image
-     * @param {number} interp interpolation method
-     * @returns {[cv.Mat, number, number]} [image resized, scale factor of x axis, , scale factor of y axis]
+     * @param img image mat
+     * @param height image height
+     * @param width image width
+     * @param targetSize target size [h, w]
+     * @param keepRatio is keep the ratio of image size
+     * @param limitMax is limit max size of image
+     * @param interp interpolation method
+     * @returns [image resized, scale factor of x axis, , scale factor of y axis]
      */
-    static resize(img, height, width, targetSize, keepRatio, limitMax, interp) {
-        let [imScaleX, imScaleY] = this.getIMScale(height, width, targetSize, keepRatio, limitMax);
-        let imgResize = new this.cv.Mat();
-        this.cv.resize(img, imgResize, { width: 0, height: 0 }, imScaleX, imScaleY, interp);
+    resize(img, height, width, targetSize, keepRatio, limitMax, interp) {
+        let [imScaleX, imScaleY] = WebAI.getIMScale(height, width, targetSize, keepRatio, limitMax);
+        let imgResize = new cv.Mat();
+        cv.resize(img, imgResize, new cv.Size(0, 0), imScaleX, imScaleY, interp);
         return [imgResize, imScaleX, imScaleY]
-    }
+    },
 
     /**
      * image center crop.
-     * @param {cv.Mat} img image mat
-     * @param {[number, number]} cropSize crop size [h, w]
-     * @returns {cv.Mat} cropped image
+     * @param img image mat
+     * @param cropSize crop size [h, w]
+     * @returns cropped image
      */
-    static crop(img, cropSize) {
-        let imgCrop = img.roi({
-            x: Math.ceil((img.cols - cropSize[1]) / 2),
-            y: Math.ceil((img.rows - cropSize[0]) / 2),
-            width: cropSize[1],
-            height: cropSize[0]
-        })
+    crop(img, cropSize) {
+        let imgCrop = img.roi(
+            new cv.Rect(
+                Math.ceil((img.cols - cropSize[1]) / 2),
+                Math.ceil((img.rows - cropSize[0]) / 2),
+                cropSize[1],
+                cropSize[0]
+            )
+        )
         img.delete()
         return imgCrop
-    }
+    },
 
     /**
      * image normalize.
-     * @param {cv.Mat} img image mat
-     * @param {[number, number, number, number]} scale normalize scale
-     * @param {[number, number, number, number]} mean normalize mean
-     * @param {[number, number, number, number]} std normalize std
-     * @param {boolean} isScale is scale the image
-     * @returns {cv.Mat} normalized image
+     * @param img image mat
+     * @param scale normalize scale
+     * @param mean normalize mean
+     * @param std normalize std
+     * @param isScale is scale the image
+     * @returns normalized image
      */
-    static normalize(img, scale, mean, std, isScale) {
-        img.convertTo(img, this.cv.CV_32F);
+    normalize(img, scale, mean, std, isScale) {
+        img.convertTo(img, cv.CV_32F);
 
         if (isScale) {
-            let imgScale = new this.cv.Mat(img.rows, img.cols, this.cv.CV_32FC3, scale);
-            this.cv.divide(img, imgScale, img);
+            let imgScale = new cv.Mat(img.rows, img.cols, cv.CV_32FC3, scale);
+            cv.divide(img, imgScale, img);
             imgScale.delete();
         }
 
-        let imgMean = new this.cv.Mat(img.rows, img.cols, this.cv.CV_32FC3, mean);
-        this.cv.subtract(img, imgMean, img);
+        let imgMean = new cv.Mat(img.rows, img.cols, cv.CV_32FC3, mean);
+        cv.subtract(img, imgMean, img);
         imgMean.delete();
 
-        let imgStd = new this.cv.Mat(img.rows, img.cols, this.cv.CV_32FC3, std);
-        this.cv.divide(img, imgStd, img);
+        let imgStd = new cv.Mat(img.rows, img.cols, cv.CV_32FC3, std);
+        cv.divide(img, imgStd, img);
         imgStd.delete();
 
         return img
-    }
+    },
 
     /**
      * permute hwc -> chw.
-     * @param {cv.Mat} img image mat
-     * @returns {Float32Array} image data
+     * @param img image mat
+     * @returns image data
      */
-    static permute(img) {
-        let rgbPlanes = new this.cv.MatVector();
-        this.cv.split(img, rgbPlanes);
+    permute(img) {
+        let rgbPlanes = new cv.MatVector();
+        cv.split(img, rgbPlanes);
         let R = rgbPlanes.get(0);
         let G = rgbPlanes.get(1);
         let B = rgbPlanes.get(2);
@@ -556,26 +572,26 @@ class WebAI {
         B.delete();
         img.delete();
         return imgData
-    }
+    },
 
     /**
      * load text content.
-     * @param {string} textURL text URL
-     * @returns {string} content of the text
+     * @param textURL text URL
+     * @returns content of the text
      */
-    static loadText(textURL) {
+    loadText(textURL) {
         let xhr = new XMLHttpRequest();
         xhr.open('get', textURL, false);
         xhr.send(null);
         return xhr.responseText
-    }
+    },
 
     /**
      * get color map of label list.
-     * @param {string[]} labelList label list
-     * @returns {{label: string, color: [number, number, number, number]}[]} color map of label list
+     * @param labelList label list
+     * @returns color map of label list
      */
-    static getColorMap(labelList) {
+    getColorMap(labelList) {
         let classNum = labelList.length
         let colorMap = []
         let colorSlice = Math.ceil((256 * 256 * 256) / classNum)
@@ -598,53 +614,56 @@ class WebAI {
             })
         }
         return colorMap
-    }
+    },
 
     /**
      * draw bboxes onto the image.
-     * @param {cv.Mat} img image mat
-     * @param {{label: string,  color: [number, number, number, number], score: number, x1: number, y1: number, x2: number, y2: number}[]} bboxes bboxes of detection
-     * @param {boolean} withLabel draw with label 
-     * @param {boolean} withScore draw with score
-     * @param {number} thickness line thickness
-     * @param {number} lineType line type
-     * @param {number} fontFace font face
-     * @param {number} fontScale font scale
-     * @returns {cv.Mat} drawed image
+     * @param img image mat
+     * @param bboxes bboxes of detection
+     * @param withLabel draw with label 
+     * @param withScore draw with score
+     * @param thickness line thickness
+     * @param lineType line type
+     * @param fontFace font face
+     * @param fontScale font scale
+     * @returns drawed image
      */
-    static drawBBoxes(img, bboxes, withLabel = true, withScore = true, thickness = 2.0, lineType = 8, fontFace = 0, fontScale = 0.7) {
+    drawBBoxes(
+        img,
+        bboxes,
+        withLabel = true,
+        withScore = true,
+        thickness = 2.0,
+        lineType = 8,
+        fontFace = 0,
+        fontScale = 0.7
+    ) {
         let imgShow = img.clone()
         for (let i = 0; i < bboxes.length; i++) {
             let bbox = bboxes[i];
-            this.cv.rectangle(imgShow, { x: bbox.x1, y: bbox.y1 }, { x: bbox.x2, y: bbox.y2 }, bbox.color, thickness, lineType);
+            cv.rectangle(imgShow, new cv.Point(bbox.x1, bbox.y1), new cv.Point(bbox.x2, bbox.y2), bbox.color, thickness, lineType);
             if (withLabel && withScore) {
-                this.cv.putText(imgShow, `${bbox.label} ${(bbox.score * 100).toFixed(2)}%`, { x: bbox.x1, y: bbox.y2 }, fontFace, fontScale, bbox.color, thickness, lineType);
+                cv.putText(imgShow, `${bbox.label} ${(bbox.score * 100).toFixed(2)}%`, new cv.Point(bbox.x1, bbox.y2), fontFace, fontScale, bbox.color, thickness, lineType);
             }
             else if (withLabel) {
-                this.cv.putText(imgShow, `${bbox.label}`, { x: bbox.x1, y: bbox.y2 }, fontFace, fontScale, bbox.color, thickness, lineType);
+                cv.putText(imgShow, `${bbox.label}`, new cv.Point(bbox.x1, bbox.y2), fontFace, fontScale, bbox.color, thickness, lineType);
             }
             else if (withScore) {
-                this.cv.putText(imgShow, `${(bbox.score * 100).toFixed(2)}%`, { x: bbox.x1, y: bbox.y2 }, fontFace, fontScale, bbox.color, thickness, lineType);
+                cv.putText(imgShow, `${(bbox.score * 100).toFixed(2)}%`, new cv.Point(bbox.x1, bbox.y2), fontFace, fontScale, bbox.color, thickness, lineType);
             }
         }
         return imgShow
-    }
+    },
 
-    static Model = Model
-
-    static CV = CV
-
-    static Det = Det
-
-    static Cls = Cls
-
-    static Seg = Seg
-
-    static cv = cv
-
-    static ort = ort
-
-    static waitForOpenCV = waitForOpenCV
+    /**
+     * wait for OpenCV initialized.
+     */
+    waitForOpenCV: waitForOpenCV,
+    Model: Model,
+    CV: CV,
+    Det: Det,
+    Cls: Cls,
+    Seg: Seg
 }
 
 export { WebAI as default, WebAI, Model, CV, Det, Cls, Seg, cv, ort, waitForOpenCV }
