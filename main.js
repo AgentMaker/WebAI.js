@@ -1,4 +1,4 @@
-import WebAI, {cv} from '.'
+import {WebAI, cv} from '.'
 
 // 获取 Doms
 const aDet = document.getElementById('aDet')
@@ -176,13 +176,13 @@ async function loadModel(MODE) {
     let modelURL = `${modelDir}/${MODE}/${modelName}/model.onnx.json`
     let modelConfig = `${modelDir}/${MODE}/${modelName}/configs.json`
     if (MODE == 'det') {
-        model = await WebAI.Det.create(modelURL, modelConfig)
+        model = new WebAI.Det(modelURL, modelConfig)
     }
     else if (MODE == 'cls') {
-        model = await WebAI.Cls.create(modelURL, modelConfig)
+        model = new WebAI.Cls(modelURL, modelConfig)
     }
     else if (MODE == 'seg') {
-        model = await WebAI.Seg.create(modelURL, modelConfig)
+        model = new WebAI.Seg(modelURL, modelConfig)
     }
     inputFile.disabled = false
     buttonUser.disabled = false

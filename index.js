@@ -1,5 +1,5 @@
-import WebAI from './src/webai'
+import {WebAI, cv, ort} from '.'
 
 window.WebAI = WebAI
-window.ort = WebAI.ort
-window.cv = WebAI.cv
+window.ort = ort
+window.cv = cv
