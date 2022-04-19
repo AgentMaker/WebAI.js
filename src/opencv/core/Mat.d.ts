@@ -64,6 +64,7 @@ declare module Mat {
         new (rows: number, cols: number, type: DataTypes, s?: Scalar): Mat;
         zeros: zeros;
         ones: ones;
+        isDeleted(): boolean;
         delete(): void;
         /**
          * The method returns a Matlab-style identity matrix initializer, similarly to Mat::zeros. Similarly to

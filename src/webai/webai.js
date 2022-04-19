@@ -1,6 +1,10 @@
 import cv from '../opencv'
 import ort from '../onnxruntime-web'
 
+
+/**
+ * wait for OpenCV initialized.
+ */
 const waitForOpenCV = new Promise(resolve => {
     cv.onRuntimeInitialized = resolve
 })
@@ -655,15 +659,12 @@ const WebAI = {
         return imgShow
     },
 
-    /**
-     * wait for OpenCV initialized.
-     */
-    waitForOpenCV: waitForOpenCV,
     Model: Model,
     CV: CV,
     Det: Det,
     Cls: Cls,
-    Seg: Seg
+    Seg: Seg,
+    waitForOpenCV: waitForOpenCV
 }
 
 export { WebAI as default, WebAI, Model, CV, Det, Cls, Seg, cv, ort, waitForOpenCV }
