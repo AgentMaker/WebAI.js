@@ -111,3 +111,4 @@ package-lock.json
 test.js
 *.lock
 src/ort_export.js
+.vscode
