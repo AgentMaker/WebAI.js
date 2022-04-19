@@ -1,4 +1,5 @@
-import {WebAI, cv} from '.'
+import { WebAI, cv } from '.'
+import YAML from 'yamljs'
 
 // 获取 Doms
 const aDet = document.getElementById('aDet')
@@ -369,7 +370,6 @@ function inferVideo() {
 
 }
 
-import YAML from 'yamljs'
 let form = layui.form
 let configs
 layui.use('form', function () {
