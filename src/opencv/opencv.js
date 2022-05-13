@@ -7111,9 +7111,4 @@ cv["matFromImageData"] = function(imageData) {
   mat.data.set(imageData.data);
   return mat;
 };
-cv["init"] = function() {
-  return new Promise((resolve) => {
-    cv.onRuntimeInitialized = resolve;
-  });
-};
 export { cv as default };

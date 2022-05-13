@@ -18,7 +18,7 @@ class Model {
         postProcess
     ) {
         this.promises = Promise.all([
-            cv.init(),
+            Promise.resolve(cv.onRuntimeInitialized),
             ort.InferenceSession.create(modelURL, sessionOption)
                 .then(session => this.session = session)
         ])

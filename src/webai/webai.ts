@@ -279,7 +279,7 @@ namespace WebAI {
             postProcess?: (resultsTensors: InferenceSession.OnnxValueMapType, ...args: any[]) => any
         ) {
             this.promises = Promise.all([
-                cv.init(),
+                Promise.resolve(cv.onRuntimeInitialized),
                 InferenceSession.create(modelURL, sessionOption)
                     .then(session => this.session = session)
             ])
