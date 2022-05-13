@@ -252,10 +252,6 @@ namespace WebAI {
     /**
      * wait for OpenCV initialized.
      */
-    export const waitForOpenCV = new Promise(resolve => {
-        cv.onRuntimeInitialized = resolve as typeof cv.onRuntimeInitialized
-    });
-
     export interface Model {
         constructor(
             modelURL: string,
@@ -283,7 +279,7 @@ namespace WebAI {
             postProcess?: (resultsTensors: InferenceSession.OnnxValueMapType, ...args: any[]) => any
         ) {
             this.promises = Promise.all([
-                waitForOpenCV,
+                cv.init(),
                 InferenceSession.create(modelURL, sessionOption)
                     .then(session => this.session = session)
             ])
@@ -723,6 +719,5 @@ const CV = WebAI.CV
 const Det = WebAI.Det
 const Cls = WebAI.Cls
 const Seg = WebAI.Seg
-const waitForOpenCV = WebAI.waitForOpenCV
 
-export { WebAI as default, WebAI, Model, CV, Det, Cls, Seg, opencv as cv, onnxruntime as ort, waitForOpenCV }
+export { WebAI as default, WebAI, Model, CV, Det, Cls, Seg, opencv as cv, onnxruntime as ort }

@@ -114,8 +114,6 @@ declare namespace WebAI {
     /**
      * wait for OpenCV initialized.
      */
-    export const waitForOpenCV: Promise<unknown>
-
     export interface Model {
         constructor(
             modelURL: string,
@@ -315,6 +313,5 @@ declare const CV: typeof WebAI.CV
 declare const Det: typeof WebAI.Det
 declare const Cls: typeof WebAI.Cls
 declare const Seg: typeof WebAI.Seg
-declare const waitForOpenCV: typeof WebAI.waitForOpenCV
 
-export { WebAI as default, WebAI, Model, CV, Det, Cls, Seg, opencv as cv, onnxruntime as ort, waitForOpenCV }
+export { WebAI as default, WebAI, Model, CV, Det, Cls, Seg, opencv as cv, onnxruntime as ort }
