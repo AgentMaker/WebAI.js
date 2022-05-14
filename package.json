@@ -29,6 +29,8 @@
   "homepage": "https://github.com/AgentMaker/WebAI.js#readme",
   "dependencies": {},
   "devDependencies": {
+    "typedoc": "^0.22.15",
+    "typescript": "^4.6.4",
     "vite": "^2.9.9",
     "yamljs": "^0.3.0"
   }
