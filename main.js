@@ -1,5 +1,7 @@
-import { WebAI, cv } from '.'
+import { WebAI, cv, ort } from '.'
 import YAML from 'yamljs'
+
+ort.env.wasm.proxy = true
 
 // 获取 Doms
 const aDet = document.getElementById('aDet')
