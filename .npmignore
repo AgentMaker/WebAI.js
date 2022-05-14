@@ -1,7 +1,12 @@
 # Page
-public
 docs
-test.js
+public
+node_modules
 .gitignore
 .npmignore
-src/ort_export.js
+index.html
+index.js
+main.js
+vite.config.js
+vite.config.html.js
+yarn.lock
