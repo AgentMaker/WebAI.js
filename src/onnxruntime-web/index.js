@@ -21041,16 +21041,9 @@ const extractTransferableBuffers = (tensors) => {
 };
 wasmCoreImpl.extractTransferableBuffers = extractTransferableBuffers;
 function WorkerWrapper() {
-  if (typeof scriptSrc == 'undefined'){
-    return new Worker("worker.js", {
-      "type": "module"
-    });
-  }
-  else {
-    return new Worker(scriptSrc.substr(0, scriptSrc.lastIndexOf("/") + 1) + "worker.js", {
-      "type": "module"
-    });
-  }
+  return new Worker("/worker.js", {
+    "type": "module"
+  });
 }
 var main = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
