@@ -1,0 +1,173 @@
+<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>webai-js</title><meta name="description" content="Documentation for webai-js"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">webai-js</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1>webai-js </h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography">
+<a href="#webaijs" id="webaijs" style="color: inherit; text-decoration: none;">
+  <h1>WebAI.js</h1>
+</a>
+<p><img src="https://img.shields.io/npm/v/webai-js.svg?sanitize=true" alt="">
+<img src="https://img.shields.io/npm/l/webai-js.svg?sanitize=true" alt="">
+<img src="https://img.shields.io/npm/dm/webai-js.svg?sanitize=true" alt=""></p>
+<p>中文版 | <a href="./README_EN.md">English</a></p>
+
+<a href="#1-简介" id="1-简介" style="color: inherit; text-decoration: none;">
+  <h2>1. 简介</h2>
+</a>
+<ul>
+<li><p>WebAI.js 是一个基于 <a href="https://docs.opencv.org/4.5.5/d5/d10/tutorial_js_root.html">OpenCV.js</a> 和 <a href="https://github.com/microsoft/onnxruntime/tree/master/js">ONNXRuntime</a> 开发的一个 Web 前端 AI 模型部署工具</p>
+</li>
+<li><p>可通过在线体验网站 <a href="https://AgentMaker.github.io/WebAI.js">Hello WebAI.js</a> 进行快速的体验试用</p>
+<p>  <img src="./docs/images/demo.png" alt=""></p>
+</li>
+</ul>
+
+<a href="#2-特性" id="2-特性" style="color: inherit; text-decoration: none;">
+  <h2>2. 特性</h2>
+</a>
+<ul>
+<li><p>WebAI.js 支持 HTML script 标签引入和 node.js 两种方式进行使用</p>
+</li>
+<li><p>目前支持目标检测 (Yolo / ssd / ...)、图像分类 (MobileNet / EfficientNet / ...)、图像分割(BiseNet / PPSeg / ...) 三类 CV 模型</p>
+</li>
+<li><p>目前支持 <a href="https://www.github.com/PaddlePaddle/PaddleDetection">PaddleDetection</a> / <a href="https://www.github.com/PaddlePaddle/PaddleClas">PaddleClas</a> / <a href="https://www.github.com/PaddlePaddle/PaddleSeg">PaddleSeg</a> 三个套件部分导出模型的部署</p>
+</li>
+</ul>
+
+<a href="#3-安装" id="3-安装" style="color: inherit; text-decoration: none;">
+  <h2>3. 安装</h2>
+</a>
+<ol>
+<li><p>HTML script 标签引入</p>
+<pre><code class="language-html"><span class="hl-0">&lt;!-- 最新版本 --&gt;</span><br/><span class="hl-1">&lt;</span><span class="hl-2">script</span><span class="hl-3"> </span><span class="hl-4">src</span><span class="hl-3">=</span><span class="hl-5">&#39;https://cdn.jsdelivr.net/npm/webai-js/dist/webai.min.js&#39;</span><span class="hl-1">&gt;&lt;/</span><span class="hl-2">script</span><span class="hl-1">&gt;</span><br/><br/><span class="hl-0">&lt;!-- 1.1.4 版本 --&gt;</span><br/><span class="hl-1">&lt;</span><span class="hl-2">script</span><span class="hl-3"> </span><span class="hl-4">src</span><span class="hl-3">=</span><span class="hl-5">&#39;https://cdn.jsdelivr.net/npm/webai-js@1.1.4/dist/webai.min.js&#39;</span><span class="hl-1">&gt;&lt;/</span><span class="hl-2">script</span><span class="hl-1">&gt;</span>
+</code></pre>
+</li>
+<li><p>Npm 安装</p>
+<pre><code class="language-bash"><span class="hl-6">$ npm install webai-js</span>
+</code></pre>
+</li>
+</ol>
+
+<a href="#4-模型" id="4-模型" style="color: inherit; text-decoration: none;">
+  <h2>4. 模型</h2>
+</a>
+<ul>
+<li><p>WebAI.js 使用 ONNX 模型进行模型推理，通过配置文件对模型的预处理进行配置</p>
+</li>
+<li><p>一个常规的模型包含如下两个文件: model.onnx / configs.json</p>
+</li>
+<li><p>其中 model.onnx 为模型文件，记录了模型的计算图和每层的参数，configs.json 为配置文件，记录了模型预处理的一些配置，如下为一个配置文件的具体内容：</p>
+<pre><code class="language-json"><span class="hl-6">{</span><br/><span class="hl-6">    </span><span class="hl-7">&quot;Preprocess&quot;</span><span class="hl-6">: [</span><br/><span class="hl-6">        {</span><br/><span class="hl-6">            </span><span class="hl-7">&quot;type&quot;</span><span class="hl-6">: </span><span class="hl-8">&quot;Decode&quot;</span><span class="hl-6">, </span><span class="hl-0">// 图像解码</span><br/><span class="hl-6">            </span><span class="hl-7">&quot;mode&quot;</span><span class="hl-6">: </span><span class="hl-8">&quot;RGB&quot;</span><span class="hl-6"> </span><span class="hl-0">// RGB 或 BGR</span><br/><span class="hl-6">        },</span><br/><span class="hl-6">        {</span><br/><span class="hl-6">            </span><span class="hl-7">&quot;type&quot;</span><span class="hl-6">: </span><span class="hl-8">&quot;Resize&quot;</span><span class="hl-6">, </span><span class="hl-0">//  图像缩放</span><br/><span class="hl-6">            </span><span class="hl-7">&quot;interp&quot;</span><span class="hl-6">: </span><span class="hl-9">1</span><span class="hl-6">, </span><span class="hl-0">// 插值方式</span><br/><span class="hl-6">            </span><span class="hl-7">&quot;keep_ratio&quot;</span><span class="hl-6">: </span><span class="hl-10">false</span><span class="hl-6">, </span><span class="hl-0">// 保持长宽比</span><br/><span class="hl-6">            </span><span class="hl-7">&quot;limit_max&quot;</span><span class="hl-6">: </span><span class="hl-10">false</span><span class="hl-6">, </span><span class="hl-0">// 限制图片尺寸</span><br/><span class="hl-6">            </span><span class="hl-7">&quot;target_size&quot;</span><span class="hl-6">: [</span><span class="hl-9">300</span><span class="hl-6">, </span><span class="hl-9">300</span><span class="hl-6">] </span><span class="hl-0">// 目标尺寸</span><br/><span class="hl-6">            </span><br/><span class="hl-6">        },</span><br/><span class="hl-6">        {</span><br/><span class="hl-6">            </span><span class="hl-7">&quot;type&quot;</span><span class="hl-6">: </span><span class="hl-8">&quot;Normalize&quot;</span><span class="hl-6">, </span><span class="hl-0">// 归一化</span><br/><span class="hl-6">            </span><span class="hl-7">&quot;is_scale&quot;</span><span class="hl-6">: </span><span class="hl-10">false</span><span class="hl-6">, </span><span class="hl-0">// 是否缩放 (img /= 255.0)</span><br/><span class="hl-6">            </span><span class="hl-7">&quot;mean&quot;</span><span class="hl-6">: [</span><span class="hl-9">127.5</span><span class="hl-6">, </span><span class="hl-9">127.5</span><span class="hl-6">, </span><span class="hl-9">127.5</span><span class="hl-6">], </span><span class="hl-0">// 均值</span><br/><span class="hl-6">            </span><span class="hl-7">&quot;std&quot;</span><span class="hl-6">: [</span><span class="hl-9">127.5</span><span class="hl-6">, </span><span class="hl-9">127.5</span><span class="hl-6">, </span><span class="hl-9">127.5</span><span class="hl-6">] </span><span class="hl-0">// 标准差</span><br/><span class="hl-6">        },</span><br/><span class="hl-6">        {</span><br/><span class="hl-6">            </span><span class="hl-7">&quot;type&quot;</span><span class="hl-6">: </span><span class="hl-8">&quot;Permute&quot;</span><span class="hl-6"> </span><span class="hl-0">// 转置 (HWC -&gt; CHW)</span><br/><span class="hl-6">        }</span><br/><span class="hl-6">    ],</span><br/><span class="hl-6">    </span><span class="hl-7">&quot;label_list&quot;</span><span class="hl-6">: [</span><br/><span class="hl-6">        </span><span class="hl-8">&quot;aeroplane&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;bicycle&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;bird&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;boat&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;bottle&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;bus&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;car&quot;</span><span class="hl-6">, </span><br/><span class="hl-6">        </span><span class="hl-8">&quot;cat&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;chair&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;cow&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;diningtable&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;dog&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;horse&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;motorbike&quot;</span><span class="hl-6">, </span><br/><span class="hl-6">        </span><span class="hl-8">&quot;person&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;pottedplant&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;sheep&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;sofa&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;train&quot;</span><span class="hl-6">, </span><span class="hl-8">&quot;tvmonitor&quot;</span><br/><span class="hl-6">    ] </span><span class="hl-0">// 标签列表</span><br/><span class="hl-6">}</span>
+</code></pre>
+</li>
+<li><p>项目中提供了多个已经过测试的预训练模型文件，具体文件位于 <a href="https://github.com/AgentMaker/WebAI.js/tree/main/docs/pretrained_models">./docs/pretrained_models</a> 目录，也可在在线体验网页 <a href="https://AgentMaker.github.io/WebAI.js">Hello WebAI.js</a> 中快速试用如下的模型，以下模型均来自 <a href="https://www.github.com/PaddlePaddle/PaddleDetection">PaddleDetection</a> / <a href="https://www.github.com/PaddlePaddle/PaddleClas">PaddleClas</a> / <a href="https://www.github.com/PaddlePaddle/PaddleSeg">PaddleSeg</a> 提供预训练模型，具体的导出教程和兼容性表格将很快更新，更多其他套件、工具链的兼容适配也在稳步进行</p>
+<table>
+<thead>
+<tr>
+<th align="center">Model</th>
+<th align="center">Type</th>
+<th align="center">Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">BlazeFace_1000e</td>
+<td align="center">Detection</td>
+<td align="center">[PaddleDetection][PaddleDetection]</td>
+</tr>
+<tr>
+<td align="center">PPYOLO_tiny_650e_coco</td>
+<td align="center">Detection</td>
+<td align="center">[PaddleDetection][PaddleDetection]</td>
+</tr>
+<tr>
+<td align="center">SSD_mobilenet_v1_300_120e_voc</td>
+<td align="center">Detection</td>
+<td align="center">[PaddleDetection][PaddleDetection]</td>
+</tr>
+<tr>
+<td align="center">SSDLite_mobilenet_v3_small_320_coco</td>
+<td align="center">Detection</td>
+<td align="center">[PaddleDetection][PaddleDetection]</td>
+</tr>
+<tr>
+<td align="center">EfficientNetB0_imagenet</td>
+<td align="center">Classification</td>
+<td align="center">[PaddleClas][PaddleClas]</td>
+</tr>
+<tr>
+<td align="center">MobileNetV3_small_x0_5_imagenet</td>
+<td align="center">Classification</td>
+<td align="center">[PaddleClas][PaddleClas]</td>
+</tr>
+<tr>
+<td align="center">PPLCNet_x0_25_imagenet</td>
+<td align="center">Classification</td>
+<td align="center">[PaddleClas][PaddleClas]</td>
+</tr>
+<tr>
+<td align="center">PPSEG_lite_portrait_398x224</td>
+<td align="center">Segmentation</td>
+<td align="center">[PaddleSeg][PaddleSeg]</td>
+</tr>
+<tr>
+<td align="center">STDC1_seg_voc12aug_512x512_40k</td>
+<td align="center">Segmentation</td>
+<td align="center">[PaddleSeg][PaddleSeg]</td>
+</tr>
+<tr>
+<td align="center">BiseNet_cityscapes_1024x1024_160k</td>
+<td align="center">Segmentation</td>
+<td align="center">[PaddleSeg][PaddleSeg]</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+
+<a href="#5-api" id="5-api" style="color: inherit; text-decoration: none;">
+  <h2>5. API</h2>
+</a>
+<ul>
+<li><p>模型加载</p>
+<pre><code class="language-js"><span class="hl-0">// Base model</span><br/><span class="hl-6">(</span><span class="hl-11">async</span><span class="hl-6">) </span><span class="hl-11">WebAI</span><span class="hl-6">.</span><span class="hl-11">Model</span><span class="hl-6">.</span><span class="hl-12">create</span><span class="hl-6">(</span><span class="hl-11">modelURL</span><span class="hl-6">, </span><span class="hl-11">sessionOption</span><span class="hl-6"> = { </span><span class="hl-11">logSeverityLevel:</span><span class="hl-6"> </span><span class="hl-9">4</span><span class="hl-6"> }, </span><span class="hl-11">init</span><span class="hl-6"> = </span><span class="hl-10">null</span><span class="hl-6">, </span><span class="hl-11">preProcess</span><span class="hl-6"> = </span><span class="hl-10">null</span><span class="hl-6">, </span><span class="hl-11">postProcess</span><span class="hl-6"> = </span><span class="hl-10">null</span><span class="hl-6">) -&gt; </span><span class="hl-11">model</span><br/><br/><span class="hl-0">// Base CV model</span><br/><span class="hl-6">(</span><span class="hl-11">async</span><span class="hl-6">) </span><span class="hl-11">WebAI</span><span class="hl-6">.</span><span class="hl-13">CV</span><span class="hl-6">.</span><span class="hl-12">create</span><span class="hl-6">(</span><span class="hl-11">modelURL</span><span class="hl-6">, </span><span class="hl-11">inferConfig</span><span class="hl-6">, </span><span class="hl-11">sessionOption</span><span class="hl-6"> = { </span><span class="hl-11">logSeverityLevel:</span><span class="hl-6"> </span><span class="hl-9">4</span><span class="hl-6"> }, </span><span class="hl-11">getFeeds</span><span class="hl-6"> = </span><span class="hl-10">null</span><span class="hl-6">, </span><span class="hl-11">postProcess</span><span class="hl-6"> = </span><span class="hl-10">null</span><span class="hl-6">) -&gt; </span><span class="hl-11">modelCV</span><br/><br/><span class="hl-0">// Detection model</span><br/><span class="hl-6">(</span><span class="hl-11">async</span><span class="hl-6">) </span><span class="hl-11">WebAI</span><span class="hl-6">.</span><span class="hl-11">Det</span><span class="hl-6">.</span><span class="hl-12">create</span><span class="hl-6">(</span><span class="hl-11">modelURL</span><span class="hl-6">, </span><span class="hl-11">inferConfig</span><span class="hl-6">, </span><span class="hl-11">sessionOption</span><span class="hl-6"> = { </span><span class="hl-11">logSeverityLevel:</span><span class="hl-6"> </span><span class="hl-9">4</span><span class="hl-6"> }, </span><span class="hl-11">getFeeds</span><span class="hl-6"> = </span><span class="hl-10">null</span><span class="hl-6">, </span><span class="hl-11">postProcess</span><span class="hl-6"> = </span><span class="hl-10">null</span><span class="hl-6">) -&gt; </span><span class="hl-11">modelDet</span><br/><br/><span class="hl-0">// Classification model</span><br/><span class="hl-6">(</span><span class="hl-11">async</span><span class="hl-6">) </span><span class="hl-11">WebAI</span><span class="hl-6">.</span><span class="hl-11">Cls</span><span class="hl-6">.</span><span class="hl-12">create</span><span class="hl-6">(</span><span class="hl-11">modelURL</span><span class="hl-6">, </span><span class="hl-11">inferConfig</span><span class="hl-6">, </span><span class="hl-11">sessionOption</span><span class="hl-6"> = { </span><span class="hl-11">logSeverityLevel:</span><span class="hl-6"> </span><span class="hl-9">4</span><span class="hl-6"> }, </span><span class="hl-11">getFeeds</span><span class="hl-6"> = </span><span class="hl-10">null</span><span class="hl-6">, </span><span class="hl-11">postProcess</span><span class="hl-6"> = </span><span class="hl-10">null</span><span class="hl-6">) -&gt; </span><span class="hl-11">modelCls</span><br/><br/><span class="hl-0">// Segmentation model</span><br/><span class="hl-6">(</span><span class="hl-11">async</span><span class="hl-6">) </span><span class="hl-11">WebAI</span><span class="hl-6">.</span><span class="hl-11">Seg</span><span class="hl-6">.</span><span class="hl-12">create</span><span class="hl-6">(</span><span class="hl-11">modelURL</span><span class="hl-6">, </span><span class="hl-11">inferConfig</span><span class="hl-6">, </span><span class="hl-11">sessionOption</span><span class="hl-6"> = { </span><span class="hl-11">logSeverityLevel:</span><span class="hl-6"> </span><span class="hl-9">4</span><span class="hl-6"> }, </span><span class="hl-11">getFeeds</span><span class="hl-6"> = </span><span class="hl-10">null</span><span class="hl-6">, </span><span class="hl-11">postProcess</span><span class="hl-6"> = </span><span class="hl-10">null</span><span class="hl-6">) -&gt; </span><span class="hl-11">modelSeg</span><span class="hl-6">    </span>
+</code></pre>
+<pre><code><span class="hl-6">  </span><span class="hl-12">modelURL</span><span class="hl-6">(</span><span class="hl-11">string</span><span class="hl-6">): </span><span class="hl-11">模型链接</span><span class="hl-6">/</span><span class="hl-11">路径</span><br/><span class="hl-6">  </span><span class="hl-12">inferConfig</span><span class="hl-6">(</span><span class="hl-11">string</span><span class="hl-6">): </span><span class="hl-11">模型配置文件链接</span><span class="hl-6">/</span><span class="hl-11">路径</span><br/><span class="hl-6">  </span><span class="hl-12">sessionOption</span><span class="hl-6">(</span><span class="hl-11">object</span><span class="hl-6">): </span><span class="hl-11">ONNXRuntime</span><span class="hl-6"> </span><span class="hl-11">session</span><span class="hl-6"> </span><span class="hl-11">的配置</span><br/><span class="hl-6">  </span><span class="hl-12">getFeeds</span><span class="hl-6">(</span><span class="hl-10">function</span><span class="hl-6">(</span><span class="hl-11">imgTensor</span><span class="hl-6">: </span><span class="hl-14">ort</span><span class="hl-6">.</span><span class="hl-14">Tensor</span><span class="hl-6">, </span><span class="hl-11">imScaleX</span><span class="hl-6">: </span><span class="hl-14">number</span><span class="hl-6">, </span><span class="hl-11">imScaleY</span><span class="hl-6">: </span><span class="hl-14">number</span><span class="hl-6">) </span><span class="hl-10">=&gt;</span><span class="hl-6"> </span><span class="hl-14">feeds</span><span class="hl-6">:</span><span class="hl-12">object</span><span class="hl-6">): </span><span class="hl-14">自定义模型输入函数</span><br/><span class="hl-6">  </span><span class="hl-12">init</span><span class="hl-6">(</span><span class="hl-11">function</span><span class="hl-6">(</span><span class="hl-11">model</span><span class="hl-6">: </span><span class="hl-14">WebAI</span><span class="hl-6">.</span><span class="hl-14">Model</span><span class="hl-6">) </span><span class="hl-10">=&gt;</span><span class="hl-6"> </span><span class="hl-14">void</span><span class="hl-6">): </span><span class="hl-14">自定义模型初始化函数</span><br/><span class="hl-6">  </span><span class="hl-12">preProcess</span><span class="hl-6">(</span><span class="hl-11">function</span><span class="hl-6">(...</span><span class="hl-11">args</span><span class="hl-6">) </span><span class="hl-10">=&gt;</span><span class="hl-6"> </span><span class="hl-14">feeds</span><span class="hl-6">: </span><span class="hl-12">object</span><span class="hl-6">): </span><span class="hl-14">自定义模型预处理函数</span><br/><span class="hl-6">  </span><span class="hl-12">postProcess</span><span class="hl-6">(</span><span class="hl-11">function</span><span class="hl-6">(</span><span class="hl-11">resultsTensors</span><span class="hl-6">: </span><span class="hl-14">object</span><span class="hl-6">, ...</span><span class="hl-11">args</span><span class="hl-6">) </span><span class="hl-10">=&gt;</span><span class="hl-6"> </span><span class="hl-14">result</span><span class="hl-6">: </span><span class="hl-12">any</span><span class="hl-6">): </span><span class="hl-14">自定义模型后处理函数</span>
+</code></pre>
+</li>
+<li><p>模型推理</p>
+<pre><code class="language-js"><span class="hl-0">// Base model</span><br/><span class="hl-6">(</span><span class="hl-11">async</span><span class="hl-6">) </span><span class="hl-11">model</span><span class="hl-6">.</span><span class="hl-12">infer</span><span class="hl-6">(...</span><span class="hl-11">args</span><span class="hl-6">)</span><br/><br/><span class="hl-0">// Base CV model</span><br/><span class="hl-6">(</span><span class="hl-11">async</span><span class="hl-6">) </span><span class="hl-11">modelCV</span><span class="hl-6">.</span><span class="hl-12">infer</span><span class="hl-6">(...</span><span class="hl-11">args</span><span class="hl-6">)</span><br/><br/><span class="hl-0">// Detection model</span><br/><span class="hl-6">(</span><span class="hl-11">async</span><span class="hl-6">) </span><span class="hl-11">modelDet</span><span class="hl-6">.</span><span class="hl-12">infer</span><span class="hl-6">(</span><span class="hl-11">imgRGBA</span><span class="hl-6">, </span><span class="hl-11">drawThreshold</span><span class="hl-6">=</span><span class="hl-9">0.5</span><span class="hl-6">) -&gt;  </span><span class="hl-11">bboxes</span><br/><br/><span class="hl-0">// Classification model</span><br/><span class="hl-6">(</span><span class="hl-11">async</span><span class="hl-6">) </span><span class="hl-11">modelCls</span><span class="hl-6">.</span><span class="hl-12">infer</span><span class="hl-6">(</span><span class="hl-11">imgRGBA</span><span class="hl-6">, </span><span class="hl-11">topK</span><span class="hl-6">=</span><span class="hl-9">5</span><span class="hl-6">) -&gt;  </span><span class="hl-11">probs</span><br/><br/><span class="hl-0">// Segmentation model</span><br/><span class="hl-6">(</span><span class="hl-11">async</span><span class="hl-6">) </span><span class="hl-11">modelSeg</span><span class="hl-6">.</span><span class="hl-12">infer</span><span class="hl-6">(</span><span class="hl-11">imgRGBA</span><span class="hl-6">) -&gt;  </span><span class="hl-11">segResults</span>
+</code></pre>
+<pre><code><span class="hl-6">  </span><span class="hl-0">// 注：目前只能实现 BatchSize=1 的模型推理</span><br/><br/><span class="hl-6">  </span><span class="hl-12">imgRGBA</span><span class="hl-6">(</span><span class="hl-11">cv</span><span class="hl-6">.</span><span class="hl-11">Mat</span><span class="hl-6">): </span><span class="hl-11">输入图像</span><br/><span class="hl-6">  </span><span class="hl-12">drawThreshold</span><span class="hl-6">(</span><span class="hl-11">number</span><span class="hl-6">): </span><span class="hl-11">检测阈值</span><br/><span class="hl-6">  </span><span class="hl-12">topK</span><span class="hl-6">(</span><span class="hl-11">number</span><span class="hl-6">): </span><span class="hl-11">返回置信度前</span><span class="hl-6"> </span><span class="hl-12">K</span><span class="hl-6"> (</span><span class="hl-13">K</span><span class="hl-6">&gt;</span><span class="hl-9">0</span><span class="hl-6">) </span><span class="hl-11">个结果</span><span class="hl-6">，</span><span class="hl-11">如果</span><span class="hl-6"> </span><span class="hl-13">K</span><span class="hl-6">&lt;</span><span class="hl-9">0</span><span class="hl-6"> </span><span class="hl-11">返回所有结果</span><br/><br/><span class="hl-6">  </span><span class="hl-12">bboxes</span><span class="hl-6">({</span><br/><span class="hl-6">      </span><span class="hl-11">label:</span><span class="hl-6"> </span><span class="hl-11">string</span><span class="hl-6">, </span><span class="hl-0">// 标签</span><br/><span class="hl-6">      </span><span class="hl-11">score:</span><span class="hl-6"> </span><span class="hl-11">number</span><span class="hl-6">, </span><span class="hl-0">// 置信度</span><br/><span class="hl-6">      </span><span class="hl-11">color:</span><span class="hl-6"> </span><span class="hl-11">number</span><span class="hl-6">[], </span><span class="hl-0">// 颜色（RGBA）</span><br/><span class="hl-6">      </span><span class="hl-11">x1:</span><span class="hl-6"> </span><span class="hl-11">number</span><span class="hl-6">, </span><span class="hl-0">// 左上角 x 坐标</span><br/><span class="hl-6">      </span><span class="hl-11">y1:</span><span class="hl-6"> </span><span class="hl-11">number</span><span class="hl-6">, </span><span class="hl-0">// 左上角 y 坐标</span><br/><span class="hl-6">      </span><span class="hl-11">x2:</span><span class="hl-6"> </span><span class="hl-11">number</span><span class="hl-6">, </span><span class="hl-0">// 右下角 x 坐标</span><br/><span class="hl-6">      </span><span class="hl-11">y2:</span><span class="hl-6"> </span><span class="hl-11">number</span><span class="hl-6"> </span><span class="hl-0">// 右下角 y 坐标</span><br/><span class="hl-6">  }[]): </span><span class="hl-11">目标检测包围框结果</span><br/><span class="hl-6">  </span><span class="hl-12">probs</span><span class="hl-6">({</span><br/><span class="hl-6">      </span><span class="hl-11">label:</span><span class="hl-6"> </span><span class="hl-11">string</span><span class="hl-6">, </span><span class="hl-0">// 标签</span><br/><span class="hl-6">      </span><span class="hl-11">prob:</span><span class="hl-6"> </span><span class="hl-11">number</span><span class="hl-6"> </span><span class="hl-0">// 置信度</span><br/><span class="hl-6">  }[]): </span><span class="hl-11">图像分类置信度结果</span><br/><span class="hl-6">  </span><span class="hl-12">segResults</span><span class="hl-6">({</span><br/><span class="hl-6">      </span><span class="hl-11">gray:</span><span class="hl-6"> </span><span class="hl-11">cv</span><span class="hl-6">.</span><span class="hl-11">Mat</span><span class="hl-6">, </span><span class="hl-0">// 最大值索引图像（Gray）</span><br/><span class="hl-6">      </span><span class="hl-11">colorRGBA:</span><span class="hl-6"> </span><span class="hl-11">cv</span><span class="hl-6">.</span><span class="hl-11">Mat</span><span class="hl-6">, </span><span class="hl-0">// 伪彩色图（RGBA）</span><br/><span class="hl-6">      </span><span class="hl-11">colorMap:</span><span class="hl-6"> { </span><span class="hl-0">// 调色板</span><br/><span class="hl-6">          </span><span class="hl-11">lable:</span><span class="hl-6"> </span><span class="hl-11">string</span><span class="hl-6">, </span><span class="hl-0">// 标签</span><br/><span class="hl-6">          </span><span class="hl-11">color:</span><span class="hl-6"> </span><span class="hl-11">number</span><span class="hl-6">[] </span><span class="hl-0">// 颜色（RGBA）</span><br/><span class="hl-6">      }[]</span><br/><span class="hl-6">  }): </span><span class="hl-11">图像分割结果</span>
+</code></pre>
+</li>
+<li><p>更多 API 请参考文档：<a href="./docs/tutorials/api.md">API 参考</a></p>
+</li>
+</ul>
+
+<a href="#6-部署" id="6-部署" style="color: inherit; text-decoration: none;">
+  <h2>6. 部署</h2>
+</a>
+<ul>
+<li><p>在线体验网页：<a href="https://AgentMaker.github.io/WebAI.js">Hello WebAI.js</a></p>
+</li>
+<li><p>除了在线体验网页，也可以通过 node.js 借助 vite 构建工具快速在本地部署这个体验网页</p>
+<pre><code class="language-bash"><span class="hl-0"># 安装依赖</span><br/><span class="hl-6">$ npm install</span><br/><br/><span class="hl-0"># 启动服务器调试</span><br/><span class="hl-6">$ npm run dev</span>
+</code></pre>
+</li>
+<li><p>部署完成后，就可以使用浏览器访问 <a href="http://localhost:3000/">http://localhost:3000/</a> 进行体验使用</p>
+</li>
+</ul>
+
+<a href="#7-教程" id="7-教程" style="color: inherit; text-decoration: none;">
+  <h2>7. 教程</h2>
+</a>
+<ol>
+<li><p><a href="https://github.com/AgentMaker/WebAI.js-Examples/tree/main/quick_start">WebAI.js 快速使用</a></p>
+</li>
+<li><p><a href="https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppdet">PaddleDetection 模型导出、转换和部署</a></p>
+</li>
+<li><p><a href="https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppcls">PaddleClas 模型导出、转换和部署</a></p>
+</li>
+<li><p><a href="https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppseg">PaddleSeg 模型导出、转换和部署</a></p>
+</li>
+<li><p><a href="./docs/tutorials/opencv.md">OpenCV.js 快速入门和 API 速览</a></p>
+</li>
+<li><p><a href="./docs/tutorials/ort.md">ONNXRuntime.js 快速入门和 API 速览</a></p>
+</li>
+</ol>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li><li class=" tsd-kind-namespace"><a href="modules/WebAI.html">WebAI</a></li><li class=" tsd-kind-namespace"><a href="modules/cv.html">cv</a></li><li class=" tsd-kind-namespace"><a href="modules/ort.html">ort</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-reference"><a href="modules.html#default" class="tsd-kind-icon">default</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>
