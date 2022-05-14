@@ -5,9 +5,6 @@ import ort from '../onnxruntime-web'
 /**
  * wait for OpenCV initialized.
  */
-const waitForOpenCV = new Promise(resolve => {
-    cv.onRuntimeInitialized = resolve
-})
 
 class Model {
     /**
@@ -21,7 +18,7 @@ class Model {
         postProcess
     ) {
         this.promises = Promise.all([
-            waitForOpenCV,
+            cv.init(),
             ort.InferenceSession.create(modelURL, sessionOption)
                 .then(session => this.session = session)
         ])
@@ -664,7 +661,6 @@ const WebAI = {
     Det: Det,
     Cls: Cls,
     Seg: Seg,
-    waitForOpenCV: waitForOpenCV
 }
 
-export { WebAI as default, WebAI, Model, CV, Det, Cls, Seg, cv, ort, waitForOpenCV }
+export { WebAI as default, WebAI, cv, ort }

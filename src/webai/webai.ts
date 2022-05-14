@@ -1,5 +1,5 @@
-import opencv, { Mat, Scalar } from '../opencv'
-import onnxruntime, { InferenceSession, Tensor } from '../onnxruntime-web'
+import cv, { Mat, Scalar } from '../opencv'
+import ort, { InferenceSession, Tensor } from '../onnxruntime-web'
 
 namespace WebAI {
     /**
@@ -252,10 +252,6 @@ namespace WebAI {
     /**
      * wait for OpenCV initialized.
      */
-    export const waitForOpenCV = new Promise(resolve => {
-        cv.onRuntimeInitialized = resolve as typeof cv.onRuntimeInitialized
-    });
-
     export interface Model {
         constructor(
             modelURL: string,
@@ -283,7 +279,7 @@ namespace WebAI {
             postProcess?: (resultsTensors: InferenceSession.OnnxValueMapType, ...args: any[]) => any
         ) {
             this.promises = Promise.all([
-                waitForOpenCV,
+                cv.init(),
                 InferenceSession.create(modelURL, sessionOption)
                     .then(session => this.session = session)
             ])
@@ -714,15 +710,6 @@ namespace WebAI {
             return super.infer(imgRGBA, imgRGBA.rows, imgRGBA.cols)
         }
     }
-    export const cv = opencv
-    export const ort = onnxruntime
 }
 
-const Model = WebAI.Model
-const CV = WebAI.CV
-const Det = WebAI.Det
-const Cls = WebAI.Cls
-const Seg = WebAI.Seg
-const waitForOpenCV = WebAI.waitForOpenCV
-
-export { WebAI as default, WebAI, Model, CV, Det, Cls, Seg, opencv as cv, onnxruntime as ort, waitForOpenCV }
+export { WebAI as default, WebAI, cv, ort }
