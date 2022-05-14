@@ -29,7 +29,6 @@
   "homepage": "https://github.com/AgentMaker/WebAI.js#readme",
   "dependencies": {},
   "devDependencies": {
-    "onnxruntime-web": "^1.11.0",
     "vite": "^2.9.9",
     "yamljs": "^0.3.0"
   }

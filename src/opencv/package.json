@@ -1,18 +1,12 @@
 {
     "name": "opencv-ts",
-    "version": "1.2.26",
+    "version": "1.0.0",
     "main": "./opencv.js",
     "types": "./opencv.d.ts",
-    "description": "This package is a work in progress to translate opecv with a typescript definition",
     "license": "MIT",
-    "author": "Grant Davidson",
+    "author": "peteruhnak",
     "repository": {
         "type": "git",
-        "url": "https://github.com/theothergrantdavidson/opencv-ts"
-    },
-    "browser": {
-        "fs": false,
-        "crypto": false,
-        "path": false
+        "url": "https://github.com/peteruhnak/opencv-ts"
     }
 }
