@@ -663,4 +663,4 @@ const WebAI = {
     Seg: Seg,
 }
 
-export { WebAI as default, WebAI, Model, CV, Det, Cls, Seg, cv, ort }
+export { WebAI as default, WebAI, cv, ort }

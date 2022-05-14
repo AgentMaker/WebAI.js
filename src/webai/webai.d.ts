@@ -1,5 +1,5 @@
-import opencv, { Mat, Scalar } from '../opencv'
-import onnxruntime, { InferenceSession, Tensor } from '../onnxruntime-web'
+import cv, { Mat, Scalar } from '../opencv'
+import ort, { InferenceSession, Tensor } from '../onnxruntime-web'
 
 
 declare namespace WebAI {
@@ -304,14 +304,6 @@ declare namespace WebAI {
             imgRGBA: Mat
         ): Promise<{ gray: Mat; colorRGBA: Mat; colorMap: { label: string; color: [number, number, number, number]; }[]; delete: () => void }>
     }
-    export const cv: typeof opencv
-    export const ort: typeof onnxruntime
 }
 
-declare const Model: typeof WebAI.Model
-declare const CV: typeof WebAI.CV
-declare const Det: typeof WebAI.Det
-declare const Cls: typeof WebAI.Cls
-declare const Seg: typeof WebAI.Seg
-
-export { WebAI as default, WebAI, Model, CV, Det, Cls, Seg, opencv as cv, onnxruntime as ort }
+export { WebAI as default, WebAI, cv, ort }

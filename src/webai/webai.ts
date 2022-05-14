@@ -1,5 +1,5 @@
-import opencv, { Mat, Scalar } from '../opencv'
-import onnxruntime, { InferenceSession, Tensor } from '../onnxruntime-web'
+import cv, { Mat, Scalar } from '../opencv'
+import ort, { InferenceSession, Tensor } from '../onnxruntime-web'
 
 namespace WebAI {
     /**
@@ -710,14 +710,6 @@ namespace WebAI {
             return super.infer(imgRGBA, imgRGBA.rows, imgRGBA.cols)
         }
     }
-    export const cv = opencv
-    export const ort = onnxruntime
 }
 
-const Model = WebAI.Model
-const CV = WebAI.CV
-const Det = WebAI.Det
-const Cls = WebAI.Cls
-const Seg = WebAI.Seg
-
-export { WebAI as default, WebAI, Model, CV, Det, Cls, Seg, opencv as cv, onnxruntime as ort }
+export { WebAI as default, WebAI, cv, ort }
