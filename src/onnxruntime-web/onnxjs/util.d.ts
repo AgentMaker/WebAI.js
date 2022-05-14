@@ -1,5 +1,5 @@
 import { flatbuffers } from 'flatbuffers';
-import Long from 'long';
+import { Long } from 'long';
 import { onnx } from 'onnx-proto';
 import { Graph } from './graph';
 import { onnxruntime } from './ort-schema/ort-generated';

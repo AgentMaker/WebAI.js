@@ -12,3 +12,4 @@ export * from './gen/functions'
 export * from './gen/classes'
 
 export function init(): Promise<void>
+export * as default from '.'
