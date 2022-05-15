@@ -1,12 +1,13 @@
 {
   "name": "webai-js",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A simple Web AI model deployment tool using JavaScript",
   "main": "./src/webai/webai.js",
   "types": "./src/webai/webai.d.ts",
   "unpkg": "./dist/webai.min.js",
   "jsdelivr": "./dist/webai.min.js",
   "scripts": {
+    "doc": "typedoc --entryPoints ./src/webai/webai.ts --out docs/interfaces",
     "dev": "vite",
     "build": "vite build",
     "build_html": "vite build --config vite.config.html.js",

@@ -527,11 +527,7 @@ namespace WebAI {
                 im_shape?: Tensor
                 image?: Tensor
                 scale_factor?: Tensor
-            } = {
-                im_shape: undefined,
-                image: undefined,
-                scale_factor: undefined
-            }
+            } = {}
             inputNames.forEach(name => {
                 feeds[name] = _feeds[name]
             })

@@ -223,11 +223,7 @@ class Det extends CV {
             image: imgTensor,
             scale_factor: new ort.Tensor('float32', Float32Array.from([imScaleY, imScaleX]), [1, 2])
         }
-        let feeds = {
-            im_shape: undefined,
-            image: undefined,
-            scale_factor: undefined
-        }
+        let feeds = {}
         inputNames.forEach(name => {
             feeds[name] = _feeds[name]
         })
