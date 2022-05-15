@@ -6,8 +6,8 @@
     "type": "git"
   },
   "author": "fs-eire",
-  "module": "./index.js",
+  "module": "./ort.js",
   "version": "1.11.0",
-  "types": "./index.d.ts",
+  "types": "./ort.d.ts",
   "description": "A Javascript library for running ONNX models on browsers"
 }
