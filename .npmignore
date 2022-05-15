@@ -1,12 +1,12 @@
 # Page
-docs
-public
-node_modules
-.gitignore
-.npmignore
-index.html
-index.js
-main.js
-vite.config.js
-vite.config.html.js
-yarn.lock
+/docs/*
+/public/*
+/node_modules/*
+/.gitignore
+/.npmignore
+/index.html
+/index.js
+/main.js
+/vite.config.js
+/vite.config.html.js
+/yarn.lock
