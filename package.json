@@ -7,10 +7,10 @@
   "unpkg": "./dist/webai.min.js",
   "jsdelivr": "./dist/webai.min.js",
   "scripts": {
-    "doc": "typedoc --entryPoints ./src/webai/webai.ts --out docs/interfaces",
     "dev": "vite",
     "build": "vite build",
-    "build_html": "vite build --config vite.config.html.js",
+    "build:html": "vite build --config vite.config.html.js",
+    "build:docs": "typedoc --entryPoints ./src/webai/webai.ts --out docs/interfaces",
     "preview_html": "vite preview --config vite.config.html.js"
   },
   "repository": {
