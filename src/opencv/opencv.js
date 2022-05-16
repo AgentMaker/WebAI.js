@@ -7111,14 +7111,10 @@ cv["matFromImageData"] = function(imageData) {
   mat.data.set(imageData.data);
   return mat;
 };
-cv["init"] = function() {
-  if (typeof cv.onRuntimeInitialized == 'undefined') {
-    return new Promise((resolve) => {
-      cv.onRuntimeInitialized = resolve;
-    });
-  }
-  else {
-    Promise.resolve(cv.onRuntimeInitialized);
-  };
+cv["loadPromise"] = new Promise((resolve) => {
+  cv.onRuntimeInitialized = resolve;
+});
+cv["init"] = function () {
+  return cv.loadPromise;
 };
 export { cv as default };
