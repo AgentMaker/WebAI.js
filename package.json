@@ -1,6 +1,6 @@
 {
   "name": "webai-js",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A simple Web AI model deployment tool using JavaScript",
   "main": "./src/webai/webai.js",
   "types": "./src/webai/webai.d.ts",
