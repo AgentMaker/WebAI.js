@@ -3,8 +3,6 @@
 ![](https://img.shields.io/npm/l/webai-js.svg?sanitize=true)
 ![](https://img.shields.io/npm/dm/webai-js.svg?sanitize=true)
 
-中文版 | [English](./README_EN.md)
-
 ## 1. 简介
 * WebAI.js 是一个基于 [OpenCV.js](https://docs.opencv.org/4.5.5/d5/d10/tutorial_js_root.html) 和 [ONNXRuntime](https://github.com/microsoft/onnxruntime/tree/master/js) 开发的一个 Web 前端 AI 模型部署工具
 
@@ -20,6 +18,10 @@
 
 * 目前支持 [PaddleDetection][PaddleDetection] / [PaddleClas][PaddleClas] / [PaddleSeg][PaddleSeg] 三个套件部分导出模型的部署
 
+* 2.x 版本添加了比较完善的 ts 支持，优化了代码大小，将内联的 opencv.wasm 改为文件加载，API 进行了一些改动，主要修改了模型加载的 API
+
+* 2.x 添加了全新的 API 文档，可直接跳转至 [API 参考](https://AgentMaker.github.io/WebAI.js/interfaces) 页面进行查看
+
 ## 3. 安装
 1. HTML script 标签引入
 
@@ -27,8 +29,8 @@
     <!-- 最新版本 -->
     <script src='https://cdn.jsdelivr.net/npm/webai-js/dist/webai.min.js'></script>
 
-    <!-- 1.1.4 版本 -->
-    <script src='https://cdn.jsdelivr.net/npm/webai-js@1.1.4/dist/webai.min.js'></script>
+    <!-- 2.0.2 版本 -->
+    <script src='https://cdn.jsdelivr.net/npm/webai-js@2.0.2/dist/webai.min.js'></script>
     ```
 
 2. Npm 安装
@@ -101,19 +103,19 @@
 
     ```js
     // Base model
-    (async) WebAI.Model.create(modelURL, sessionOption = { logSeverityLevel: 4 }, init = null, preProcess = null, postProcess = null) -> model
+    new WebAI.Model(modelURL, sessionOption = { logSeverityLevel: 4 }, init = null, preProcess = null, postProcess = null) -> model
 
     // Base CV model
-    (async) WebAI.CV.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelCV
+    new WebAI.CV(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelCV
 
     // Detection model
-    (async) WebAI.Det.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelDet
+    new WebAI.Det(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelDet
 
     // Classification model
-    (async) WebAI.Cls.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelCls
+    new WebAI.Cls(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelCls
 
     // Segmentation model
-    (async) WebAI.Seg.create(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelSeg    
+    new WebAI.Seg(modelURL, inferConfig, sessionOption = { logSeverityLevel: 4 }, getFeeds = null, postProcess = null) -> modelSeg    
     ```
 
         modelURL(string): 模型链接/路径
@@ -171,7 +173,7 @@
             }[]
         }): 图像分割结果
 
-* 更多 API 请参考文档：[API 参考](./docs/tutorials/api.md)
+* 更多 API 请参考文档：[API 参考](https://AgentMaker.github.io/WebAI.js/interfaces)
 
 ## 6. 部署
 * 在线体验网页：[Hello WebAI.js](https://AgentMaker.github.io/WebAI.js)
@@ -187,16 +189,3 @@
     ```
 
 * 部署完成后，就可以使用浏览器访问 http://localhost:3000/ 进行体验使用
-
-## 7. 教程
-1. [WebAI.js 快速使用](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/quick_start)
-
-2. [PaddleDetection 模型导出、转换和部署](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppdet)
-
-3. [PaddleClas 模型导出、转换和部署](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppcls)
-
-4. [PaddleSeg 模型导出、转换和部署](https://github.com/AgentMaker/WebAI.js-Examples/tree/main/ppseg)
-
-5. [OpenCV.js 快速入门和 API 速览](./docs/tutorials/opencv.md)
-
-6. [ONNXRuntime.js 快速入门和 API 速览](./docs/tutorials/ort.md)
