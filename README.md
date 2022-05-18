@@ -189,3 +189,6 @@
     ```
 
 * 部署完成后，就可以使用浏览器访问 http://localhost:3000/ 进行体验使用
+
+## 7. 更多
+* [OpenCV.js 快速入门](./docs/tutorials/opencv.md)

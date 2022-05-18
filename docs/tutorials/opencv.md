@@ -5,55 +5,7 @@
 * 官方指南：[OpenCV.js Tutorials](https://docs.opencv.org/4.5.5/d5/d10/tutorial_js_root.html)
 
 
-## 2. 下载
-* 可通过如下链接下载到指定版本的预编译 opencv.js 文件
-
-    ```
-    https://docs.opencv.org/{version}/opencv.js
-    ```
-
-* 比如下载 4.5.5 版本的 opencv.js 文件
-
-    ```
-    https://docs.opencv.org/4.5.5/opencv.js
-    ```
-
-## 3. 安装使用
-1. HTML script 标签引入
-
-    ```html
-    <!-- OpenCV.js 4.5.5 版本 -->
-    <script src='https://docs.opencv.org/4.5.5/opencv.js'></script>
-    ```
-
-2. node.js 使用
-
-    ```js
-    // 加载 OpenCV.js
-    function loadOpenCV(path) {
-        return new Promise(resolve => {
-            global.Module = {
-                onRuntimeInitialized: resolve
-            };
-            global.cv = require(path);
-        });
-    }
-
-    // 加载并创建一个图像
-    async function run(path){
-        await loadOpenCV(path)
-        let img = new cv.Mat()
-        img.delete()
-    }
-    
-    // 设置文件路径
-    const path = './opencv.js'
-
-    // 运行
-    run(path)
-    ```
-
-## 4. 数据类型
+## 2. 数据类型
 * 图像数据类型
     * Mat 是 OpenCV 基础的图像数据结构，其数据类型对照表如下：
 
@@ -150,7 +102,7 @@
     }
     ```
 
-## 5. API
+## 3. 常用接口
 * OpenCV.js 的 API 与 OpenCV C++ 版本 API 非常相似
 
 * OpenCV.js 常用的 API 如下：
@@ -360,4 +312,5 @@
             mat(cv.Mat): 图像
 
 * 更多 API 和详细信息请参考官方文档：[OpenCV Docs](https://docs.opencv.org)
+
 * 更多示例代码请参考官方指南：[OpenCV.js Tutorials](https://docs.opencv.org/4.5.5/d5/d10/tutorial_js_root.html)
