@@ -1,4 +1,5 @@
-import { WebAI, cv } from '.'
+import WebAI from './src/webai.mjs'
+import cv from './src/opencv.mjs'
 import YAML from 'yamljs'
 
 
@@ -178,13 +179,13 @@ async function loadModel(MODE) {
     let modelURL = `${modelDir}/${MODE}/${modelName}/model.onnx.json`
     let modelConfig = `${modelDir}/${MODE}/${modelName}/configs.json`
     if (MODE == 'det') {
-        model = new WebAI.Det(modelURL, modelConfig)
+        model = new WebAI.Det(modelURL, modelConfig, {executionProviders: ['wasm']})
     }
     else if (MODE == 'cls') {
-        model = new WebAI.Cls(modelURL, modelConfig)
+        model = new WebAI.Cls(modelURL, modelConfig, {executionProviders: ['webgpu']})
     }
     else if (MODE == 'seg') {
-        model = new WebAI.Seg(modelURL, modelConfig)
+        model = new WebAI.Seg(modelURL, modelConfig, {executionProviders: ['wasm']})
     }
     inputFile.disabled = false
     buttonUser.disabled = false
