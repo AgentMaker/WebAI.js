@@ -1,16 +1,5 @@
-const htmlPlugin = () => {
-  return {
-    name: 'html-transform',
-    transformIndexHtml(html) {
-      return html.replace(/="\//g, '="./')
-    }
-  }
-}
-
 export default {
-  plugins: [
-    htmlPlugin()
-  ],
+  base: './',
   define: {
     BUILD: true
   },
