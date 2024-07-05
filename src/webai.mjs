@@ -3,9 +3,9 @@ import ort from 'https://cdn.jsdelivr.net/npm/onnxruntime-web@dev/dist/ort.all.b
 
 
 /**
- * wait for OpenCV initialized.
+ * Model Class.
+ * @class
  */
-
 class Model {
     /**
      * create a base model.
@@ -70,6 +70,11 @@ class Model {
     }
 }
 
+/**
+ * CV Model Class.
+ * @class
+ * @extends Model
+ */
 class CV extends Model {
     /**
      * create a base CV model.
@@ -213,6 +218,11 @@ class CV extends Model {
 }
 
 
+/**
+ * Detection Model Class.
+ * @class
+ * @extends CV
+ */
 class Det extends CV {
     /**
      * get session infer feeds.
@@ -293,6 +303,12 @@ class Det extends CV {
     }
 }
 
+
+/**
+ * Classification Model Class.
+ * @class
+ * @extends CV
+ */
 class Cls extends CV {
     /**
      * get the feeds of the infer session.
@@ -343,6 +359,11 @@ class Cls extends CV {
     }
 }
 
+/**
+ * Segmentation Model Class.
+ * @class
+ * @extends CV
+ */
 class Seg extends CV {
     /**
      * get the feeds of the infer session.
@@ -408,7 +429,10 @@ class Seg extends CV {
     }
 }
 
-
+/**
+ * Namespace of WebAI.
+ * @namespace
+ */
 const WebAI = {
     /**
      * get the index of the max value of the array.

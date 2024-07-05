@@ -20,7 +20,7 @@
 
 * 2.x 版本添加了比较完善的 ts 支持，优化了代码大小，将内联的 opencv.wasm 改为文件加载，API 进行了一些改动，主要修改了模型加载的 API
 
-* 2.x 添加了全新的 API 文档，可直接跳转至 [API 参考](https://AgentMaker.github.io/WebAI.js/interfaces/webai.mjs.html) 页面进行查看
+* 2.x 添加了全新的 API 文档，可直接跳转至 [API 参考](https://AgentMaker.github.io/WebAI.js/interfaces/index.html) 页面进行查看
 
 * 3.x 版本更新了新版本的 ONNXRuntime 1.19.0，Demo 中的图像分类模型已支持 WebGPU 加速，可直接调用本地 GPU 实现推理加速，OpenCV 也同步更新至 4.10.0 版本
 
@@ -177,7 +177,7 @@
             }[]
         }): 图像分割结果
 
-* 更多 API 请参考文档：[API 参考](https://AgentMaker.github.io/WebAI.js/interfaces/webai.mjs.html)
+* 更多 API 请参考文档：[API 参考](https://AgentMaker.github.io/WebAI.js/interfaces/index.html)
 
 ## 6. 部署
 * 在线体验网页：[Hello WebAI.js](https://AgentMaker.github.io/WebAI.js)

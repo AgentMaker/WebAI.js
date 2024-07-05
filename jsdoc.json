@@ -3,8 +3,7 @@
         "include": [
             "src/webai.mjs"
         ],
-        "includePattern": ".+\\.(m?js(doc|x)?)$",
-        "excludePattern": "(^|\\/|\\\\)_"
+        "includePattern": ".+\\.(m?js(doc|x)?)$"
     },
     "opts": {
         "destination": "docs/interfaces"

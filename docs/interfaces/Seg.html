@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: CV</title>
+    <title>JSDoc: Class: Seg</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: CV</h1>
+    <h1 class="page-title">Class: Seg</h1>
 
     
 
@@ -28,9 +28,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>CV<span class="signature">(modelURL, inferConfig, sessionOption, getFeeds, postProcess)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Seg<span class="signature">()</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">CV Model Class.</div>
+            <div class="class-description">Segmentation Model Class.</div>
         
     
 </header>
@@ -45,139 +45,19 @@
     
 
     
-    <h4 class="name" id="CV"><span class="type-signature"></span>new CV<span class="signature">(modelURL, inferConfig, sessionOption, getFeeds, postProcess)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Seg"><span class="type-signature"></span>new Seg<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
 
 
 
-<div class="description">
-    create a base CV model.
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>modelURL</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">model URL</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>inferConfig</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">model infer config URL</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>sessionOption</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">onnxruntime session options</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>getFeeds</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">get infer session feeds function</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>postProcess</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">postprocess function</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -213,7 +93,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webai.mjs.html">webai.mjs</a>, <a href="webai.mjs.html#line78">line 78</a>
+        <a href="webai.mjs.html">webai.mjs</a>, <a href="webai.mjs.html#line367">line 367</a>
     </li></ul></dd>
     
 
@@ -238,16 +118,6 @@
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    base CV model object
-</div>
-
-
-
-    
 
 
 
@@ -263,7 +133,7 @@
 
 
     <ul>
-        <li><a href="Model.html">Model</a></li>
+        <li><a href="CV.html">CV</a></li>
     </ul>
 
 
@@ -290,7 +160,7 @@
     
 
     
-    <h4 class="name" id="infer"><span class="type-signature">(async) </span>infer<span class="signature">(&hellip;args)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="getFeeds"><span class="type-signature"></span>getFeeds<span class="signature">(imgTensor)</span><span class="type-signature"></span></h4>
     
 
     
@@ -298,7 +168,7 @@
 
 
 <div class="description">
-    base model infer function.
+    get the feeds of the infer session.
 </div>
 
 
@@ -322,8 +192,6 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -336,7 +204,7 @@
 
         <tr>
             
-                <td class="name"><code>args</code></td>
+                <td class="name"><code>imgTensor</code></td>
             
 
             <td class="type">
@@ -344,20 +212,10 @@
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                    &lt;repeatable><br>
-                
-                </td>
-            
 
             
 
-            <td class="description last">model infer paramters</td>
+            <td class="description last">image tensor</td>
         </tr>
 
     
@@ -377,11 +235,6 @@
 
     
 
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Model.html#infer">Model#infer</a>
-    </li></ul></dd>
     
 
     
@@ -403,7 +256,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="webai.mjs.html">webai.mjs</a>, <a href="webai.mjs.html#line46">line 46</a>
+        <a href="webai.mjs.html">webai.mjs</a>, <a href="webai.mjs.html#line373">line 373</a>
     </li></ul></dd>
     
 
@@ -432,7 +285,154 @@
 
         
 <div class="param-desc">
-    model infer results
+    feeds of the infer session
+</div>
+
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="infer"><span class="type-signature"></span>infer<span class="signature">(imgRGBA)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    segmentation infer.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>imgRGBA</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">RGBA image</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="CV.html#infer">CV#infer</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="webai.mjs.html">webai.mjs</a>, <a href="webai.mjs.html#line425">line 425</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    segmentation results
 </div>
 
 
@@ -523,6 +523,11 @@
     
 
     
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="CV.html#loadConfigs">CV#loadConfigs</a>
+    </li></ul></dd>
+    
 
     
 
@@ -570,6 +575,148 @@
 
 
 
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="postProcess"><span class="type-signature"></span>postProcess<span class="signature">(resultsTensors)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    segmentation postprocess.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resultsTensors</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">result tensors</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="webai.mjs.html">webai.mjs</a>, <a href="webai.mjs.html#line382">line 382</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    segmentation results
+</div>
+
+
+
+    
 
 
 
@@ -666,6 +813,11 @@
 
     
 
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="CV.html#preProcess">CV#preProcess</a>
+    </li></ul></dd>
     
 
     
