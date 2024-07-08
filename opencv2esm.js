@@ -10,6 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const url = 'https://docs.opencv.org/5.x/opencv.js';
 const wasmFilePath = path.join(__dirname, './public/opencv.wasm');
+const wasmFilePathSrc = path.join(__dirname, './src/opencv.wasm');
 const jsOutputFilePath = path.join(__dirname, './src/opencv.mjs');
 
 async function fetchFile(url) {
@@ -36,6 +37,7 @@ async function processFile(data) {
     const base64Data = wasmDataUriMatch[1];
     const binaryData = Buffer.from(base64Data, 'base64');
     await writeFile(wasmFilePath, binaryData);
+    await writeFile(wasmFilePathSrc, binaryData);
     console.log('WASM file saved as opencv.wasm');
 
     let updatedData = data.replace(wasmDataUriMatch[0], 'wasmBinaryFile = "opencv.wasm"');
