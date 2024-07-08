@@ -31,7 +31,7 @@
 
     ```html
     <!-- 最新版本 -->
-    <script type="module" src='https://cdn.jsdelivr.net/npm/webai-js/dist/webai.min.js'></script>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/AgentMaker/WebAI.js@dev_v3/dist/webai.min.mjs"></script>
     ```
 
 2. Npm 安装
