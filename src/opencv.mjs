@@ -759,7 +759,7 @@ var cv = (function () {
         ? filename.startsWith(dataURIPrefix)
         : filename.indexOf(dataURIPrefix) === 0;
     }
-    var wasmBinaryFile = "./opencv.wasm";
+    var wasmBinaryFile = "opencv.wasm";
     if (!isDataURI(wasmBinaryFile)) {
       wasmBinaryFile = locateFile(wasmBinaryFile);
     }
