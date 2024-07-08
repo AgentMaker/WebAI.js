@@ -1,6 +1,9 @@
-import WebAI from './src/webai.mjs'
-import cv from './src/opencv.mjs'
+import { WebAI, cv, ort } from './src/webai.mjs'
 import YAML from 'yamljs'
+
+window.WebAI = WebAI
+window.cv = cv
+window.ort = ort
 
 
 // 获取 Doms
@@ -179,13 +182,13 @@ async function loadModel(MODE) {
     let modelURL = `${modelDir}/${MODE}/${modelName}/model.onnx.json`
     let modelConfig = `${modelDir}/${MODE}/${modelName}/configs.json`
     if (MODE == 'det') {
-        model = new WebAI.Det(modelURL, modelConfig, {executionProviders: ['wasm']})
+        model = new WebAI.Det(modelURL, modelConfig, { executionProviders: ['wasm'] })
     }
     else if (MODE == 'cls') {
-        model = new WebAI.Cls(modelURL, modelConfig, {executionProviders: ['webgpu']})
+        model = new WebAI.Cls(modelURL, modelConfig, { executionProviders: ['webgpu'] })
     }
     else if (MODE == 'seg') {
-        model = new WebAI.Seg(modelURL, modelConfig, {executionProviders: ['wasm']})
+        model = new WebAI.Seg(modelURL, modelConfig, { executionProviders: ['wasm'] })
     }
     inputFile.disabled = false
     buttonUser.disabled = false
