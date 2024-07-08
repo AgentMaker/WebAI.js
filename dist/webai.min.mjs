@@ -35,7 +35,7 @@ var x = function() {
     }), ue = function(n) {
       var r;
       return r = Fe(n), r || (typeof readbuffer == "function" ? new Uint8Array(readbuffer(n)) : (r = read(n, "binary"), ae(typeof r == "object"), r));
-    }, typeof scriptArgs < "u" && scriptArgs, typeof print < "u" && (typeof console > "u" && (console = {}), console.log = print, console.warn = console.error = typeof printErr < "u" ? printErr : print)) : (R || S) && (S ? $ = self.location.href : document.currentScript && ($ = document.currentScript.src), b && ($ = b), $.indexOf("blob:") !== 0 ? $ = $.substr(
+    }, typeof scriptArgs < "u" && scriptArgs, typeof print < "u" && (typeof console > "u" && (console = {}), console.log = print, console.warn = console.error = typeof printErr < "u" ? printErr : print)) : (R || S) && (S ? $ = self.location.href : document.currentScript ? $ = document.currentScript.src : $ = import.meta.url, b && ($ = b), $.indexOf("blob:") !== 0 ? $ = $.substr(
       0,
       $.lastIndexOf("/") + 1
     ) : $ = "", H = function(n) {

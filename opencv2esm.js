@@ -42,9 +42,11 @@ async function processFile(data) {
 
     const moduleWrapStart = "(function(root,factory){if(typeof define==='function'&&define.amd){define(function(){return(root.cv=factory());});}else if(typeof module==='object'&&module.exports){module.exports=factory();}else if(typeof window==='object'){root.cv=factory();}else if(typeof importScripts==='function'){root.cv=factory();}else{root.cv=factory();}}(this,function(){";
     const moduleWrapEnd = ";if(typeof exports==='object'&&typeof module==='object')\nmodule.exports=cv;else if(typeof define==='function'&&define['amd'])\ndefine([],function(){return cv;});else if(typeof exports==='object')\nexports[\"cv\"]=cv;if(typeof Module==='undefined')\nModule={};return cv(Module);}));";
+    const moduleWarpSrc = "scriptDirectory=document.currentScript.src}";
 
     updatedData = updatedData.replace(moduleWrapStart, "");
     updatedData = updatedData.replace(moduleWrapEnd, "();");
+    updatedData = updatedData.replace(moduleWarpSrc, "scriptDirectory=document.currentScript.src}else{scriptDirectory=import.meta.url}");
     updatedData = updatedData + '\nexport default cv;\n';
 
     const formattedData = await prettier.format(updatedData, { parser: 'babel' });

@@ -31,10 +31,7 @@
 
     ```html
     <!-- 最新版本 -->
-    <script src='https://cdn.jsdelivr.net/npm/webai-js/dist/webai.min.js'></script>
-
-    <!-- 2.0.2 版本 -->
-    <script src='https://cdn.jsdelivr.net/npm/webai-js@2.0.2/dist/webai.min.js'></script>
+    <script type="module" src='https://cdn.jsdelivr.net/npm/webai-js/dist/webai.min.js'></script>
     ```
 
 2. Npm 安装

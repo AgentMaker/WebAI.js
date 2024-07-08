@@ -124,6 +124,8 @@ var cv = (function () {
         scriptDirectory = self.location.href;
       } else if (document.currentScript) {
         scriptDirectory = document.currentScript.src;
+      } else {
+        scriptDirectory = import.meta.url;
       }
       if (_scriptDir) {
         scriptDirectory = _scriptDir;
