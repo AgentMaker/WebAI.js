@@ -10,9 +10,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:doc": "jsdoc -c jsdoc.json",
+    "build:opencv": "node opencv2esm.js",
     "build:html": "vite build --config vite.config.html.js",
-    "preview": "vite preview --config vite.config.html.js",
-    "doc": "jsdoc -c jsdoc.json"
+    "preview": "vite preview --config vite.config.html.js"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,7 @@
   "homepage": "https://github.com/AgentMaker/WebAI.js#readme",
   "devDependencies": {
     "jsdoc": "^4.0.3",
+    "prettier": "^3.3.2",
     "vite": "^5.3.1",
     "yamljs": "^0.3.0"
   },

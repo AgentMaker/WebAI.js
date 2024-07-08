@@ -22,7 +22,7 @@
 
 * 2.x 添加了全新的 API 文档，可直接跳转至 [API 参考](https://AgentMaker.github.io/WebAI.js/interfaces/index.html) 页面进行查看
 
-* 3.x 版本更新了新版本的 ONNXRuntime 1.19.0，Demo 中的图像分类模型已支持 WebGPU 加速，可直接调用本地 GPU 实现推理加速，OpenCV 也同步更新至 4.10.0 版本
+* 3.x 版本更新了新版本的 ONNXRuntime，Demo 中的图像分类模型已支持 WebGPU 加速，可直接调用本地 GPU 实现推理加速，OpenCV 也同步更新至 5.x 版本
 
 * 3.x 版本更换了依赖导入方式，使用原生的 ESM 模块导入
 
