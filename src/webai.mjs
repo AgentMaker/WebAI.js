@@ -1,5 +1,5 @@
 import cv from './opencv.mjs'
-import ort from './ort.all.mjs'
+import ort from 'https://cdn.jsdelivr.net/npm/onnxruntime-web@dev/dist/ort.all.bundle.min.mjs'
 
 
 /**

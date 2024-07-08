@@ -38,7 +38,7 @@ async function processFile(data) {
     await writeFile(wasmFilePath, binaryData);
     console.log('WASM file saved as opencv.wasm');
 
-    let updatedData = data.replace(wasmDataUriMatch[0], 'wasmBinaryFile = "opencv.wasm"');
+    let updatedData = data.replace(wasmDataUriMatch[0], 'wasmBinaryFile = "./opencv.wasm"');
 
     const moduleWrapStart = "(function(root,factory){if(typeof define==='function'&&define.amd){define(function(){return(root.cv=factory());});}else if(typeof module==='object'&&module.exports){module.exports=factory();}else if(typeof window==='object'){root.cv=factory();}else if(typeof importScripts==='function'){root.cv=factory();}else{root.cv=factory();}}(this,function(){";
     const moduleWrapEnd = ";if(typeof exports==='object'&&typeof module==='object')\nmodule.exports=cv;else if(typeof define==='function'&&define['amd'])\ndefine([],function(){return cv;});else if(typeof exports==='object')\nexports[\"cv\"]=cv;if(typeof Module==='undefined')\nModule={};return cv(Module);}));";
