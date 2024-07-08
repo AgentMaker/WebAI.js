@@ -5,8 +5,8 @@
   "description": "A simple Web AI model deployment tool using JavaScript",
   "main": "./src/webai.mjs",
   "types": "./src/webai.d.ts",
-  "unpkg": "./dist/webai.min.js",
-  "jsdelivr": "./dist/webai.min.js",
+  "unpkg": "./dist/webai.min.mjs",
+  "jsdelivr": "./dist/webai.min.mjs",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

@@ -1,4 +1,5 @@
 import Be from "https://cdn.jsdelivr.net/npm/onnxruntime-web@dev/dist/ort.all.bundle.min.mjs";
+import { default as oa } from "https://cdn.jsdelivr.net/npm/onnxruntime-web@dev/dist/ort.all.bundle.min.mjs";
 var x = function() {
   var b = typeof document < "u" && document.currentScript ? document.currentScript.src : void 0;
   return function(y) {
@@ -238,7 +239,7 @@ var x = function() {
     function Tn(e) {
       return String.prototype.startsWith ? e.startsWith(Fn) : e.indexOf(Fn) === 0;
     }
-    var me = "./opencv.wasm";
+    var me = "opencv.wasm";
     Tn(me) || (me = le(me));
     function ir() {
       try {
@@ -6743,3 +6744,9 @@ const te = {
 window.WebAI = te;
 window.cv = x;
 window.ort = Be;
+export {
+  te as WebAI,
+  x as cv,
+  te as default,
+  oa as ort
+};

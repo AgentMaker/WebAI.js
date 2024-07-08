@@ -6,7 +6,7 @@ export default {
         },
         rollupOptions: {
           output: {
-            entryFileNames: `webai.min.js`
+            entryFileNames: `webai.min.mjs`
           }
         }
     }
