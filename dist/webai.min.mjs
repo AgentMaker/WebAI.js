@@ -1,5 +1,5 @@
-import Be from "https://cdn.jsdelivr.net/npm/onnxruntime-web@dev/dist/ort.all.bundle.min.mjs";
-import { default as oa } from "https://cdn.jsdelivr.net/npm/onnxruntime-web@dev/dist/ort.all.bundle.min.mjs";
+import Be from "https://cdn.jsdelivr.net/npm/onnxruntime-web@dev/dist/ort.all.min.mjs";
+import { default as oa } from "https://cdn.jsdelivr.net/npm/onnxruntime-web@dev/dist/ort.all.min.mjs";
 var x = function() {
   var b = typeof document < "u" && document.currentScript ? document.currentScript.src : void 0;
   return function(y) {
